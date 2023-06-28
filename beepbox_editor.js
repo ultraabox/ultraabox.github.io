@@ -1319,7 +1319,7 @@ var beepbox = (function (exports) {
             return (_a = EditorConfig.presetCategories[0].presets.dictionary) === null || _a === void 0 ? void 0 : _a[TypePresets === null || TypePresets === void 0 ? void 0 : TypePresets[instrument]];
         }
     }
-    EditorConfig.version = "1.1.3";
+    EditorConfig.version = "1.2.0";
     EditorConfig.versionDisplayName = "UltraBox " + EditorConfig.version;
     EditorConfig.releaseNotesURL = "https://jummbus.bitbucket.io/patch_notes/" + EditorConfig.version + ".html";
     EditorConfig.isOnMac = /^Mac/i.test(navigator.platform) || /Mac OS X/i.test(navigator.userAgent) || /^(iPhone|iPad|iPod)/i.test(navigator.platform) || /(iPhone|iPad|iPod)/i.test(navigator.userAgent);
@@ -1789,7 +1789,7 @@ var beepbox = (function (exports) {
 			{ name: "UltraBox Presets", presets: toNameMap([
               			{ name: "vrc6 sawtooth", midiProgram: null, settings: { "type": "custom chip", "volume": 0, "eqFilter": [ { "type": "high-pass", "cutoffHz": 62.5, "linearGain": 0.5 } ], "eqFilterType": false, "eqSimpleCut": 10, "eqSimplePeak": 0, "eqSubFilters0": [ { "type": "high-pass", "cutoffHz": 62.5, "linearGain": 0.5 } ], "effects": [ "panning", "transition type", "chord type", "detune", "vibrato" ], "transition": "normal", "clicklessTransition": true, "chord": "arpeggio", "fastTwoNoteArp": true, "arpeggioSpeed": 12, "detuneCents": 0, "vibrato": "none", "vibratoDepth": 0, "vibratoDelay": 0, "vibratoSpeed": 10, "vibratoType": 0, "pan": 0, "panDelay": 10, "fadeInSeconds": 0, "fadeOutTicks": -1, "wave": "square", "unison": "none", "customChipWave": { "0": -1, "1": -1, "2": -1, "3": -1, "4": -1, "5": -1, "6": -1, "7": -1, "8": -1, "9": -5, "10": -5, "11": -5, "12": -4, "13": -4, "14": -4, "15": -3, "16": -3, "17": -3, "18": -7, "19": -7, "20": -6, "21": -6, "22": -5, "23": -5, "24": -4, "25": -4, "26": -4, "27": -7, "28": -7, "29": -6, "30": -6, "31": -5, "32": -5, "33": -4, "34": -4, "35": -4, "36": -8, "37": -8, "38": -7, "39": -7, "40": -6, "41": -6, "42": -5, "43": -5, "44": -4, "45": -4, "46": 21, "47": 20, "48": 18, "49": 17, "50": 16, "51": 14, "52": 13, "53": 12, "54": 11, "55": 7, "56": 6, "57": 6, "58": 5, "59": 5, "60": 5, "61": 4, "62": 4, "63": 4 }, "customChipWaveIntegral": { "0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0, "8": 0, "9": 0, "10": 0, "11": 0, "12": 0, "13": 0, "14": 0, "15": 0, "16": 0, "17": 0, "18": 0, "19": 0, "20": 0, "21": 0, "22": 0, "23": 0, "24": 0, "25": 0, "26": 0, "27": 0, "28": 0, "29": 0, "30": 0, "31": 0, "32": 0, "33": 0, "34": 0, "35": 0, "36": 0, "37": 0, "38": 0, "39": 0, "40": 0, "41": 0, "42": 0, "43": 0, "44": 0, "45": 0, "46": 0, "47": 0, "48": 0, "49": 0, "50": 0, "51": 0, "52": 0, "53": 0, "54": 0, "55": 0, "56": 0, "57": 0, "58": 0, "59": 0, "60": 0, "61": 0, "62": 0, "63": 0, "64": 0 }, "envelopes": [] } },
                { name: "nes white", midiProgram: 116, isNoise: true, settings: { "type": "noise", "volume": 0, "eqFilter": [], "eqFilterType": false, "eqSimpleCut": 8, "eqSimplePeak": 0, "eqSubFilters1": [], "effects": [ "panning" ], "pan": 0, "panDelay": 10, "fadeInSeconds": 0, "fadeOutTicks": 0, "wave": "ultrabox 1-bit white", "envelopes": [] } }, 
-				 { name: "nes ping", midiProgram: 116, isNoise: true, settings: { "type": "noise", "volume": 0, "eqFilter": [], "eqFilterType": false, "eqSimpleCut": 8, "eqSimplePeak": 0, "eqSubFilters1": [], "effects": [ "panning" ], "pan": 0, "panDelay": 10, "fadeInSeconds": 0, "fadeOutTicks": 0, "wave": "ultrabox 1-bit ping", "envelopes": [] } }, 
+				 { name: "nes ping", midiProgram: 116, isNoise: true, settings: { "type": "noise", "volume": 0, "eqFilter": [], "eqFilterType": false, "eqSimpleCut": 8, "eqSimplePeak": 0, "eqSubFilters1": [], "effects": [ "panning" ], "pan": 0, "panDelay": 10, "fadeInSeconds": 0, "fadeOutTicks": 0, "wave": "ultrabox 1-bit metallic", "envelopes": [] } }, 
 				{ name: "distorted pulse vocal", midiProgram: null, settings: { "type": "chip", "volume": 0, "eqFilter": [ { "type": "low-pass", "cutoffHz": 19027.31, "linearGain": 0.0884 } ], "eqFilterType": false, "eqSimpleCut": 10, "eqSimplePeak": 0, "eqSubFilters0": [ { "type": "low-pass", "cutoffHz": 19027.31, "linearGain": 0.0884 } ], "effects": [ "panning", "transition type", "pitch shift", "vibrato", "note filter", "bitcrusher", "echo", "reverb" ], "transition": "normal", "clicklessTransition": false, "pitchShiftSemitones": 0, "vibrato": "delayed", "vibratoDepth": 0.3, "vibratoDelay": 18.5, "vibratoSpeed": 10, "vibratoType": 0, "noteFilterType": false, "noteSimpleCut": 10, "noteSimplePeak": 0, "noteFilter": [ { "type": "high-pass", "cutoffHz": 840.9, "linearGain": 11.3137 }, { "type": "low-pass", "cutoffHz": 297.3, "linearGain": 8 }, { "type": "peak", "cutoffHz": 500, "linearGain": 11.3137 }, { "type": "high-pass", "cutoffHz": 62.5, "linearGain": 1.4142 }, { "type": "peak", "cutoffHz": 176.78, "linearGain": 11.3137 }, { "type": "high-pass", "cutoffHz": 250, "linearGain": 11.3137 } ], "noteSubFilters0": [ { "type": "high-pass", "cutoffHz": 840.9, "linearGain": 11.3137 }, { "type": "low-pass", "cutoffHz": 297.3, "linearGain": 8 }, { "type": "peak", "cutoffHz": 500, "linearGain": 11.3137 }, { "type": "high-pass", "cutoffHz": 62.5, "linearGain": 1.4142 }, { "type": "peak", "cutoffHz": 176.78, "linearGain": 11.3137 }, { "type": "high-pass", "cutoffHz": 250, "linearGain": 11.3137 } ], "bitcrusherOctave": 6.5, "bitcrusherQuantization": 71, "pan": 0, "panDelay": 10, "echoSustain": 14, "echoDelayBeats": 0.167, "reverb": 0, "fadeInSeconds": 0, "fadeOutTicks": -3, "wave": "1/8 pulse", "unison": "none", "envelopes": [] } },
               { name: "dubsteb bwah", midiProgram: null, settings: { "type": "FM", "volume": 0, "eqFilter": [ { "type": "low-pass", "cutoffHz": 19027.31, "linearGain": 0.7071 } ], "eqFilterType": true, "eqSimpleCut": 10, "eqSimplePeak": 0, "eqSubFilters1": [], "effects": [ "panning", "transition type", "chord type" ], "transition": "interrupt", "clicklessTransition": false, "chord": "custom interval", "fastTwoNoteArp": false, "arpeggioSpeed": 12, "pan": 0, "panDelay": 10, "fadeInSeconds": 0, "fadeOutTicks": -1, "algorithm": "1←(2 3 4)", "feedbackType": "1⟲", "feedbackAmplitude": 10, "operators": [ { "frequency": "2×", "amplitude": 15, "waveform": "sine", "pulseWidth": 5 }, { "frequency": "4×", "amplitude": 15, "waveform": "sine", "pulseWidth": 5 }, { "frequency": "1×", "amplitude": 11, "waveform": "sine", "pulseWidth": 5 }, { "frequency": "1×", "amplitude": 13, "waveform": "sine", "pulseWidth": 5 } ], "envelopes": [ { "target": "noteVolume", "envelope": "note size" }, { "target": "operatorAmplitude", "envelope": "swell 2", "index": 1 }, { "target": "operatorAmplitude", "envelope": "punch", "index": 2 }, { "target": "operatorAmplitude", "envelope": "note size", "index": 3 } ] } },
  { name: "FM cool bass", midiProgram: null, settings: { "type": "FM", "volume": 0, "eqFilter": [ { "type": "low-pass", "cutoffHz": 6727.17, "linearGain": 1 }, { "type": "high-pass", "cutoffHz": 88.39, "linearGain": 1 }, { "type": "peak", "cutoffHz": 1000, "linearGain": 0.7071 } ], "eqFilterType": false, "eqSimpleCut": 10, "eqSimplePeak": 0, "eqSubFilters0": [ { "type": "low-pass", "cutoffHz": 6727.17, "linearGain": 1 }, { "type": "high-pass", "cutoffHz": 88.39, "linearGain": 1 }, { "type": "peak", "cutoffHz": 1000, "linearGain": 0.7071 } ], "effects": [ "panning", "transition type", "note filter", "reverb" ], "transition": "interrupt", "clicklessTransition": false, "noteFilterType": true, "noteSimpleCut": 9, "noteSimplePeak": 2, "noteFilter": [ { "type": "low-pass", "cutoffHz": 7231.23, "linearGain": 1 } ], "noteSubFilters1": [ { "type": "low-pass", "cutoffHz": 7231.23, "linearGain": 1 } ], "pan": 0, "panDelay": 10, "reverb": 0, "fadeInSeconds": 0, "fadeOutTicks": -1, "algorithm": "1←(2 3←4)", "feedbackType": "1⟲", "feedbackAmplitude": 0, "operators": [ { "frequency": "2×", "amplitude": 15, "waveform": "sine", "pulseWidth": 5 }, { "frequency": "1×", "amplitude": 8, "waveform": "sine", "pulseWidth": 5 }, { "frequency": "1×", "amplitude": 7, "waveform": "sine", "pulseWidth": 5 }, { "frequency": "13×", "amplitude": 11, "waveform": "sine", "pulseWidth": 5 } ], "envelopes": [ { "target": "noteFilterAllFreqs", "envelope": "punch" }, { "target": "operatorAmplitude", "envelope": "twang 2", "index": 1 }, { "target": "operatorAmplitude", "envelope": "twang 3", "index": 2 }, { "target": "operatorAmplitude", "envelope": "twang 2", "index": 3 } ] } },
@@ -1804,7 +1804,10 @@ var beepbox = (function (exports) {
                 { name: "italian accordian", midiProgram: null, settings: { "type": "custom chip", "volume": 0, "eqFilter": [ { "type": "low-pass", "cutoffHz": 6000, "linearGain": 0.5 } ], "eqFilterType": true, "eqSimpleCut": 8, "eqSimplePeak": 1, "eqSubFilters1": [], "effects": [ "panning", "chorus", "reverb" ], "pan": 0, "panDelay": 10, "chorus": 71, "reverb": 45, "fadeInSeconds": 0.0263, "fadeOutTicks": -3, "wave": "square", "unison": "honky tonk", "customChipWave": { "0": -24, "1": -24, "2": -24, "3": -24, "4": -24, "5": -24, "6": -24, "7": -24, "8": -24, "9": -24, "10": -24, "11": -24, "12": -24, "13": -24, "14": -24, "15": -24, "16": 24, "17": 24, "18": 24, "19": 24, "20": 24, "21": 24, "22": 24, "23": 24, "24": -24, "25": -24, "26": -24, "27": -24, "28": -24, "29": -24, "30": -24, "31": -24, "32": -24, "33": -24, "34": -24, "35": -24, "36": -24, "37": -24, "38": -24, "39": -24, "40": 24, "41": 24, "42": 24, "43": 24, "44": 24, "45": 24, "46": 24, "47": 24, "48": -24, "49": -24, "50": -24, "51": -24, "52": -24, "53": -24, "54": -24, "55": -24, "56": -24, "57": -24, "58": -24, "59": -24, "60": -24, "61": -24, "62": -24, "63": -24 }, "customChipWaveIntegral": { "0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0, "8": 0, "9": 0, "10": 0, "11": 0, "12": 0, "13": 0, "14": 0, "15": 0, "16": 0, "17": 0, "18": 0, "19": 0, "20": 0, "21": 0, "22": 0, "23": 0, "24": 0, "25": 0, "26": 0, "27": 0, "28": 0, "29": 0, "30": 0, "31": 0, "32": 0, "33": 0, "34": 0, "35": 0, "36": 0, "37": 0, "38": 0, "39": 0, "40": 0, "41": 0, "42": 0, "43": 0, "44": 0, "45": 0, "46": 0, "47": 0, "48": 0, "49": 0, "50": 0, "51": 0, "52": 0, "53": 0, "54": 0, "55": 0, "56": 0, "57": 0, "58": 0, "59": 0, "60": 0, "61": 0, "62": 0, "63": 0, "64": 0 }, "envelopes": [] } },
              //   { name: "sans", midiProgram: null, settings:  },
                 { name: "super saw 1", midiProgram: null, settings: { "type": "custom chip", "volume": 0, "eqFilter": [ { "type": "low-pass", "cutoffHz": 19027.31, "linearGain": 0.7071 } ], "eqFilterType": true, "eqSimpleCut": 10, "eqSimplePeak": 0, "eqSubFilters1": [], "effects": [ "panning", "transition type", "vibrato", "chorus", "reverb" ], "transition": "interrupt", "clicklessTransition": false, "vibrato": "delayed", "vibratoDepth": 0.3, "vibratoDelay": 18.5, "vibratoSpeed": 10, "vibratoType": 0, "pan": 0, "panDelay": 10, "chorus": 29, "reverb": 29, "fadeInSeconds": 0, "fadeOutTicks": -1, "wave": "square", "unison": "dissonant", "customChipWave": { "0": 22, "1": 22, "2": 16, "3": 6, "4": 0, "5": -3, "6": -8, "7": -10, "8": -13, "9": -16, "10": -19, "11": -19, "12": -20, "13": -22, "14": -22, "15": -24, "16": -24, "17": -24, "18": -24, "19": -24, "20": -24, "21": -24, "22": -24, "23": -24, "24": -24, "25": -24, "26": -24, "27": -24, "28": -24, "29": -24, "30": -24, "31": 24, "32": 24, "33": 16, "34": 9, "35": 6, "36": 4, "37": 2, "38": 0, "39": -1, "40": -3, "41": -4, "42": -4, "43": -6, "44": -6, "45": -6, "46": -6, "47": -5, "48": -5, "49": -4, "50": -2, "51": -2, "52": 1, "53": 4, "54": 6, "55": 8, "56": 10, "57": 12, "58": 14, "59": 16, "60": 18, "61": 19, "62": 22, "63": 24 }, "customChipWaveIntegral": { "0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0, "8": 0, "9": 0, "10": 0, "11": 0, "12": 0, "13": 0, "14": 0, "15": 0, "16": 0, "17": 0, "18": 0, "19": 0, "20": 0, "21": 0, "22": 0, "23": 0, "24": 0, "25": 0, "26": 0, "27": 0, "28": 0, "29": 0, "30": 0, "31": 0, "32": 0, "33": 0, "34": 0, "35": 0, "36": 0, "37": 0, "38": 0, "39": 0, "40": 0, "41": 0, "42": 0, "43": 0, "44": 0, "45": 0, "46": 0, "47": 0, "48": 0, "49": 0, "50": 0, "51": 0, "52": 0, "53": 0, "54": 0, "55": 0, "56": 0, "57": 0, "58": 0, "59": 0, "60": 0, "61": 0, "62": 0, "63": 0, "64": 0 }, "envelopes": [] } },
-               //{ name: "overdrive guitar custom chip", midiProgram: null, settings: { "type": "custom chip", "volume": 10, "eqFilter": [ { "type": "peak", "cutoffHz": 297.3, "linearGain": 0.3536 }, { "type": "peak", "cutoffHz": 500, "linearGain": 0.25 }, { "type": "peak", "cutoffHz": 1189.21, "linearGain": 0.25 }, { "type": "high-pass", "cutoffHz": 125, "linearGain": 2.8284 }, { "type": "high-pass", "cutoffHz": 62.5, "linearGain": 0.1768 }, { "type": "low-pass", "cutoffHz": 16000, "linearGain": 0.3536 }, { "type": "low-pass", "cutoffHz": 8000, "linearGain": 0.5 }, { "type": "peak", "cutoffHz": 2378.41, "linearGain": 0.25 } ], "eqFilterType": false, "eqSimpleCut": 10, "eqSimplePeak": 0, "eqSubFilters0": [ { "type": "peak", "cutoffHz": 297.3, "linearGain": 0.3536 }, { "type": "peak", "cutoffHz": 500, "linearGain": 0.25 }, { "type": "peak", "cutoffHz": 1189.21, "linearGain": 0.25 }, { "type": "high-pass", "cutoffHz": 125, "linearGain": 2.8284 }, { "type": "high-pass", "cutoffHz": 62.5, "linearGain": 0.1768 }, { "type": "low-pass", "cutoffHz": 16000, "linearGain": 0.3536 }, { "type": "low-pass", "cutoffHz": 8000, "linearGain": 0.5 }, { "type": "peak", "cutoffHz": 2378.41, "linearGain": 0.25 } ], "eqSubFilters1": [], "effects": [ "panning", "note filter" ], "noteFilterType": false, "noteSimpleCut": 10, "noteSimplePeak": 0, "noteFilter": [ { "type": "high-pass", "cutoffHz": 105.11, "linearGain": 0.5 }, { "type": "low-pass", "cutoffHz": 11313.71, "linearGain": 1 }, { "type": "peak", "cutoffHz": 420.45, "linearGain": 0.7071 }, { "type": "peak", "cutoffHz": 2000, "linearGain": 0.3536 }, { "type": "peak", "cutoffHz": 6727.17, "linearGain": 0.25 } ], "noteSubFilters0": [ { "type": "high-pass", "cutoffHz": 105.11, "linearGain": 0.5 }, { "type": "low-pass", "cutoffHz": 11313.71, "linearGain": 1 }, { "type": "peak", "cutoffHz": 420.45, "linearGain": 0.7071 }, { "type": "peak", "cutoffHz": 2000, "linearGain": 0.3536 }, { "type": "peak", "cutoffHz": 6727.17, "linearGain": 0.25 } ], "pan": 0, "panDelay": 10, "fadeInSeconds": 0, "fadeOutTicks": -3, "wave": "square", "unison": "none", "customChipWave": { "0": 0, "1": -2, "2": -6, "3": -6, "4": -8, "5": -11, "6": -12, "7": -14, "8": -16, "9": -17, "10": -19, "11": -16, "12": -16, "13": -15, "14": -12, "15": -10, "16": -7, "17": -5, "18": 2, "19": 5, "20": 11, "21": 2, "22": 2, "23": 2, "24": 8, "25": 8, "26": 8, "27": 8, "28": 8, "29": 8, "30": 8, "31": 8, "32": 8, "33": 8, "34": 8, "35": 9, "36": 10, "37": -12, "38": 0, "39": -3, "40": -4, "41": -10, "42": -15, "43": -4, "44": 2, "45": 4, "46": 2, "47": 2, "48": -4, "49": -6, "50": 22, "51": 24, "52": 24, "53": -5, "54": 24, "55": 24, "56": 24, "57": 24, "58": 24, "59": 24, "60": 22, "61": -2, "62": 0, "63": 1 }, "customChipWaveIntegral": { "0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0, "8": 0, "9": 0, "10": 0, "11": 0, "12": 0, "13": 0, "14": 0, "15": 0, "16": 0, "17": 0, "18": 0, "19": 0, "20": 0, "21": 0, "22": 0, "23": 0, "24": 0, "25": 0, "26": 0, "27": 0, "28": 0, "29": 0, "30": 0, "31": 0, "32": 0, "33": 0, "34": 0, "35": 0, "36": 0, "37": 0, "38": 0, "39": 0, "40": 0, "41": 0, "42": 0, "43": 0, "44": 0, "45": 0, "46": 0, "47": 0, "48": 0, "49": 0, "50": 0, "51": 0, "52": 0, "53": 0, "54": 0, "55": 0, "56": 0, "57": 0, "58": 0, "59": 0, "60": 0, "61": 0, "62": 0, "63": 0, "64": 0 }, "envelopes": [] } },  
+               { name: "super saw 2", midiProgram: null, settings: { "type": "FM6op", "volume": 0, "eqFilter": [ { "type": "low-pass", "cutoffHz": 19027.31, "linearGain": 1.4142 }, { "type": "high-pass", "cutoffHz": 148.65, "linearGain": 0.7071 } ], "eqFilterType": false, "eqSimpleCut": 10, "eqSimplePeak": 0, "eqSubFilters0": [ { "type": "low-pass", "cutoffHz": 19027.31, "linearGain": 1.4142 }, { "type": "high-pass", "cutoffHz": 148.65, "linearGain": 0.7071 } ], "effects": [ "panning", "transition type", "pitch shift", "note filter", "chorus", "reverb" ], "transition": "continue", "clicklessTransition": false, "pitchShiftSemitones": 0, "noteFilterType": false, "noteSimpleCut": 10, "noteSimplePeak": 0, "noteFilter": [], "noteSubFilters0": [], "noteSubFilters1": [ { "type": "low-pass", "cutoffHz": 4756.83, "linearGain": 1 } ], "pan": 0, "panDelay": 10, "chorus": 71, "reverb": 0, "fadeInSeconds": 0, "fadeOutTicks": -1, "algorithm": "1 2 3 4 5 6", "feedbackType": "1⟲", "feedbackAmplitude": 0, "operators": [ { "frequency": "1×", "amplitude": 13, "waveform": "sawtooth", "pulseWidth": 5 }, { "frequency": "~1×", "amplitude": 15, "waveform": "sawtooth", "pulseWidth": 5 }, { "frequency": "2×", "amplitude": 10, "waveform": "sawtooth", "pulseWidth": 5 }, { "frequency": "3×", "amplitude": 7, "waveform": "sawtooth", "pulseWidth": 5 }, { "frequency": "4×", "amplitude": 9, "waveform": "sawtooth", "pulseWidth": 5 }, { "frequency": "8×", "amplitude": 6, "waveform": "sawtooth", "pulseWidth": 5 } ], "envelopes": [] } },
+			 //THANKS ANSWEARING MACHINE
+			 
+			 //{ name: "overdrive guitar custom chip", midiProgram: null, settings: { "type": "custom chip", "volume": 10, "eqFilter": [ { "type": "peak", "cutoffHz": 297.3, "linearGain": 0.3536 }, { "type": "peak", "cutoffHz": 500, "linearGain": 0.25 }, { "type": "peak", "cutoffHz": 1189.21, "linearGain": 0.25 }, { "type": "high-pass", "cutoffHz": 125, "linearGain": 2.8284 }, { "type": "high-pass", "cutoffHz": 62.5, "linearGain": 0.1768 }, { "type": "low-pass", "cutoffHz": 16000, "linearGain": 0.3536 }, { "type": "low-pass", "cutoffHz": 8000, "linearGain": 0.5 }, { "type": "peak", "cutoffHz": 2378.41, "linearGain": 0.25 } ], "eqFilterType": false, "eqSimpleCut": 10, "eqSimplePeak": 0, "eqSubFilters0": [ { "type": "peak", "cutoffHz": 297.3, "linearGain": 0.3536 }, { "type": "peak", "cutoffHz": 500, "linearGain": 0.25 }, { "type": "peak", "cutoffHz": 1189.21, "linearGain": 0.25 }, { "type": "high-pass", "cutoffHz": 125, "linearGain": 2.8284 }, { "type": "high-pass", "cutoffHz": 62.5, "linearGain": 0.1768 }, { "type": "low-pass", "cutoffHz": 16000, "linearGain": 0.3536 }, { "type": "low-pass", "cutoffHz": 8000, "linearGain": 0.5 }, { "type": "peak", "cutoffHz": 2378.41, "linearGain": 0.25 } ], "eqSubFilters1": [], "effects": [ "panning", "note filter" ], "noteFilterType": false, "noteSimpleCut": 10, "noteSimplePeak": 0, "noteFilter": [ { "type": "high-pass", "cutoffHz": 105.11, "linearGain": 0.5 }, { "type": "low-pass", "cutoffHz": 11313.71, "linearGain": 1 }, { "type": "peak", "cutoffHz": 420.45, "linearGain": 0.7071 }, { "type": "peak", "cutoffHz": 2000, "linearGain": 0.3536 }, { "type": "peak", "cutoffHz": 6727.17, "linearGain": 0.25 } ], "noteSubFilters0": [ { "type": "high-pass", "cutoffHz": 105.11, "linearGain": 0.5 }, { "type": "low-pass", "cutoffHz": 11313.71, "linearGain": 1 }, { "type": "peak", "cutoffHz": 420.45, "linearGain": 0.7071 }, { "type": "peak", "cutoffHz": 2000, "linearGain": 0.3536 }, { "type": "peak", "cutoffHz": 6727.17, "linearGain": 0.25 } ], "pan": 0, "panDelay": 10, "fadeInSeconds": 0, "fadeOutTicks": -3, "wave": "square", "unison": "none", "customChipWave": { "0": 0, "1": -2, "2": -6, "3": -6, "4": -8, "5": -11, "6": -12, "7": -14, "8": -16, "9": -17, "10": -19, "11": -16, "12": -16, "13": -15, "14": -12, "15": -10, "16": -7, "17": -5, "18": 2, "19": 5, "20": 11, "21": 2, "22": 2, "23": 2, "24": 8, "25": 8, "26": 8, "27": 8, "28": 8, "29": 8, "30": 8, "31": 8, "32": 8, "33": 8, "34": 8, "35": 9, "36": 10, "37": -12, "38": 0, "39": -3, "40": -4, "41": -10, "42": -15, "43": -4, "44": 2, "45": 4, "46": 2, "47": 2, "48": -4, "49": -6, "50": 22, "51": 24, "52": 24, "53": -5, "54": 24, "55": 24, "56": 24, "57": 24, "58": 24, "59": 24, "60": 22, "61": -2, "62": 0, "63": 1 }, "customChipWaveIntegral": { "0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0, "8": 0, "9": 0, "10": 0, "11": 0, "12": 0, "13": 0, "14": 0, "15": 0, "16": 0, "17": 0, "18": 0, "19": 0, "20": 0, "21": 0, "22": 0, "23": 0, "24": 0, "25": 0, "26": 0, "27": 0, "28": 0, "29": 0, "30": 0, "31": 0, "32": 0, "33": 0, "34": 0, "35": 0, "36": 0, "37": 0, "38": 0, "39": 0, "40": 0, "41": 0, "42": 0, "43": 0, "44": 0, "45": 0, "46": 0, "47": 0, "48": 0, "49": 0, "50": 0, "51": 0, "52": 0, "53": 0, "54": 0, "55": 0, "56": 0, "57": 0, "58": 0, "59": 0, "60": 0, "61": 0, "62": 0, "63": 0, "64": 0 }, "envelopes": [] } },  
 			// { name: "overdrive guitar wave", midiProgram: null, settings: { "type": "chip", "eqFilter": [], "effects": ["aliasing"], "transition": "interrupt", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "ultrabox shortened od guitar", "unison": "none", "envelopes": [] } },  
 			 //  { name: "dubsteb bwah", midiProgram: null, settings:  },
               //  { name: "dubsteb bwah", midiProgram: null, settings:  },
@@ -8498,6 +8501,116 @@ transform: scale(2, 0.5);
     --disabled-note-secondary: #666;
 				}
 			`,
+			  "custom": `${localStorage.getItem("customColors") || `:root {
+				--page-margin: #040410;
+				--editor-background: #040410;
+				--hover-preview: white;
+				--playhead: rgba(255, 255, 255, 0.9);
+				--primary-text: white;
+				--secondary-text: #84859a;
+				--inverted-text: black;
+				--text-selection: rgba(119,68,255,0.99);
+				--box-selection-fill: #044b94;
+				--loop-accent: #74f;
+				--link-accent: #98f;
+				--ui-widget-background: #393e4f;
+				--ui-widget-focus: #6d6886;
+				--pitch-background: #393e4f99;
+				--tonic: #725491;
+				--fifth-note: #54547a;
+				--white-piano-key: #eee;
+				--black-piano-key: #666;
+				--use-color-formula: true;
+				--track-editor-bg-pitch: #393e4f;
+				--track-editor-bg-pitch-dim: #1c1d28;
+				--track-editor-bg-noise: #3d3535;
+				--track-editor-bg-noise-dim: #161313;
+				--track-editor-bg-mod: #283560;
+				--track-editor-bg-mod-dim: #0a101f;
+				--multiplicative-mod-slider: #606c9f;
+				--overwriting-mod-slider: #6850b5;
+				--indicator-primary: #9c64f7;
+				--indicator-secondary: #393e4f;
+				--select2-opt-group: #5d576f;
+				--input-box-outline: #222;
+				--mute-button-normal: #dda85d;
+				--mute-button-mod: #886eae;
+				--mod-label-primary: #282840;
+				--mod-label-secondary-text: rgb(87, 86, 120);
+				--mod-label-primary-text: white;
+				--pitch-secondary-channel-hue: 0;
+				--pitch-secondary-channel-hue-scale: 6.1;
+				--pitch-secondary-channel-sat: 83.3;
+				--pitch-secondary-channel-sat-scale: 0.1;
+				--pitch-secondary-channel-lum: 40;
+				--pitch-secondary-channel-lum-scale: 0.05;
+				--pitch-primary-channel-hue: 0;
+				--pitch-primary-channel-hue-scale: 6.1;
+				--pitch-primary-channel-sat: 100;
+				--pitch-primary-channel-sat-scale: 0.1;
+				--pitch-primary-channel-lum: 67.5;
+				--pitch-primary-channel-lum-scale: 0.05;
+				--pitch-secondary-note-hue: 0;
+				--pitch-secondary-note-hue-scale: 6.1;
+				--pitch-secondary-note-sat: 93.9;
+				--pitch-secondary-note-sat-scale: 0.1;
+				--pitch-secondary-note-lum: 25;
+				--pitch-secondary-note-lum-scale: 0.05;
+				--pitch-primary-note-hue: 0;
+				--pitch-primary-note-hue-scale: 6.1;
+				--pitch-primary-note-sat: 100;
+				--pitch-primary-note-sat-scale: 0.05;
+				--pitch-primary-note-lum: 85.6;
+				--pitch-primary-note-lum-scale: 0.025;
+				--noise-secondary-channel-hue: 0;
+				--noise-secondary-channel-hue-scale: 2;
+				--noise-secondary-channel-sat: 25;
+				--noise-secondary-channel-sat-scale: 0;
+				--noise-secondary-channel-lum: 42;
+				--noise-secondary-channel-lum-scale: 0;
+				--noise-primary-channel-hue: 0;
+				--noise-primary-channel-hue-scale: 2;
+				--noise-primary-channel-sat: 33;
+				--noise-primary-channel-sat-scale: 0;
+				--noise-primary-channel-lum: 63.5;
+				--noise-primary-channel-lum-scale: 0;
+				--noise-secondary-note-hue: 0;
+				--noise-secondary-note-hue-scale: 2;
+				--noise-secondary-note-sat: 33.5;
+				--noise-secondary-note-sat-scale: 0;
+				--noise-secondary-note-lum: 55;
+				--noise-secondary-note-lum-scale: 0;
+				--noise-primary-note-hue: 0;
+				--noise-primary-note-hue-scale: 2;
+				--noise-primary-note-sat: 46.5;
+				--noise-primary-note-sat-scale: 0;
+				--noise-primary-note-lum: 74;
+				--noise-primary-note-lum-scale: 0;
+				--mod-secondary-channel-hue: 192;
+				--mod-secondary-channel-hue-scale: 1.5;
+				--mod-secondary-channel-sat: 88;
+				--mod-secondary-channel-sat-scale: 0;
+				--mod-secondary-channel-lum: 50;
+				--mod-secondary-channel-lum-scale: 0;
+				--mod-primary-channel-hue: 192;
+				--mod-primary-channel-hue-scale: 1.5;
+				--mod-primary-channel-sat: 96;
+				--mod-primary-channel-sat-scale: 0;
+				--mod-primary-channel-lum: 80;
+				--mod-primary-channel-lum-scale: 0;
+				--mod-secondary-note-hue: 192;
+				--mod-secondary-note-hue-scale: 1.5;
+				--mod-secondary-note-sat: 92;
+				--mod-secondary-note-sat-scale: 0;
+				--mod-secondary-note-lum: 45;
+				--mod-secondary-note-lum-scale: 0;
+				--mod-primary-note-hue: 192;
+				--mod-primary-note-hue-scale: 1.5;
+				--mod-primary-note-sat: 96;
+				--mod-primary-note-sat-scale: 0;
+				--mod-primary-note-lum: 85;
+				--mod-primary-note-lum-scale: 0;
+			}`}`,
 			 "69420": `
 			:root {
 				--page-margin: #000420;
@@ -9117,6 +9230,7 @@ transform: scale(2, 0.5);
 
 .beepboxEditor .track-area {
 	grid-area: track-area;
+	background-image: url(${localStorage.getItem('customTheme2')})
 }
 
 .beepboxEditor .loopEditor {
@@ -10383,6 +10497,7 @@ li.select2-results__option[role=group] > strong:hover {
 /* wide screen */
 @media (min-width: 711px) {
 	#beepboxEditorContainer {
+		background-image: url(${localStorage.getItem('customTheme2')});
 		display: table;
 	}
 	.beepboxEditor {
@@ -10502,8 +10617,10 @@ li.select2-results__option[role=group] > strong:hover {
             this._leftHighlight = SVG.path({ fill: ColorConfig.hoverPreview, "pointer-events": "none" });
             this._rightHighlight = SVG.path({ fill: ColorConfig.hoverPreview, "pointer-events": "none" });
             this._renderedPlayhead = -1;
-            this._svg = SVG.svg({ style: `background-color: ${ColorConfig.editorBackground}; touch-action: pan-y; position: absolute;`, width: this._editorWidth, height: this._editorHeight }, this._notches, this._handle, this._handleHighlight, this._leftHighlight, this._rightHighlight, this._playhead);
-            this.container = HTML.div({ class: "barScrollBar", style: "width: 512px; height: 20px; overflow: hidden; position: relative;" }, this._svg);
+          //  this._svg = SVG.svg({ id: 'firstImage', style: `background-image: url(${localStorage.getItem("customTheme") || "https://www.teahub.io/photos/full/244-2448998_anime-girl-wallpaper-4k.jpg"}); background-repeat: no-repeat; background-size: 100% 100%; background-color: ${ColorConfig.editorBackground}; touch-action: pan-y; position: absolute;`, width: this._editorWidth, height: this._editorHeight }, this._notches, this._handle, this._handleHighlight, this._leftHighlight, this._rightHighlight, this._playhead);
+           this._svg = SVG.svg({ id: 'firstImage', style: `background-image: url(${localStorage.getItem("customTheme")}); background-repeat: no-repeat; background-size: 100% 100%; background-color: ${ColorConfig.editorBackground}; touch-action: pan-y; position: absolute;`, width: this._editorWidth, height: this._editorHeight }, this._notches, this._handle, this._handleHighlight, this._leftHighlight, this._rightHighlight, this._playhead);
+          
+		   this.container = HTML.div({ class: "barScrollBar", style: "width: 512px; height: 20px; overflow: hidden; position: relative;" }, this._svg);
             this._mouseX = 0;
             this._mouseDown = false;
             this._mouseOver = false;
@@ -17046,6 +17163,11 @@ li.select2-results__option[role=group] > strong:hover {
                     }
                 }
             }
+			 var dummyArray = new Float32Array(1);
+        this.isPlayingSong = true;
+        this.synthesize(dummyArray, dummyArray, 1, true);
+        this.isPlayingSong = false;
+		//BUGFIX FROM JUMMBOX
         }
         computeLatestModValues() {
             if (this.song != null && this.song.modChannelCount > 0) {
@@ -17488,10 +17610,13 @@ li.select2-results__option[role=group] > strong:hover {
         play() {
             if (this.isPlayingSong)
                 return;
+			 this.computeLatestModValues();
+        this.warmUpSynthesizer(this.song);
+		//BUGFIX FROMM JUMMBOX
             this.isPlayingSong = true;
             this.activateAudio();
-            this.warmUpSynthesizer(this.song);
-            this.computeLatestModValues();
+            //this.warmUpSynthesizer(this.song);
+           // this.computeLatestModValues();
         }
         pause() {
             if (!this.isPlayingSong)
@@ -17678,6 +17803,8 @@ li.select2-results__option[role=group] > strong:hover {
             this.part = 0;
             this.tick = 0;
             this.tickSampleCountdown = samplesPerTick;
+			this.isAtStartOfTick = true;
+			//BUGFIX FROM JUMMBOX
             if (this.loopRepeatCount != 0 && this.bar == this.song.loopStart + this.song.loopLength) {
                 this.bar = this.song.loopStart;
                 if (this.loopRepeatCount > 0)
@@ -17730,6 +17857,9 @@ li.select2-results__option[role=group] > strong:hover {
             const limitDecay = 1.0 - Math.pow(0.5, 4.0 / this.samplesPerSecond);
             const limitRise = 1.0 - Math.pow(0.5, 4000.0 / this.samplesPerSecond);
             let limit = +this.limit;
+			let skippedBars = [];
+        let firstSkippedBufferIndex = -1;
+		//BUGFIX FROM JUMMBOX
             let bufferIndex = 0;
             while (bufferIndex < outputBufferLength && !ended) {
                 this.nextBar = this.getNextBar();
@@ -17754,8 +17884,21 @@ li.select2-results__option[role=group] > strong:hover {
                     }
                 }
                 if (this.wantToSkip) {
+					// Unable to continue, as we have skipped back to a previously visited bar without generating new samples, which means we are infinitely skipping.
+                // In this case processing will return before the designated number of samples are processed. In other words, silence will be generated.
+                let barVisited = skippedBars.includes(this.bar);
+                if (barVisited && bufferIndex == firstSkippedBufferIndex)
+                    return;
+                if (firstSkippedBufferIndex == -1) {
+                    firstSkippedBufferIndex = bufferIndex;
+                }
+                if (!barVisited)
+                    skippedBars.push(this.bar);
+				//BUGFIX FROM JUMMBOX
                     this.wantToSkip = false;
                     this.skipBar();
+					continue;
+					//BUGFIX FROM JUMMBOX
                 }
                 for (let channelIndex = 0; channelIndex < song.pitchChannelCount + song.noiseChannelCount; channelIndex++) {
                     const channel = song.channels[channelIndex];
@@ -18596,7 +18739,7 @@ li.select2-results__option[role=group] > strong:hover {
             else if (instrument.type == 1 || instrument.type == 10) {
                 baseExpression = Config.fmBaseExpression;
             }
-            else if (instrument.type == 0 || instrument.type == 8) {
+            else if (instrument.type == 0) {
                 baseExpression = Config.chipBaseExpression;
 				if (Config.chipWaves[instrument.chipWave].isSampled == true && Config.chipWaves[instrument.chipWave].isPercussion == false) {
 					basePitch = basePitch - 63 + Config.chipWaves[instrument.chipWave].extraSampleDetune
@@ -18604,6 +18747,9 @@ li.select2-results__option[role=group] > strong:hover {
 				else if (Config.chipWaves[instrument.chipWave].isSampled == true && Config.chipWaves[instrument.chipWave].isPercussion == true) {
 				basePitch = -51 + Config.chipWaves[instrument.chipWave].extraSampleDetune
 				}
+            }
+			 else if (instrument.type == 8) {
+                baseExpression = Config.chipBaseExpression;
             }
             else if (instrument.type == 5) {
                 baseExpression = Config.harmonicsBaseExpression;
@@ -19292,7 +19438,8 @@ li.select2-results__option[role=group] > strong:hover {
             const data = synth.tempMonoInstrumentSampleBuffer;
             const wave = instrumentState.wave;
             const volumeScale = instrumentState.volumeScale;
-            const waveLength = wave.length - 1;
+            const waveLength = (aliases && instrumentState.type == 8) ? wave.length : wave.length - 1;
+			//BUGFIX FROM JUMMBOX
             const unisonSign = tone.specialIntervalExpressionMult * instrumentState.unison.sign;
             if (instrumentState.unison.voices == 1 && !instrumentState.chord.customInterval)
                 tone.phases[1] = tone.phases[0];
@@ -19352,12 +19499,15 @@ li.select2-results__option[role=group] > strong:hover {
                     prevWaveIntegralB = nextWaveIntegralB;
                     inputSample = waveA + waveB * unisonSign;
                 }
-                const sample = applyFilters(inputSample, initialFilterInput1, initialFilterInput2, filterCount, filters);
-                initialFilterInput2 = initialFilterInput1;
-                initialFilterInput1 = inputSample;
+                 const sample = applyFilters(inputSample * volumeScale, initialFilterInput1, initialFilterInput2, filterCount, filters);
+				 //BUGFIX FROM JUMMBOX
+           initialFilterInput2 = initialFilterInput1;
+               initialFilterInput1 = inputSample * volumeScale;
+			   //BUGFIX FROM JUMMBOX
                 phaseDeltaA *= phaseDeltaScaleA;
                 phaseDeltaB *= phaseDeltaScaleB;
-                const output = sample * expression * volumeScale;
+                const output = sample * expression;
+				 //BUGFIX FROM JUMMBOX
                 expression += expressionDelta;
                 data[sampleIndex] += output;
             }
@@ -22848,7 +22998,8 @@ li.select2-results__option[role=group] > strong:hover {
                         let instrument = doc.song.channels[channelIndex].instruments[instrumentIndex];
                         let modInstrument = instrument.modInstruments[mod];
                         let modChannel = instrument.modChannels[mod];
-                        if (modInstrument >= doc.song.channels[channelIndex].instruments.length && modChannel == doc.channel) {
+                        if (modChannel == doc.channel && modInstrument >= doc.song.channels[modChannel].instruments.length-1 ) {
+							//BUGFIX FROM JUMMBOX
                             instrument.modInstruments[mod]++;
                         }
                     }
@@ -22890,10 +23041,12 @@ li.select2-results__option[role=group] > strong:hover {
                         let modInstrument = instrument.modInstruments[mod];
                         let modChannel = instrument.modChannels[mod];
                         if (modChannel == doc.channel) {
-                            if (modInstrument > doc.song.channels[channelIndex].instruments.length) {
+						if (modInstrument > removedIndex) {
+	//BUGFIX FROM JUMMBOX
                                 instrument.modInstruments[mod]--;
                             }
-                            else if (modInstrument == doc.song.channels[channelIndex].instruments.length) {
+                            else if (modInstrument == removedIndex) {
+								//BUGFIX FROM JUMMBOX
                                 instrument.modInstruments[mod] = 0;
                                 instrument.modulators[mod] = 0;
                             }
@@ -26045,8 +26198,9 @@ li.select2-results__option[role=group] > strong:hover {
                     this.synth.goToNextBar();
                 }
             }
-            this.synth.warmUpSynthesizer(this._doc.song);
             this.synth.computeLatestModValues();
+			  this.synth.warmUpSynthesizer(this._doc.song);
+			  //BUGFIX FROM JUMMBOX
             this.sampleFrames = this.synth.getTotalSamples(this._enableIntro.checked, this._enableOutro.checked, this.synth.loopRepeatCount);
             this.totalChunks = Math.ceil(this.sampleFrames / (this.synth.samplesPerSecond * 5));
             this.recordedSamplesL = new Float32Array(this.sampleFrames);
@@ -27261,7 +27415,9 @@ You should be redirected to the song at:<br /><br />
             const noteEvents = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []];
             const pitchBendEvents = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []];
             const noteSizeEvents = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []];
-            let microsecondsPerBeat = 500000;
+           let tempoChanges = [];
+		   //midi tempo addition
+		   let microsecondsPerBeat = 500000;
             let beatsPerBar = 8;
             let numSharps = 0;
             let isMinor = false;
@@ -27395,7 +27551,12 @@ You should be redirected to the song at:<br /><br />
                                         }
                                         else if (message == 81) {
                                             microsecondsPerBeat = track.reader.readUint24();
-                                            track.reader.skipBytes(length - 3);
+                                             tempoChanges.push({
+                                                midiTick: currentMidiTick,
+                                               microsecondsPerBeat: microsecondsPerBeat,
+                                           });
+//midi tempo addition
+										   track.reader.skipBytes(length - 3);
                                         }
                                         else if (message == 88) {
                                             const numerator = track.reader.readUint8();
@@ -27464,6 +27625,12 @@ You should be redirected to the song at:<br /><br />
                     break;
                 }
             }
+			// Pick the first tempo value.
+            for (const change of tempoChanges) {
+                microsecondsPerBeat = change.microsecondsPerBeat;
+                break;
+            }
+			//midi tempo addition
             const microsecondsPerMinute = 60 * 1000 * 1000;
             const beatsPerMinute = Math.max(Config.tempoMin, Math.min(Config.tempoMax, Math.round(microsecondsPerMinute / microsecondsPerBeat)));
             const midiTicksPerPart = midiTicksPerBeat / Config.partsPerBeat;
@@ -27804,6 +27971,66 @@ You should be redirected to the song at:<br /><br />
                     channel.bars.push(0);
                 }
             }
+			 // Add mod channel to hold the tempo changes, if necessary.
+            if (tempoChanges.length > 1) {
+                let tempoModChannel = new Channel();
+                modChannels.push(tempoModChannel);
+                let tempoModInstrument = new Instrument(false, true);
+                tempoModInstrument.setTypeAndReset(9 /* InstrumentType.mod */, false, true);
+                tempoModInstrument.modulators[0] = Config.modulators.dictionary["tempo"].index;
+                tempoModInstrument.modChannels[0] = -1;
+                tempoModChannel.instruments.push(tempoModInstrument);
+                // We're using the first modulator in the channel, but the pitch values are
+                // flipped relative to the UI, so we need to pick a pitch value accordingly.
+                const tempoModPitch = Config.modCount - 1;
+                let currentBar = -1;
+                let pattern = null;
+                let prevChangeEndPart = 0;
+                for (let changeIndex = 0; changeIndex < tempoChanges.length; changeIndex++) {
+                    const change = tempoChanges[changeIndex];
+                    const changeStartMidiTick = change.midiTick;
+                    const changeStartPart = quantizeMidiTickToPart(changeStartMidiTick);
+                    let changeEndMidiTick = -1;
+                    let changeEndPart = -1;
+                    if (changeIndex === tempoChanges.length - 1) {
+                        changeEndMidiTick = changeStartMidiTick + 1;
+                        changeEndPart = changeStartPart + 1;
+                    }
+                    else {
+                        const nextChange = tempoChanges[changeIndex + 1];
+                        changeEndMidiTick = nextChange.midiTick;
+                        changeEndPart = quantizeMidiTickToPart(changeEndMidiTick);
+                    }
+                    let startBar = Math.floor(changeStartPart / partsPerBar);
+                    let endBar = Math.ceil(changeEndPart / partsPerBar);
+                    for (let bar = startBar; bar < endBar; bar++) {
+                        const barStartPart = bar * partsPerBar;
+                        const noteStartPart = Math.max(0, prevChangeEndPart - barStartPart);
+                        let noteEndPart = Math.min(partsPerBar, changeEndPart - barStartPart);
+                        if (noteStartPart < noteEndPart) {
+                            // Ensure a pattern exists for the current bar before inserting notes into it.
+                            if (currentBar != bar || pattern == null) {
+                                currentBar++;
+                                while (currentBar < bar) {
+                                    tempoModChannel.bars[currentBar] = 0;
+                                    currentBar++;
+                                }
+                                pattern = new Pattern();
+                                tempoModChannel.patterns.push(pattern);
+                                tempoModChannel.bars[currentBar] = tempoModChannel.patterns.length;
+                                pattern.instruments[0] = 0;
+                                pattern.instruments.length = 1;
+                            }
+                            // Create a new note.
+                            const newBPM = Math.max(Config.tempoMin, Math.min(Config.tempoMax, Math.round(microsecondsPerMinute / change.microsecondsPerBeat) - Config.modulators.dictionary["tempo"].convertRealFactor));
+                            const note = new Note(tempoModPitch, noteStartPart, noteEndPart, newBPM, false);
+                            pattern.notes.push(note);
+                        }
+                    }
+                    prevChangeEndPart = changeEndPart;
+                }
+           }
+//midi tempo addition
             function compactChannels(channels, maxLength) {
                 while (channels.length > maxLength) {
                     let bestChannelIndexA = channels.length - 2;
@@ -32204,6 +32431,190 @@ You should be redirected to the song at:<br /><br />
             }
         }
     }
+	
+	let doReload = false;
+    class CustomPrompt {
+        constructor(_doc, _pattern, _pattern2, _pattern3) {
+            this._doc = _doc;
+            this._pattern = _pattern;
+            this._pattern2 = _pattern2;
+            this._pattern3 = _pattern3;
+            this._fileInput = input$8({ type: "file", accept: ".png,.jpg,.jpeg", text: "choose editor background image" });
+            this._fileInput2 = input$8({ type: "file", accept: ".png,.jpg,.jpeg", text: "choose website background image" });
+            this._colorInput = input$8({ type: "text", value: localStorage.getItem("customColors") || `:root {
+		--page-margin: #040410;
+		--editor-background: #040410;
+		--hover-preview: white;
+		--playhead: rgba(255, 255, 255, 0.9);
+		--primary-text: white;
+		--secondary-text: #84859a;
+		--inverted-text: black;
+		--text-selection: rgba(119,68,255,0.99);
+		--box-selection-fill: #044b94;
+		--loop-accent: #74f;
+		--link-accent: #98f;
+		--ui-widget-background: #393e4f;
+		--ui-widget-focus: #6d6886;
+		--pitch-background: #393e4f99;
+		--tonic: #725491;
+		--fifth-note: #54547a;
+		--white-piano-key: #eee;
+		--black-piano-key: #666;
+		--use-color-formula: true;
+		--track-editor-bg-pitch: #393e4f;
+		--track-editor-bg-pitch-dim: #1c1d28;
+		--track-editor-bg-noise: #3d3535;
+		--track-editor-bg-noise-dim: #161313;
+		--track-editor-bg-mod: #283560;
+		--track-editor-bg-mod-dim: #0a101f;
+		--multiplicative-mod-slider: #606c9f;
+		--overwriting-mod-slider: #6850b5;
+		--indicator-primary: #9c64f7;
+		--indicator-secondary: #393e4f;
+		--select2-opt-group: #5d576f;
+		--input-box-outline: #222;
+		--mute-button-normal: #dda85d;
+		--mute-button-mod: #886eae;
+		--mod-label-primary: #282840;
+		--mod-label-secondary-text: rgb(87, 86, 120);
+		--mod-label-primary-text: white;
+		--pitch-secondary-channel-hue: 0;
+		--pitch-secondary-channel-hue-scale: 6.1;
+		--pitch-secondary-channel-sat: 83.3;
+		--pitch-secondary-channel-sat-scale: 0.1;
+		--pitch-secondary-channel-lum: 40;
+		--pitch-secondary-channel-lum-scale: 0.05;
+		--pitch-primary-channel-hue: 0;
+		--pitch-primary-channel-hue-scale: 6.1;
+		--pitch-primary-channel-sat: 100;
+		--pitch-primary-channel-sat-scale: 0.1;
+		--pitch-primary-channel-lum: 67.5;
+		--pitch-primary-channel-lum-scale: 0.05;
+		--pitch-secondary-note-hue: 0;
+		--pitch-secondary-note-hue-scale: 6.1;
+		--pitch-secondary-note-sat: 93.9;
+		--pitch-secondary-note-sat-scale: 0.1;
+		--pitch-secondary-note-lum: 25;
+		--pitch-secondary-note-lum-scale: 0.05;
+		--pitch-primary-note-hue: 0;
+		--pitch-primary-note-hue-scale: 6.1;
+		--pitch-primary-note-sat: 100;
+		--pitch-primary-note-sat-scale: 0.05;
+		--pitch-primary-note-lum: 85.6;
+		--pitch-primary-note-lum-scale: 0.025;
+		--noise-secondary-channel-hue: 0;
+		--noise-secondary-channel-hue-scale: 2;
+		--noise-secondary-channel-sat: 25;
+		--noise-secondary-channel-sat-scale: 0;
+		--noise-secondary-channel-lum: 42;
+		--noise-secondary-channel-lum-scale: 0;
+		--noise-primary-channel-hue: 0;
+		--noise-primary-channel-hue-scale: 2;
+		--noise-primary-channel-sat: 33;
+		--noise-primary-channel-sat-scale: 0;
+		--noise-primary-channel-lum: 63.5;
+		--noise-primary-channel-lum-scale: 0;
+		--noise-secondary-note-hue: 0;
+		--noise-secondary-note-hue-scale: 2;
+		--noise-secondary-note-sat: 33.5;
+		--noise-secondary-note-sat-scale: 0;
+		--noise-secondary-note-lum: 55;
+		--noise-secondary-note-lum-scale: 0;
+		--noise-primary-note-hue: 0;
+		--noise-primary-note-hue-scale: 2;
+		--noise-primary-note-sat: 46.5;
+		--noise-primary-note-sat-scale: 0;
+		--noise-primary-note-lum: 74;
+		--noise-primary-note-lum-scale: 0;
+		--mod-secondary-channel-hue: 192;
+		--mod-secondary-channel-hue-scale: 1.5;
+		--mod-secondary-channel-sat: 88;
+		--mod-secondary-channel-sat-scale: 0;
+		--mod-secondary-channel-lum: 50;
+		--mod-secondary-channel-lum-scale: 0;
+		--mod-primary-channel-hue: 192;
+		--mod-primary-channel-hue-scale: 1.5;
+		--mod-primary-channel-sat: 96;
+		--mod-primary-channel-sat-scale: 0;
+		--mod-primary-channel-lum: 80;
+		--mod-primary-channel-lum-scale: 0;
+		--mod-secondary-note-hue: 192;
+		--mod-secondary-note-hue-scale: 1.5;
+		--mod-secondary-note-sat: 92;
+		--mod-secondary-note-sat-scale: 0;
+		--mod-secondary-note-lum: 45;
+		--mod-secondary-note-lum-scale: 0;
+		--mod-primary-note-hue: 192;
+		--mod-primary-note-hue-scale: 1.5;
+		--mod-primary-note-sat: 96;
+		--mod-primary-note-sat-scale: 0;
+		--mod-primary-note-lum: 85;
+		--mod-primary-note-lum-scale: 0;
+	}` });
+            this._cancelButton = button$a({ class: "cancelButton" });
+            this._okayButton = button$a({ class: "okayButton", style: "width:45%;" }, "Okay");
+            this.container = div$a({ class: "prompt noSelection", style: "width: 300px;" }, h2$a("Import"), p$2({ style: "text-align: left; margin: 0.5em 0;" }, "You can upload images to create a custom theme."), p$2({ style: "text-align: left; margin: 0.5em 0;" }, "The first image will become the editor background, and the second image will be tiled across the webpage."), div$a(), p$2({ style: "text-align: left; margin: 0;" }, "Editor Background Image:", this._fileInput), p$2({ style: "text-align: left; margin: 0.5em 0;" }, "Website Background Image:", this._fileInput2), div$a(), p$2({ style: "text-align: left; margin: 0;" }, "If you want to mess with custom color schemes, mess with the hexcodes yourself, I dare you:"), this._colorInput, div$a({ style: "display: flex; flex-direction: row-reverse; justify-content: space-between;" }, this._okayButton), this._cancelButton);
+            this._close = () => {
+                this._doc.undo();
+                if (doReload) {
+                    window.location.reload();
+                }
+            };
+            this.cleanUp = () => {
+                this._okayButton.removeEventListener("click", this._saveChanges);
+                this._cancelButton.removeEventListener("click", this._close);
+            };
+            this._whenColorsChanged = () => {
+                localStorage.setItem("customColors", this._colorInput.value);
+                window.localStorage.setItem("colorTheme", "custom");
+                this._doc.colorTheme = "custom";
+                doReload = true;
+            };
+            this._whenFileSelected = () => {
+                const file = this._fileInput.files[0];
+                if (!file)
+                    return;
+                const reader = new FileReader();
+                reader.addEventListener("load", (event) => {
+                    let base64 = reader.result;
+                    window.localStorage.setItem("customTheme", base64);
+                    const value = `url("${window.localStorage.getItem('customTheme')}")`;
+                    console.log('setting', value);
+                    this._pattern._svg.style.backgroundImage = value;
+                    console.log('done');
+                });
+                reader.readAsDataURL(file);
+            };
+            this._whenFileSelected2 = () => {
+                const file = this._fileInput2.files[0];
+                if (!file)
+                    return;
+                const reader = new FileReader();
+                reader.addEventListener("load", (event) => {
+                    let base64 = reader.result;
+                    window.localStorage.setItem("customTheme2", base64);
+                    const value = `url("${window.localStorage.getItem('customTheme2')}")`;
+                    document.body.style.backgroundImage = `url(${base64})`;
+                    this._pattern2.style.backgroundImage = value;
+                    this._pattern3.style.backgroundImage = value;
+                    document.getElementById('secondImage').style.backgroundImage = `url(${base64})`;
+                });
+                reader.readAsDataURL(file);
+            };
+            this._saveChanges = () => {
+                this._doc.prompt = null;
+                this._doc.undo();
+                if (doReload) {
+                    window.location.reload();
+                }
+            };
+            this._fileInput.addEventListener("change", this._whenFileSelected);
+            this._fileInput2.addEventListener("change", this._whenFileSelected2);
+            this._colorInput.addEventListener("change", this._whenColorsChanged);
+            this._okayButton.addEventListener("click", this._saveChanges);
+            this._cancelButton.addEventListener("click", this._close);
+        }
+    }
 
     const { button: button$d, div: div$d, h2: h2$d, select: select$6, option: option$6 } = HTML;
     class ThemePrompt {
@@ -32254,6 +32665,7 @@ You should be redirected to the song at:<br /><br />
 			option$6({ value: "ultrabox rainbow" }, "UltraBox Rainbow"),
 			option$6({ value: "ultrabox terminal" }, "UltraBox Terminal"),
 			option$6({ value: "ultrabox upside-down beepbox" }, "UltraBox Upside-down Beepbox"),
+		option$6({ value: "custom" }, "Custom")
 			);
             this._cancelButton = button$d({ class: "cancelButton" });
             this._okayButton = button$d({ class: "okayButton", style: "width:45%;" }, "Okay");
@@ -33714,7 +34126,10 @@ You should be redirected to the song at:<br /><br />
             this._volumeBarBox = div$f({ class: "playback-volume-bar", style: "height: 12px; align-self: center;" }, this._volumeBarContainer);
             this._fileMenu = select$7({ style: "width: 100%;" }, option$7({ selected: true, disabled: true, hidden: false }, "File"), option$7({ value: "new" }, "+ New Blank Song"), option$7({ value: "import" }, "↑ Import Song... (" + EditorConfig.ctrlSymbol + "O)"), option$7({ value: "export" }, "↓ Export Song... (" + EditorConfig.ctrlSymbol + "S)"), option$7({ value: "copyUrl" }, "⎘ Copy Song URL"), option$7({ value: "shareUrl" }, "⤳ Share Song URL"), option$7({ value: "shortenUrl" }, "… Shorten Song URL"), option$7({ value: "viewPlayer" }, "▶ View in Song Player"), option$7({ value: "copyEmbed" }, "⎘ Copy HTML Embed Code"), option$7({ value: "songRecovery" }, "⚠ Recover Recent Song..."));
             this._editMenu = select$7({ style: "width: 100%;" }, option$7({ selected: true, disabled: true, hidden: false }, "Edit"), option$7({ value: "undo" }, "Undo (Z)"), option$7({ value: "redo" }, "Redo (Y)"), option$7({ value: "copy" }, "Copy Pattern (C)"), option$7({ value: "pasteNotes" }, "Paste Pattern Notes (V)"), option$7({ value: "pasteNumbers" }, "Paste Pattern Numbers (" + EditorConfig.ctrlSymbol + "⇧V)"), option$7({ value: "insertBars" }, "Insert Bar (⏎)"), option$7({ value: "deleteBars" }, "Delete Selected Bars (⌫)"), option$7({ value: "insertChannel" }, "Insert Channel (" + EditorConfig.ctrlSymbol + "⏎)"), option$7({ value: "deleteChannel" }, "Delete Selected Channels (" + EditorConfig.ctrlSymbol + "⌫)"), option$7({ value: "selectChannel" }, "Select Channel (⇧A)"), option$7({ value: "selectAll" }, "Select All (A)"), option$7({ value: "duplicatePatterns" }, "Duplicate Reused Patterns (D)"), option$7({ value: "transposeUp" }, "Move Notes Up (+ or ⇧+)"), option$7({ value: "transposeDown" }, "Move Notes Down (- or ⇧-)"), option$7({ value: "moveNotesSideways" }, "Move All Notes Sideways... (W)"), option$7({ value: "beatsPerBar" }, "Change Beats Per Bar..."), option$7({ value: "barCount" }, "Change Song Length... (L)"), option$7({ value: "channelSettings" }, "Channel Settings... (Q)"), option$7({ value: "limiterSettings" }, "Limiter Settings... (⇧L)"));
-            this._optionsMenu = select$7({ style: "width: 100%;" }, option$7({ selected: true, disabled: true, hidden: false }, "Preferences"), option$7({ value: "autoPlay" }, "Auto Play on Load"), option$7({ value: "autoFollow" }, "Keep Current Pattern Selected"), option$7({ value: "enableNotePreview" }, "Hear Preview of Added Notes"), option$7({ value: "showLetters" }, "Show Piano Keys"), option$7({ value: "showFifth" }, 'Highlight "Fifth" of Song Key'), option$7({ value: "notesOutsideScale" }, "Allow Adding Notes Not in Scale"), option$7({ value: "setDefaultScale" }, "Use Current Scale as Default"), option$7({ value: "showChannels" }, "Show Notes From All Channels"), option$7({ value: "showScrollBar" }, "Show Octave Scroll Bar"), option$7({ value: "alwaysFineNoteVol" }, "Always Fine Note Volume"), option$7({ value: "enableChannelMuting" }, "Enable Channel Muting"), option$7({ value: "displayBrowserUrl" }, "Display Song Data in URL"), option$7({ value: "displayVolumeBar" }, "Show Playback Volume"), option$7({ value: "layout" }, "Set Layout..."), option$7({ value: "colorTheme" }, "Set Theme..."), option$7({ value: "recordingSetup" }, "Set Up Note Recording..."));
+            this._optionsMenu = select$7({ style: "width: 100%;" }, option$7({ selected: true, disabled: true, hidden: false }, "Preferences"), option$7({ value: "autoPlay" }, "Auto Play on Load"), option$7({ value: "autoFollow" }, "Keep Current Pattern Selected"), option$7({ value: "enableNotePreview" }, "Hear Preview of Added Notes"), option$7({ value: "showLetters" }, "Show Piano Keys"), option$7({ value: "showFifth" }, 'Highlight "Fifth" of Song Key'), option$7({ value: "notesOutsideScale" }, "Allow Adding Notes Not in Scale"), option$7({ value: "setDefaultScale" }, "Use Current Scale as Default"), option$7({ value: "showChannels" }, "Show Notes From All Channels"), option$7({ value: "showScrollBar" }, "Show Octave Scroll Bar"), option$7({ value: "alwaysFineNoteVol" }, "Always Fine Note Volume"), option$7({ value: "enableChannelMuting" }, "Enable Channel Muting"), option$7({ value: "displayBrowserUrl" }, "Display Song Data in URL"), option$7({ value: "displayVolumeBar" }, "Show Playback Volume"), option$7({ value: "layout" }, "Set Layout..."),
+			option$7({ value: "colorTheme" }, "Set Theme..."),
+			option$7({ value: "customTheme" }, "Custom Theme..."),
+			option$7({ value: "recordingSetup" }, "Set Up Note Recording..."));
             this._scaleSelect = buildOptions(select$7(), Config.scales.map(scale => scale.name));
             this._keySelect = buildOptions(select$7(), Config.keys.map(key => key.name).reverse());
             this._tempoSlider = new Slider(input$a({ style: "margin: 0; vertical-align: middle;", type: "range", min: "1", max: "500", value: "160", step: "1" }), this._doc, (oldValue, newValue) => new ChangeTempo(this._doc, oldValue, newValue), false);
@@ -34019,6 +34434,7 @@ You should be redirected to the song at:<br /><br />
                     (prefs.displayVolumeBar ? "✓ " : "　") + "Show Playback Volume",
                     "　Set Layout...",
                     "　Set Theme...",
+					 "　Custom Theme...",
                     "　Set Up Note Recording...",
                 ];
                 for (let i = 0; i < optionCommands.length; i++) {
@@ -35428,61 +35844,81 @@ You should be redirected to the song at:<br /><br />
                         if (canPlayNotes)
                             break;
                         this._doc.selection.nextDigit("0", needControlForShortcuts != (event.shiftKey || event.ctrlKey || event.metaKey), event.altKey);
-                        event.preventDefault();
+                      this._renderInstrumentBar(this._doc.song.channels[this._doc.channel], this._doc.getCurrentInstrument(), ColorConfig.getChannelColor(this._doc.song, this._doc.channel));
+					  //JUMMBOX BUGFIX
+					  event.preventDefault();
                         break;
                     case 49:
                         if (canPlayNotes)
                             break;
                         this._doc.selection.nextDigit("1", needControlForShortcuts != (event.shiftKey || event.ctrlKey || event.metaKey), event.altKey);
-                        event.preventDefault();
+                       this._renderInstrumentBar(this._doc.song.channels[this._doc.channel], this._doc.getCurrentInstrument(), ColorConfig.getChannelColor(this._doc.song, this._doc.channel));
+					   //BUGFIX FROM JUMMBOX
+					  event.preventDefault();
                         break;
                     case 50:
                         if (canPlayNotes)
                             break;
                         this._doc.selection.nextDigit("2", needControlForShortcuts != (event.shiftKey || event.ctrlKey || event.metaKey), event.altKey);
-                        event.preventDefault();
+                     this._renderInstrumentBar(this._doc.song.channels[this._doc.channel], this._doc.getCurrentInstrument(), ColorConfig.getChannelColor(this._doc.song, this._doc.channel));
+					 //JUMMBOX BUGFIX
+				   event.preventDefault();
                         break;
                     case 51:
                         if (canPlayNotes)
                             break;
                         this._doc.selection.nextDigit("3", needControlForShortcuts != (event.shiftKey || event.ctrlKey || event.metaKey), event.altKey);
-                        event.preventDefault();
+                          this._renderInstrumentBar(this._doc.song.channels[this._doc.channel], this._doc.getCurrentInstrument(), ColorConfig.getChannelColor(this._doc.song, this._doc.channel));
+						  //BUGFIX FROM JUMMBOX
+						event.preventDefault();
                         break;
                     case 52:
                         if (canPlayNotes)
                             break;
                         this._doc.selection.nextDigit("4", needControlForShortcuts != (event.shiftKey || event.ctrlKey || event.metaKey), event.altKey);
-                        event.preventDefault();
+                 this._renderInstrumentBar(this._doc.song.channels[this._doc.channel], this._doc.getCurrentInstrument(), ColorConfig.getChannelColor(this._doc.song, this._doc.channel));
+//I LOVE MAKING INCONSISTANT COMMENTS	 
+					event.preventDefault();
                         break;
                     case 53:
                         if (canPlayNotes)
                             break;
                         this._doc.selection.nextDigit("5", needControlForShortcuts != (event.shiftKey || event.ctrlKey || event.metaKey), event.altKey);
-                        event.preventDefault();
+                       this._renderInstrumentBar(this._doc.song.channels[this._doc.channel], this._doc.getCurrentInstrument(), ColorConfig.getChannelColor(this._doc.song, this._doc.channel));
+					   //AGAIN
+					   event.preventDefault();
                         break;
                     case 54:
                         if (canPlayNotes)
                             break;
                         this._doc.selection.nextDigit("6", needControlForShortcuts != (event.shiftKey || event.ctrlKey || event.metaKey), event.altKey);
-                        event.preventDefault();
+                       this._renderInstrumentBar(this._doc.song.channels[this._doc.channel], this._doc.getCurrentInstrument(), ColorConfig.getChannelColor(this._doc.song, this._doc.channel));
+//AGAAIN					   
+					  event.preventDefault();
                         break;
                     case 55:
                         if (canPlayNotes)
                             break;
                         this._doc.selection.nextDigit("7", needControlForShortcuts != (event.shiftKey || event.ctrlKey || event.metaKey), event.altKey);
-                        event.preventDefault();
+                       this._renderInstrumentBar(this._doc.song.channels[this._doc.channel], this._doc.getCurrentInstrument(), ColorConfig.getChannelColor(this._doc.song, this._doc.channel));
+					   //AGAIN
+					  event.preventDefault();
                         break;
                     case 56:
                         if (canPlayNotes)
                             break;
                         this._doc.selection.nextDigit("8", needControlForShortcuts != (event.shiftKey || event.ctrlKey || event.metaKey), event.altKey);
-                        event.preventDefault();
+                       this._renderInstrumentBar(this._doc.song.channels[this._doc.channel], this._doc.getCurrentInstrument(), ColorConfig.getChannelColor(this._doc.song, this._doc.channel));
+//AGAIN					   
+					   event.preventDefault();
                         break;
                     case 57:
                         if (canPlayNotes)
                             break;
                         this._doc.selection.nextDigit("9", needControlForShortcuts != (event.shiftKey || event.ctrlKey || event.metaKey), event.altKey);
-                        event.preventDefault();
+                           this._renderInstrumentBar(this._doc.song.channels[this._doc.channel], this._doc.getCurrentInstrument(), ColorConfig.getChannelColor(this._doc.song, this._doc.channel));
+						   //AGAIN
+						event.preventDefault();
                         break;
                     default:
                         this._doc.selection.digits = "";
@@ -35663,7 +36099,9 @@ You should be redirected to the song at:<br /><br />
                     if (this._doc.channel >= this._doc.song.pitchChannelCount + this._doc.song.noiseChannelCount) {
                         this._piano.forceRender();
                     }
-                }
+                   this._renderInstrumentBar(this._doc.song.channels[this._doc.channel], index, ColorConfig.getChannelColor(this._doc.song, this._doc.channel));
+      //BUGFIX FROM JUMMBOX
+			   }
                 this.refocusStage();
             };
             this._whenSetModChannel = (mod) => {
@@ -35925,6 +36363,9 @@ You should be redirected to the song at:<br /><br />
                         break;
                     case "colorTheme":
                         this._openPrompt("theme");
+                        break;
+					case "customTheme":
+                        this._openPrompt("custom");
                         break;
                     case "recordingSetup":
                         this._openPrompt("recordingSetup");
@@ -36422,6 +36863,9 @@ You should be redirected to the song at:<br /><br />
                         break;
                     case "layout":
                         this.prompt = new LayoutPrompt(this._doc);
+                        break;
+					case "custom":
+                        this.prompt = new CustomPrompt(this._doc, this._patternEditor, this._trackArea, beepboxEditorContainer);
                         break;
                     case "recordingSetup":
                         this.prompt = new RecordingSetupPrompt(this._doc);
@@ -37039,14 +37483,16 @@ You should be redirected to the song at:<br /><br />
                     digit = "10";
                 this.instrumentDigits += digit;
                 var parsed = parseInt(this.instrumentDigits);
-                var pattern = this._doc.getCurrentPattern();
-                if (pattern != null && parsed != 0 && parsed <= this._doc.song.channels[this._doc.channel].instruments.length) {
+              //var pattern: Pattern | null = this._doc.getCurrentPattern();
+            if (parsed != 0 && parsed <= this._doc.song.channels[this._doc.channel].instruments.length) {
+				//BUGFIX FROM JUMMBOX
                     this.selectInstrument(parsed - 1);
                     return;
                 }
                 this.instrumentDigits = digit;
                 parsed = parseInt(this.instrumentDigits);
-                if (pattern != null && parsed != 0 && parsed <= this._doc.song.channels[this._doc.channel].instruments.length) {
+                if (parsed != 0 && parsed <= this._doc.song.channels[this._doc.channel].instruments.length) {
+					//BUGFIX FROM JUMMBOX
                     this.selectInstrument(parsed - 1);
                     return;
                 }
@@ -37633,7 +38079,12 @@ You should be redirected to the song at:<br /><br />
                 this._changeTranspose.append(new ChangeDuplicateSelectedReusedPatterns(this._doc, this.boxSelectionBar, this.boxSelectionWidth, this.boxSelectionChannel, this.boxSelectionHeight));
             }
             for (const channelIndex of this._eachSelectedChannel()) {
-                for (const pattern of this._eachSelectedPattern(channelIndex)) {
+                // Can't transpose mod channels.
+            if (channelIndex >= this._doc.song.pitchChannelCount + this._doc.song.noiseChannelCount)
+                continue;
+			//BUGFIX FROM JUMMBOX
+			//BOOKMARK
+			   for (const pattern of this._eachSelectedPattern(channelIndex)) {
                     this._changeTranspose.append(new ChangeTranspose(this._doc, channelIndex, pattern, upward, this._doc.prefs.notesOutsideScale, octave));
                 }
             }
@@ -37696,7 +38147,9 @@ You should be redirected to the song at:<br /><br />
                             this._changeInstrument.append(new ChangeSetPatternInstruments(this._doc, channelIndex, instruments, pattern));
                         }
                     }
+                                   if (!this._changeInstrument.isNoop())
                     this._doc.record(this._changeInstrument, canReplaceLastChange);
+				//JUMMBOX BUGFIX
                 }
             }
             else {
@@ -37756,7 +38209,12 @@ You should be redirected to the song at:<br /><br />
             this.keyboardLayout = window.localStorage.getItem("keyboardLayout") || "wickiHayden";
             this.layout = window.localStorage.getItem("layout") || "small";
             this.colorTheme = window.localStorage.getItem("colorTheme") || "dark classic";
-            this.visibleOctaves = (window.localStorage.getItem("visibleOctaves") >>> 0) || Preferences.defaultVisibleOctaves;
+                 //      this.customTheme = window.localStorage.getItem("customTheme") || "https://www.teahub.io/photos/full/244-2448998_anime-girl-wallpaper-4k.jpg";
+           // this.customTheme2 = window.localStorage.getItem("customTheme2") || "https://media.istockphoto.com/videos/petals-sakura-cherry-blossom-falling-on-black-background-looped-video-id925176466?s=640x640";
+		   this.customTheme = window.localStorage.getItem("customTheme");
+            this.customTheme2 = window.localStorage.getItem("customTheme2");
+		  
+		   this.visibleOctaves = (window.localStorage.getItem("visibleOctaves") >>> 0) || Preferences.defaultVisibleOctaves;
             const defaultScale = Config.scales.dictionary[window.localStorage.getItem("defaultScale")];
             this.defaultScale = (defaultScale != undefined) ? defaultScale.index : 0;
             if (window.localStorage.getItem("volume") != null) {
@@ -37793,6 +38251,8 @@ You should be redirected to the song at:<br /><br />
             window.localStorage.setItem("keyboardLayout", this.keyboardLayout);
             window.localStorage.setItem("layout", this.layout);
             window.localStorage.setItem("colorTheme", this.colorTheme);
+			window.localStorage.setItem("customTheme", this.customTheme);
+            window.localStorage.setItem("customTheme2", this.customTheme2);
             window.localStorage.setItem("volume", String(this.volume));
             window.localStorage.setItem("visibleOctaves", String(this.visibleOctaves));
         }
