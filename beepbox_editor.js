@@ -13837,7 +13837,7 @@ li.select2-results__option[role=group] > strong:hover {
                     const instrument = this.channels[channelIndex].instruments[i];
                     let storedInfo = {};
                     let isStoringSomething = false;
-                    if (instrument.type === 0 && Config.rawRawChipWaves[instrument.chipWave].isSampled) {
+                    if (instrument.type === 0 && Config.rawRawChipWaves[instrument.chipWave].isCustomSampled) {
                         const chipWaveLength = Config.rawRawChipWaves[instrument.chipWave].samples.length;
                         const chipWaveLoopStart = instrument.chipWaveLoopStart;
                         const chipWaveLoopEnd = instrument.chipWaveLoopEnd;
