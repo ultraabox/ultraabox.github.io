@@ -12076,14 +12076,16 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
 						}
 					
 						else if (fromGoldBox && !beforeFour && beforeSix) {
-							this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)] + 125);						
 							
 							if (document.URL.substring(document.URL.length - 13).toLowerCase() != "legacysamples") {
 									document.location = document.URL.concat("|legacysamples");
 									//location.reload();
 									loadLegacySamples();
 									//run the loadLegacySamples function so it doesn't have to reload
-							}					   					   	 						  				
+							}	
+
+							this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)] + 125);						
+														
 						}
 					break;
                     case 102:
