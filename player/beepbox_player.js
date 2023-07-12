@@ -11430,7 +11430,7 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
 							document.head.append(script)
 							// script.src = 'legacy_samples.js'
 							// document.head.append(script)
-							am I doing this correctly???
+							//am I doing this correctly???
 							
 							//if (window.kicksample != undefined && window.vinyl != undefined && window.crowdhey != undefined && window.funktomlow != undefined && window.warioland4tick  != undefined && window.kirbysynthvoice != undefined ) {
 								
