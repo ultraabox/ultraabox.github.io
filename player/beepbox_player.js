@@ -60,6 +60,94 @@ var beepbox = (function (exports) {
         });
     }
 
+	function loadLegacySamples() {
+		const script = document.createElement('script')
+		script.src = 'samples.js'
+		document.head.append(script)
+		script.src = 'samples2.js'
+		document.head.append(script)
+		script.src = 'samples3.js'
+		document.head.append(script)
+		script.src = 'drumsamples.js'
+		document.head.append(script)
+		script.src = 'wario_samples.js'
+		document.head.append(script)
+		script.src = 'kirby_samples.js'
+		document.head.append(script)
+
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox kick", expression: 4.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(kicksample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox snare", expression: 3.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(snaresample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox piano1", expression: 3.0, isSampled: true, isPercussion: false, extraSampleDetune: 2, samples: centerWave(pianosample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox WOW", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: 0, samples: centerWave(WOWsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox overdrive", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -2, samples: centerWave(overdrivesample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox trumpet", expression: 3.0, isSampled: true, isPercussion: false, extraSampleDetune: 1.2, samples: centerWave(trumpetsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox saxophone", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -5, samples: centerWave(saxophonesample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox orchestrahit", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: 4.2, samples: centerWave(orchhitsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox detatched violin", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: 4.2, samples: centerWave(detatchedviolinsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox synth", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -0.8, samples: centerWave(synthsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox sonic3snare", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(sonic3snaresample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox come on", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: 0, samples: centerWave(comeonsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox choir", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -3, samples: centerWave(choirsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox overdriveguitar", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -6.2, samples: centerWave(overdrivensample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox flute", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -6, samples: centerWave(flutesample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox legato violin", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -28, samples: centerWave(legatoviolinsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox tremolo violin", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -33, samples: centerWave(tremoloviolinsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox amen break", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -55, samples: centerWave(amenbreaksample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox pizzicato violin", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -11, samples: centerWave(pizzicatoviolinsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox tuba", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: 44, samples: centerWave(tubasample) };	
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox tim allen grunt", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -20, samples: centerWave(timallengruntsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox loopingcymbal", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -17, samples: centerWave(loopingcymbalsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox standardkick", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -7, samples: centerWave(kickdrumsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox standardsnare", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(snaredrumsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox closedhihat", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 5, samples: centerWave(closedhihatsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox foothihat", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 4, samples: centerWave(foothihatsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox openhihat", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -31, samples: centerWave(openhihatsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox crashcymbal", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -43, samples: centerWave(crashsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox pianoC4", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -42.5, samples: centerWave(pianoC4sample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox liver pad", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -22.5, samples: centerWave(liverpadsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox marimba", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -15.5, samples: centerWave(marimbasample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox susdotwav", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -24.5, samples: centerWave(susdotwavsample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox wackyboxtts", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -17.5, samples: centerWave(wackyboxttssample) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox peppersteak_1", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -42.2, samples: centerWave(peppersteak1) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox peppersteak_2", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -47, samples: centerWave(peppersteak2) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox vinyl_noise", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -50, samples: centerWave(vinyl) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta slap bass", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -56, samples: centerWave(slapbass) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta HD EB overdrive guitar", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -60, samples: centerWave(hdeboverdrive) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sunsoft bass", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -18.5, samples: centerWave(sunsoftbass) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta masculine choir", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -50, samples: centerWave(masculinechoir) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta feminine choir", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -60.5, samples: centerWave(femininechoir) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta tololoche", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -29.5, samples: centerWave(southtololoche) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta harp", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -54, samples: centerWave(harp) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta pan flute", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -58, samples: centerWave(panflute) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta krumhorn", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -46, samples: centerWave(krumhorn) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta timpani", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -50, samples: centerWave(timpani) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta crowd hey", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -29, samples: centerWave(crowdhey) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta wario land 4 brass", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -68, samples: centerWave(warioland4brass) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta wario land 4 rock organ", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -63, samples: centerWave(warioland4organ) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta wario land 4 DAOW", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -35, samples: centerWave(warioland4daow) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta wario land 4 hour chime", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -47.5, samples: centerWave(warioland4hourchime) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta wario land 4 tick", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -12.5, samples: centerWave(warioland4tick) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta kirby kick", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbykick) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta kirby snare", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbysnare) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta kirby bongo", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbybongo) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta kirby click", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbyclick) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor kick", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -28.5, samples: centerWave(funkkick) }
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor snare", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -28.5, samples: centerWave(funksnare) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor snare (left hand)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -22.5, samples: centerWave(funksnareleft) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor snare (right hand)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -22.5, samples: centerWave(funksnareright) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor high tom", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -41.5, samples: centerWave(funktomhigh) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor low tom", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -41.5, samples: centerWave(funktomlow) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor hihat (closed)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -17, samples: centerWave(funkhihatclosed) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor hihat (half opened)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -21, samples: centerWave(funkhihathalfopen) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor hihat (open)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -54.5, samples: centerWave(funkhihatopen) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor hihat (open tip)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -43.5, samples: centerWave(funkhihatopentip) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor hihat (pedal)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -28, samples: centerWave(funkhihatfoot) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor crash", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -51, samples: centerWave(funkcrash) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor crash (tip)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -50.5, samples: centerWave(funkcrashtip) };
+		Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor ride", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46, samples: centerWave(funkride) };
+	
+		Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
+	}
 	//samplemark
     const TypePresets = ["chip wave", "FM", "basic noise", "spectrum", "drumset", "harmonics", "pulse width", "picked string", "custom chip", "mod", "advanced FM"];
     class Config {
@@ -11410,172 +11498,12 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
                 const defaultIntegratedSamples = Config.chipWaves[defaultIndex].samples;
                 const defaultSamples = Config.rawRawChipWaves[defaultIndex].samples;
                 for (const url of compressed_array) {
-                    if (url === "legacySamples") {
+                    if (url.toLowerCase() === "legacysamples") {
                         if (!willLoadLegacySamples) {
                             willLoadLegacySamples = true;
                             customSampleUrls.push(url);
 							
-							const script = document.createElement('script')
-							script.src = 'samples.js'
-							document.head.append(script)
-							script.src = 'samples2.js'
-							document.head.append(script)
-							script.src = 'samples3.js'
-							document.head.append(script)
-							script.src = 'drumsamples.js'
-							document.head.append(script)
-							script.src = 'wario_samples.js'
-							document.head.append(script)
-							script.src = 'kirby_samples.js'
-							document.head.append(script)
-							// script.src = 'legacy_samples.js'
-							// document.head.append(script)
-							//am I doing this correctly???
-							
-							//if (window.kicksample != undefined && window.vinyl != undefined && window.crowdhey != undefined && window.funktomlow != undefined && window.warioland4tick  != undefined && window.kirbysynthvoice != undefined ) {
-								
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox kick", expression: 4.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(kicksample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox snare", expression: 3.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(snaresample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox piano1", expression: 3.0, isSampled: true, isPercussion: false, extraSampleDetune: 2, samples: centerWave(pianosample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox WOW", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: 0, samples: centerWave(WOWsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox overdrive", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -2, samples: centerWave(overdrivesample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox trumpet", expression: 3.0, isSampled: true, isPercussion: false, extraSampleDetune: 1.2, samples: centerWave(trumpetsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox saxophone", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -5, samples: centerWave(saxophonesample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox orchestrahit", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: 4.2, samples: centerWave(orchhitsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox detatched violin", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: 4.2, samples: centerWave(detatchedviolinsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox synth", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -0.8, samples: centerWave(synthsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox sonic3snare", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(sonic3snaresample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox come on", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: 0, samples: centerWave(comeonsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox choir", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -3, samples: centerWave(choirsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox overdriveguitar", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -6.2, samples: centerWave(overdrivensample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox flute", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -6, samples: centerWave(flutesample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox legato violin", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -28, samples: centerWave(legatoviolinsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox tremolo violin", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -33, samples: centerWave(tremoloviolinsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox amen break", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -55, samples: centerWave(amenbreaksample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox pizzicato violin", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -11, samples: centerWave(pizzicatoviolinsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox tim allen grunt", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -20, samples: centerWave(timallengruntsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox loopingcymbal", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -17, samples: centerWave(loopingcymbalsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox standardkick", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -7, samples: centerWave(kickdrumsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox standardsnare", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(snaredrumsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox closedhihat", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 5, samples: centerWave(closedhihatsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox foothihat", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 4, samples: centerWave(foothihatsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox openhihat", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -31, samples: centerWave(openhihatsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox crashcymbal", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -43, samples: centerWave(crashsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox pianoC4", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -42.5, samples: centerWave(pianoC4sample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox liver pad", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -22.5, samples: centerWave(liverpadsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox marimba", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -15.5, samples: centerWave(marimbasample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox susdotwav", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -24.5, samples: centerWave(susdotwavsample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox wackyboxtts", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -17.5, samples: centerWave(wackyboxttssample) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox peppersteak_1", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -42.2, samples: centerWave(peppersteak1) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox peppersteak_2", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -47, samples: centerWave(peppersteak2) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox vinyl_noise", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -50, samples: centerWave(vinyl) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta slap bass", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -56, samples: centerWave(slapbass) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta HD EB overdrive guitar", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -60, samples: centerWave(hdeboverdrive) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sunsoft bass", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -18.5, samples: centerWave(sunsoftbass) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta masculine choir", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -50, samples: centerWave(masculinechoir) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta feminine choir", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -60.5, samples: centerWave(femininechoir) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta tololoche", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -29.5, samples: centerWave(southtololoche) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta harp", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -54, samples: centerWave(harp) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta pan flute", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -58, samples: centerWave(panflute) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta krumhorn", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -46, samples: centerWave(krumhorn) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta timpani", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -50, samples: centerWave(timpani) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta crowd hey", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -29, samples: centerWave(crowdhey) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta wario land 4 brass", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -68, samples: centerWave(warioland4brass) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta wario land 4 rock organ", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -63, samples: centerWave(warioland4organ) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta wario land 4 DAOW", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -35, samples: centerWave(warioland4daow) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta wario land 4 hour chime", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -47.5, samples: centerWave(warioland4hourchime) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta crowd hey", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -29, samples: centerWave(crowdhey) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta wario land 4 tick", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -12.5, samples: centerWave(warioland4tick) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta kirby kick", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbykick) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta kirby snare", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbysnare) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta kirby bongo", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbybongo) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta kirby click", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbyclick) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor kick", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -28.5, samples: centerWave(funkkick) }
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor snare", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -28.5, samples: centerWave(funksnare) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor snare (left hand)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -22.5, samples: centerWave(funksnareleft) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor snare (right hand)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -22.5, samples: centerWave(funksnareright) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor high tom", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -41.5, samples: centerWave(funktomhigh) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor low tom", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -41.5, samples: centerWave(funktomlow) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor hihat (closed)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -17, samples: centerWave(funkhihatclosed) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor hihat (half opened)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -21, samples: centerWave(funkhihathalfopen) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor hihat (open)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -54.5, samples: centerWave(funkhihatopen) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor hihat (open tip)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -43.5, samples: centerWave(funkhihatopentip) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor hihat (pedal)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -28, samples: centerWave(funkhihatfoot) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor crash", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -51, samples: centerWave(funkcrash) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor crash (tip)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -50.5, samples: centerWave(funkcrashtip) };
-								Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor ride", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46, samples: centerWave(funkride) };
-							// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox kick", expression: 4.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(kicksample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox snare", expression: 3.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(snaresample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox piano1", expression: 3.0, isSampled: true, isPercussion: false, extraSampleDetune: 2, samples: centerWave(pianosample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox WOW", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: 0, samples: centerWave(WOWsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox overdrive", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -2, samples: centerWave(overdrivesample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox trumpet", expression: 3.0, isSampled: true, isPercussion: false, extraSampleDetune: 1.2, samples: centerWave(trumpetsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox saxophone", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -5, samples: centerWave(saxophonesample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox orchestrahit", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: 4.2, samples: centerWave(orchhitsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox detatched violin", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: 4.2, samples: centerWave(detatchedviolinsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox synth", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -0.8, samples: centerWave(synthsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox sonic3snare", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(sonic3snaresample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox come on", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: 0, samples: centerWave(comeonsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox choir", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -3, samples: centerWave(choirsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox overdriveguitar", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -6.2, samples: centerWave(overdrivensample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox flute", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -6, samples: centerWave(flutesample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox legato violin", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -28, samples: centerWave(legatoviolinsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox tremolo violin", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -33, samples: centerWave(tremoloviolinsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox amen break", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -55, samples: centerWave(amenbreaksample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox pizzicato violin", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -11, samples: centerWave(pizzicatoviolinsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox tim allen grunt", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -20, samples: centerWave(timallengruntsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox loopingcymbal", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -17, samples: centerWave(loopingcymbalsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox standardkick", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -7, samples: centerWave(kickdrumsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox standardsnare", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(snaredrumsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox closedhihat", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 5, samples: centerWave(closedhihatsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox foothihat", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 4, samples: centerWave(foothihatsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox openhihat", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -31, samples: centerWave(openhihatsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox crashcymbal", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -43, samples: centerWave(crashsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox pianoC4", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -42.5, samples: centerWave(pianoC4sample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox liver pad", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -22.5, samples: centerWave(liverpadsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox marimba", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -15.5, samples: centerWave(marimbasample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox susdotwav", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -24.5, samples: centerWave(susdotwavsample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox wackyboxtts", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -17.5, samples: centerWave(wackyboxttssample) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox peppersteak_1", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -42.2, samples: centerWave(peppersteak1) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox peppersteak_2", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -47, samples: centerWave(peppersteak2) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbox vinyl_noise", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -50, samples: centerWave(vinyl) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta slap bass", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -56, samples: centerWave(slapbass) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta HD EB overdrive guitar", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -60, samples: centerWave(hdeboverdrive) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta sunsoft bass", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -18.5, samples: centerWave(sunsoftbass) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta masculine choir", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -50, samples: centerWave(masculinechoir) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta feminine choir", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -60.5, samples: centerWave(femininechoir) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta tololoche", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -29.5, samples: centerWave(southtololoche) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta harp", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -54, samples: centerWave(harp) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta pan flute", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -58, samples: centerWave(panflute) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta krumhorn", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -46, samples: centerWave(krumhorn) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta timpani", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -50, samples: centerWave(timpani) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta crowd hey", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -29, samples: centerWave(crowdhey) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta wario land 4 brass", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -68, samples: centerWave(warioland4brass) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta wario land 4 rock organ", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -63, samples: centerWave(warioland4organ) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta wario land 4 DAOW", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -35, samples: centerWave(warioland4daow) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta wario land 4 hour chime", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -47.5, samples: centerWave(warioland4hourchime) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta crowd hey", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -29, samples: centerWave(crowdhey) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta wario land 4 tick", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -12.5, samples: centerWave(warioland4tick) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta kirby kick", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbykick) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta kirby snare", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbysnare) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta kirby bongo", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbybongo) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta kirby click", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbyclick) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta sonor kick", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -28.5, samples: centerWave(funkkick) }
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta sonor snare", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -28.5, samples: centerWave(funksnare) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta sonor snare (left hand)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -22.5, samples: centerWave(funksnareleft) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta sonor snare (right hand)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -22.5, samples: centerWave(funksnareright) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta sonor high tom", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -41.5, samples: centerWave(funktomhigh) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta sonor low tom", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -41.5, samples: centerWave(funktomlow) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta sonor hihat (closed)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -17, samples: centerWave(funkhihatclosed) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta sonor hihat (half opened)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -21, samples: centerWave(funkhihathalfopen) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta sonor hihat (open)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -54.5, samples: centerWave(funkhihatopen) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta sonor hihat (open tip)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -43.5, samples: centerWave(funkhihatopentip) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta sonor hihat (pedal)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -28, samples: centerWave(funkhihatfoot) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta sonor crash", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -51, samples: centerWave(funkcrash) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta sonor crash (tip)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -50.5, samples: centerWave(funkcrashtip) };
-								// Config.chipWaves[Config.chipWaves.length] = { name: "paandorasbeta sonor ride", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46, samples: centerWave(funkride) };
-								Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
-							//}
+							loadLegacySamples();
 							
                         }
                     } else {
@@ -12086,10 +12014,11 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
 						if (fromGoldBox && !beforeFour && beforeSix) {
 							const chipWaveForCompat = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
 							if ((chipWaveForCompat + 62) > 85) {
-								if (document.URL.substring(document.URL.length - 13) != "legacySamples") {
-									document.location = document.URL.concat("|legacySamples");
-									location.reload();
-									//ADD "legacySample" TO CUSTOM SAMPLE LIST FOR BACKWARDS COMPATIBILITY
+								if (document.URL.substring(document.URL.length - 13).toLowerCase() != "legacysamples") {
+									document.location = document.URL.concat("|legacysamples");
+									//location.reload();
+									loadLegacySamples();
+									//run the loadLegacySamples function so it doesn't have to reload
 								}
 							}
 							
@@ -12149,11 +12078,12 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
 						else if (fromGoldBox && !beforeFour && beforeSix) {
 							this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)] + 125);						
 							
-							if (document.URL.substring(document.URL.length - 13) != "legacySamples") {
-									document.location = document.URL.concat("|legacySamples");
-									location.reload();
-									//ADD "legacySample" TO CUSTOM SAMPLE LIST FOR BACKWARDS COMPATIBILITY
-								}						   					   	 						  				
+							if (document.URL.substring(document.URL.length - 13).toLowerCase() != "legacysamples") {
+									document.location = document.URL.concat("|legacysamples");
+									//location.reload();
+									loadLegacySamples();
+									//run the loadLegacySamples function so it doesn't have to reload
+							}					   					   	 						  				
 						}
 					break;
                     case 102:
