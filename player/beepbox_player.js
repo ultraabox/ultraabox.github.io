@@ -11713,7 +11713,7 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
             const beforeSeven = version < 7;
             const beforeEight = version < 8;
             const beforeNine = version < 9;
-           this.initToDefault((fromBeepBox && beforeNine) || ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox) || (beforeTwo && fromUltraBox)));
+            this.initToDefault((fromBeepBox && beforeNine) || ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox) || (beforeTwo && fromUltraBox)));
             const forceSimpleFilter = (fromBeepBox && beforeNine || fromJummBox && beforeFive);
             if (beforeThree && fromBeepBox) {
                 for (const channel of this.channels) {
@@ -12085,8 +12085,12 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
 					case 120:
 						if (fromGoldBox && !beforeFour && beforeSix) {
 							const chipWaveForCompat = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
-							if ((chipWaveForCompat + 62) > 89) {
-								//ADD "legacySample" TO CUSTOM SAMPLE LIST FOR BACKWARDS COMPATIBILITY	
+							if ((chipWaveForCompat + 62) > 85) {
+								if (document.URL.substring(document.URL.length - 13) != "legacySamples") {
+									document.location = document.URL.concat("|legacySamples");
+									location.reload();
+									//ADD "legacySample" TO CUSTOM SAMPLE LIST FOR BACKWARDS COMPATIBILITY
+								}
 							}
 							
 							if ((chipWaveForCompat + 62) > 78) {
@@ -12100,8 +12104,9 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
 							}
 							else {
 								this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, chipWaveForCompat + 62);			
-							}								
+							}							
 						}
+						//is it more useful to save base64 characters or url length?
 					break;
 					case 121:
 						if (fromUltraBox) {
@@ -12142,8 +12147,13 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
 						}
 					
 						else if (fromGoldBox && !beforeFour && beforeSix) {
-							this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length       , base64CharCodeToInt[compressed.charCodeAt(charIndex++)] + 125);						
-							//ADD "legacySample" TO CUSTOM SAMPLE LIST FOR BACKWARDS COMPATIBILITY											   					   	 						  				
+							this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)] + 125);						
+							
+							if (document.URL.substring(document.URL.length - 13) != "legacySamples") {
+									document.location = document.URL.concat("|legacySamples");
+									location.reload();
+									//ADD "legacySample" TO CUSTOM SAMPLE LIST FOR BACKWARDS COMPATIBILITY
+								}						   					   	 						  				
 						}
 					break;
                     case 102:
