@@ -11416,21 +11416,21 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
                             customSampleUrls.push(url);
 							
 							const script = document.createElement('script')
-							// script.src = 'samples.js'
-							// document.head.append(script)
-							// script.src = 'samples2.js'
-							// document.head.append(script)
-							// script.src = 'samples3.js'
-							// document.head.append(script)
-							// script.src = 'drumsamples.js'
-							// document.head.append(script)
-							// script.src = 'wario_samples.js'
-							// document.head.append(script)
-							// script.src = 'kirby_samples.js'
-							// document.head.append(script)
-							script.src = 'legacy_samples.js'
+							script.src = 'samples.js'
 							document.head.append(script)
-							//am I doing this correctly???
+							script.src = 'samples2.js'
+							document.head.append(script)
+							script.src = 'samples3.js'
+							document.head.append(script)
+							script.src = 'drumsamples.js'
+							document.head.append(script)
+							script.src = 'wario_samples.js'
+							document.head.append(script)
+							script.src = 'kirby_samples.js'
+							document.head.append(script)
+							// script.src = 'legacy_samples.js'
+							// document.head.append(script)
+							am I doing this correctly???
 							
 							//if (window.kicksample != undefined && window.vinyl != undefined && window.crowdhey != undefined && window.funktomlow != undefined && window.warioland4tick  != undefined && window.kirbysynthvoice != undefined ) {
 								
