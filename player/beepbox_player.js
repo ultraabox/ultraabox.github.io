@@ -11858,15 +11858,31 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
                         break;
                     case 114:
                         {
-                            this.rhythm = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
-                            if (fromJummBox && beforeThree || fromBeepBox) {
-                                if (this.rhythm == Config.rhythms.dictionary["÷3 (triplets)"].index || this.rhythm == Config.rhythms.dictionary["÷6"].index) {
-                                    useSlowerArpSpeed = true;
-                                }
-                                if (this.rhythm >= Config.rhythms.dictionary["÷6"].index) {
-                                    useFastTwoNoteArp = true;
-                                }
-                            }
+							if (!fromUltraBox) {
+								
+								let newRhythm = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
+								
+								if (newRhythm == undefined) {
+									newRhythm = 4;
+								}
+								
+								this.rhythm = clamp(0, Config.rhythms.length, newRhythm + 2);
+								
+								if (fromJummBox && beforeThree || fromBeepBox) {
+									if (this.rhythm == 2 || this.rhythm == 3) {
+										useSlowerArpSpeed = true;
+									}
+									if (this.rhythm >= 2) {
+										useFastTwoNoteArp = true;
+									}
+								}
+								
+							}
+							
+							else {
+								this.rhythm = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
+							}
+							
                         }
                         break;
                     case 111:
