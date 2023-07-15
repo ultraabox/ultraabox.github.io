@@ -11860,11 +11860,7 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
                         {
 							if (!fromUltraBox) {
 								
-								let newRhythm = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
-								
-								if (newRhythm == undefined) {
-									newRhythm = 4;
-								}
+								let newRhythm = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];		
 								
 								this.rhythm = clamp(0, Config.rhythms.length, newRhythm + 2);
 								
