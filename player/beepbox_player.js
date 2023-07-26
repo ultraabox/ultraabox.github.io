@@ -11741,7 +11741,7 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
                     //}
 					
 					else {
-                        customSampleUrls.push(url);
+                         customSampleUrls.push(url);
                         // This depends on `Config.chipWaves` being the same
                         // length as `Config.rawRawChipWaves`.
                         const chipWaveIndex = Config.chipWaves.length;
@@ -11759,6 +11759,7 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
 							let parsedUrl = new URL(url);
 							let customSampleRate = 44100;
 							let isCustomPercussive = false;
+							let customRootKey = 60;
 							
 							if (url.indexOf("@") != -1) {
 								//urlSliced = url.slice(url.indexOf("@"), url.indexOf("@"));
@@ -11767,14 +11768,41 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
 								isCustomPercussive = true;	
 							}	
 							
-							if (url.indexOf(",") != -1) {
+							function sliceForSampleRate() {
 								urlSliced = url.slice(0, url.indexOf(","));
 								parsedUrl = new URL(urlSliced);
 								customSampleRate = clamp(8000, 96000, parseFloat(url.slice(url.indexOf(",") + 1)));
 								//should this be parseFloat or parseInt?
 								//ig floats let you do decimals and such, but idk where that would be useful
-							}	
+							}
 							
+							function sliceForRootKey() {
+								urlSliced = url.slice(0, url.indexOf("!"));
+								parsedUrl = new URL(urlSliced);
+								customRootKey = parseFloat(url.slice(url.indexOf("!") + 1));
+								
+							}
+							
+							
+							if (url.indexOf(",") != -1 && url.indexOf("!") != -1) {
+								if (url.indexOf(",") < url.indexOf("!")) {
+									sliceForRootKey();
+									sliceForSampleRate();
+								}
+								else {
+									sliceForSampleRate();
+									sliceForRootKey();
+								}	
+							}
+							else {
+								if (url.indexOf(",") != -1) {
+									sliceForSampleRate();
+								}	
+								if (url.indexOf("!") != -1) {
+									sliceForRootKey();
+								}	
+							}
+
 							// @TODO: Could also remove known extensions, but it
 							// would probably be much better to be able to specify
 							// a custom name.
@@ -11792,6 +11820,7 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
 								expression: expression,
 								isCustomSampled: true,
 								isPercussion: isCustomPercussive,
+								rootKey: customRootKey,
 								sampleRate: customSampleRate,
 								samples: defaultIntegratedSamples,
 								index: chipWaveIndex,
@@ -11801,6 +11830,7 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
 								expression: expression,
 								isCustomSampled: true,
 								isPercussion: isCustomPercussive,
+								rootKey: customRootKey,
 								sampleRate: customSampleRate,
 								samples: defaultSamples,
 								index: chipWaveIndex,
@@ -16773,15 +16803,15 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
             else if (instrument.type == 1 || instrument.type == 10) {
                 baseExpression = Config.fmBaseExpression;
             }
-           else if (instrument.type == 0) {
+            else if (instrument.type == 0) {
                 baseExpression = Config.chipBaseExpression;
-				if (Config.chipWaves[instrument.chipWave].isCustomSampled == true) {
+				if (Config.chipWaves[instrument.chipWave].isCustomSampled) {
 					if (Config.chipWaves[instrument.chipWave].isPercussion){
-						basePitch = -84.37 + Math.log2(Config.chipWaves[instrument.chipWave].samples.length/Config.chipWaves[instrument.chipWave].sampleRate) * -12;
+						basePitch = -84.37 + Math.log2(Config.chipWaves[instrument.chipWave].samples.length/Config.chipWaves[instrument.chipWave].sampleRate) * -12 + (-60 + Config.chipWaves[instrument.chipWave].rootKey);
 					}
 					
 					else {
-						basePitch += -96.37 + Math.log2(Config.chipWaves[instrument.chipWave].samples.length/Config.chipWaves[instrument.chipWave].sampleRate) * -12;
+						basePitch += -96.37 + Math.log2(Config.chipWaves[instrument.chipWave].samples.length/Config.chipWaves[instrument.chipWave].sampleRate) * -12 + (-60 + Config.chipWaves[instrument.chipWave].rootKey); 
 					}
 				}
 				else {
