@@ -16777,11 +16777,11 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
                 baseExpression = Config.chipBaseExpression;
 				if (Config.chipWaves[instrument.chipWave].isCustomSampled == true) {
 					if (Config.chipWaves[instrument.chipWave].isPercussion){
-						basePitch = -84 + Math.log2(Config.chipWaves[instrument.chipWave].samples.length/Config.chipWaves[instrument.chipWave].sampleRate) * -12;
+						basePitch = -84.37 + Math.log2(Config.chipWaves[instrument.chipWave].samples.length/Config.chipWaves[instrument.chipWave].sampleRate) * -12;
 					}
 					
 					else {
-						basePitch += -96 + Math.log2(Config.chipWaves[instrument.chipWave].samples.length/Config.chipWaves[instrument.chipWave].sampleRate) * -12;
+						basePitch += -96.37 + Math.log2(Config.chipWaves[instrument.chipWave].samples.length/Config.chipWaves[instrument.chipWave].sampleRate) * -12;
 					}
 				}
 				else {
