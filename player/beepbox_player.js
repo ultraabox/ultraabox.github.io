@@ -13134,12 +13134,21 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
                     case 81:
                         {
                             const instrument = this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator];
-                            if ((beforeThree && fromGoldBox) || (!fromGoldBox && !fromUltraBox)) {
-								  const freqToGold3 = [4, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16, 18, 20, 22, 24, 2, 1, 9, 17, 19, 21, 23, 0, 3];
-                                for (let o = 0; o < (instrument.type == 10 ? 6 : Config.operatorCount); o++) {
+                            if (beforeThree && fromGoldBox) {
+								const freqToGold3 = [4, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16, 18, 20, 22, 24, 2, 1, 9, 17, 19, 21, 23, 0, 3];
+                               
+								for (let o = 0; o < (instrument.type == 10 ? 6 : Config.operatorCount); o++) {
                                     instrument.operators[o].frequency = freqToGold3[clamp(0, freqToGold3.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)])];
                                 }
                             }
+							else if ((!fromGoldBox && !fromUltraBox) || (fromGoldBox && !beforeFour && beforeSix)) {
+								const freqToUltraBox = [4, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16, 18, 20, 23, 27, 2, 1, 9, 17, 19, 21, 23, 0, 3];
+								
+								for (let o = 0; o < (instrument.type == 10 ? 6 : Config.operatorCount); o++) {
+                                    instrument.operators[o].frequency = freqToUltraBox[clamp(0, freqToUltraBox.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)])];
+                                }
+								
+							}
                             else {
                                 for (let o = 0; o < (instrument.type == 10 ? 6 : Config.operatorCount); o++) {
                                     instrument.operators[o].frequency = clamp(0, Config.operatorFrequencies.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
