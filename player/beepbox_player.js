@@ -22,6 +22,226 @@ var beepbox = (function (exports) {
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     */
+// const sampleLoaderAudioContext = new AudioContext({ sampleRate: 44100 });
+    function startLoadingSample(url, chipWaveIndex, customSampleRate) {
+        // @TODO: Track loading status of samples, so that parts of the code
+        // that expect everything to already be in memory can work correctly.
+        // It would be easy to only instantiate `SongEditor` and company after
+        // everything is loaded, but if dynamic sample loading without a reload
+        // is deemed necessary, anything that involves chip waves has to be
+        // revisited so as to be able to work with a changing list of chip
+        // waves that may or may not be ready to be used.
+		const sampleLoaderAudioContext = new AudioContext({ sampleRate: customSampleRate });
+        const chipWave = Config.chipWaves[chipWaveIndex];
+        const rawChipWave = Config.rawRawChipWaves[chipWaveIndex];
+        fetch(url).then((response) => {
+            if (!response.ok) {
+                // @TODO: Be specific with the error handling.
+                return Promise.reject(new Error("Couldn't load sample"));
+            }
+            return response.arrayBuffer();
+        }).then((arrayBuffer) => {
+            return sampleLoaderAudioContext.decodeAudioData(arrayBuffer);
+        }).then((audioBuffer) => {
+            // @TODO: Downmix.
+            const samples = centerWave(Array.from(audioBuffer.getChannelData(0)));
+            const integratedSamples = performIntegral(samples);
+            chipWave.samples = integratedSamples;
+            rawChipWave.samples = samples;
+        }).catch((error) => {
+            //console.error(error);
+			alert("Failed to load " + url + ":\n" + error);
+        });
+    }
+
+	function loadBuiltInSamples(set) {
+		
+		const script = document.createElement('script')
+		
+		if (set == 0) {
+			script.src = 'samples.js';
+			document.head.append(script);
+			script.src = 'samples2.js';
+			document.head.append(script);
+			script.src = 'samples3.js';
+			document.head.append(script);
+			script.src = 'drumsamples.js';
+			document.head.append(script);
+			script.src = 'wario_samples.js';
+			document.head.append(script);
+			script.src = 'kirby_samples.js';
+			document.head.append(script);
+
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox kick", expression: 4.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(kicksample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox snare", expression: 3.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(snaresample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox piano1", expression: 3.0, isSampled: true, isPercussion: false, extraSampleDetune: 2, samples: centerWave(pianosample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox WOW", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: 0, samples: centerWave(WOWsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox overdrive", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -2, samples: centerWave(overdrivesample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox trumpet", expression: 3.0, isSampled: true, isPercussion: false, extraSampleDetune: 1.2, samples: centerWave(trumpetsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox saxophone", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -5, samples: centerWave(saxophonesample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox orchestrahit", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: 4.2, samples: centerWave(orchhitsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox detatched violin", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: 4.2, samples: centerWave(detatchedviolinsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox synth", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -0.8, samples: centerWave(synthsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox sonic3snare", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(sonic3snaresample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox come on", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: 0, samples: centerWave(comeonsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox choir", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -3, samples: centerWave(choirsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox overdriveguitar", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -6.2, samples: centerWave(overdrivensample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox flute", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -6, samples: centerWave(flutesample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox legato violin", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -28, samples: centerWave(legatoviolinsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox tremolo violin", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -33, samples: centerWave(tremoloviolinsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox amen break", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -55, samples: centerWave(amenbreaksample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox pizzicato violin", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -11, samples: centerWave(pizzicatoviolinsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox tim allen grunt", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -20, samples: centerWave(timallengruntsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox tuba", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: 44, samples: centerWave(tubasample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox loopingcymbal", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -17, samples: centerWave(loopingcymbalsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox standardkick", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -7, samples: centerWave(kickdrumsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox standardsnare", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(snaredrumsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox closedhihat", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 5, samples: centerWave(closedhihatsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox foothihat", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 4, samples: centerWave(foothihatsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox openhihat", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -31, samples: centerWave(openhihatsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox crashcymbal", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -43, samples: centerWave(crashsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox pianoC4", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -42.5, samples: centerWave(pianoC4sample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox liver pad", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -22.5, samples: centerWave(liverpadsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox marimba", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -15.5, samples: centerWave(marimbasample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox susdotwav", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -24.5, samples: centerWave(susdotwavsample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox wackyboxtts", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -17.5, samples: centerWave(wackyboxttssample) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox peppersteak_1", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -42.2, samples: centerWave(peppersteak1) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox peppersteak_2", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -47, samples: centerWave(peppersteak2) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbox vinyl_noise", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -50, samples: centerWave(vinyl) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta slap bass", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -56, samples: centerWave(slapbass) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta HD EB overdrive guitar", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -60, samples: centerWave(hdeboverdrive) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sunsoft bass", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -18.5, samples: centerWave(sunsoftbass) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta masculine choir", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -50, samples: centerWave(masculinechoir) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta feminine choir", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -60.5, samples: centerWave(femininechoir) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta tololoche", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -29.5, samples: centerWave(southtololoche) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta harp", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -54, samples: centerWave(harp) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta pan flute", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -58, samples: centerWave(panflute) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta krumhorn", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -46, samples: centerWave(krumhorn) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta timpani", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -50, samples: centerWave(timpani) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta crowd hey", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -29, samples: centerWave(crowdhey) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta wario land 4 brass", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -68, samples: centerWave(warioland4brass) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta wario land 4 rock organ", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -63, samples: centerWave(warioland4organ) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta wario land 4 DAOW", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -35, samples: centerWave(warioland4daow) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta wario land 4 hour chime", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -47.5, samples: centerWave(warioland4hourchime) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta wario land 4 tick", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -12.5, samples: centerWave(warioland4tick) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta kirby kick", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbykick) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta kirby snare", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbysnare) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta kirby bongo", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbybongo) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta kirby click", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbyclick) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor kick", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -28.5, samples: centerWave(funkkick) }
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor snare", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -28.5, samples: centerWave(funksnare) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor snare (left hand)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -22.5, samples: centerWave(funksnareleft) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor snare (right hand)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -22.5, samples: centerWave(funksnareright) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor high tom", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -41.5, samples: centerWave(funktomhigh) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor low tom", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -41.5, samples: centerWave(funktomlow) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor hihat (closed)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -17, samples: centerWave(funkhihatclosed) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor hihat (half opened)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -21, samples: centerWave(funkhihathalfopen) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor hihat (open)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -54.5, samples: centerWave(funkhihatopen) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor hihat (open tip)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -43.5, samples: centerWave(funkhihatopentip) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor hihat (pedal)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -28, samples: centerWave(funkhihatfoot) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor crash", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -51, samples: centerWave(funkcrash) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor crash (tip)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -50.5, samples: centerWave(funkcrashtip) };
+			Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "paandorasbeta sonor ride", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46, samples: centerWave(funkride) };
+		}
+		// else if (set == 1) {
+			// script.src = 'nintaribox_samples.js';
+			// document.head.append(script);
+
+			// Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "chronoperc1final", expression: 4.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(chronoperc1finalsample) };
+			// Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "synthkickfm", expression: 4.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(synthkickfmsample) };
+			// Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "mcwoodclick1", expression: 4.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(woodclicksample) };
+			// Config.rawRawChipWaves[Config.rawRawChipWaves.length] = { name: "acoustic snare", expression: 4.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(acousticsnaresample) };
+			
+		// }
+		// else if (set == 2) {
+			// script.src = 'mario_paintbox_samples.js';
+			// document.head.append(script);
+
+			// Config.rawRawChipWaves[Config.rawRawChipWaves.length] = {
+            // name: "cat",
+            // expression: 1,
+            // isSampled: true,
+            // isPercussion: false,
+            // extraSampleDetune: -3,
+            // samples: centerWave(catpaintboxsample)};
+			// Config.rawRawChipWaves[Config.rawRawChipWaves.length] = {
+            // name: "gameboy",
+            // expression: 1,
+            // isSampled: true,
+            // isPercussion: false,
+            // extraSampleDetune: 7,
+            // samples: centerWave(gameboypaintboxsample) };
+			// Config.rawRawChipWaves[Config.rawRawChipWaves.length] = {
+            // name: "mario",
+            // expression: 1,
+            // isSampled: true,
+            // isPercussion: false,
+            // extraSampleDetune: 0,
+            // samples: centerWave(mariopaintboxsample) };
+			// Config.rawRawChipWaves[Config.rawRawChipWaves.length] = {
+            // name: "drum",
+            // expression: 1,
+            // isSampled: true,
+            // isPercussion: false,
+            // extraSampleDetune: 4,
+            // samples: centerWave(drumpaintboxsample) };
+			// Config.rawRawChipWaves[Config.rawRawChipWaves.length] = {
+            // name: "yoshi",
+            // expression: 1,
+            // isSampled: true,
+            // isPercussion: false,
+            // extraSampleDetune: -16,
+            // samples: centerWave(yoshipaintboxsample)};
+			// Config.rawRawChipWaves[Config.rawRawChipWaves.length] = {
+            // name: "star",
+            // expression: 1,
+            // isSampled: true,
+            // isPercussion: false,
+            // extraSampleDetune: -16,
+            // samples: centerWave(starpaintboxsample)};
+			// Config.rawRawChipWaves[Config.rawRawChipWaves.length] = {
+            // name: "fire flower",
+            // expression: 1,
+            // isSampled: true,
+            // isPercussion: false,
+            // extraSampleDetune: -1,
+            // samples: centerWave(fireflowerpaintboxsample) };
+			// Config.rawRawChipWaves[Config.rawRawChipWaves.length] = {
+            // name: "dog",
+            // expression: 1,
+            // isSampled: true,
+            // isPercussion: false,
+            // extraSampleDetune: -1,
+            // samples: centerWave(dogpaintbox)  };
+			// Config.rawRawChipWaves[Config.rawRawChipWaves.length] =  {
+            // name: "oink",
+            // expression: 1,
+            // isSampled: true,
+            // isPercussion: false,
+            // extraSampleDetune: 3,
+            // samples: centerWave(oinkpaintbox) };
+			// Config.rawRawChipWaves[Config.rawRawChipWaves.length] = {
+         //   name: "swan",
+        //    expression: 1,
+           // isSampled: true,
+          //  isPercussion: false,
+         //   extraSampleDetune: 1,
+         //   samples: centerWave(swanpaintboxsample) };
+		//	Config.rawRawChipWaves[Config.rawRawChipWaves.length] = {
+        //    name: "face",
+        //    expression: 1,
+        //    isSampled: true,
+         //   isPercussion: false,
+         //   extraSampleDetune: -12,
+         //   samples: centerWave(facepaintboxsample) };
+		//	
+		//}
+		else {
+			console.log("invalid set of built-in samples");
+		}
+		Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
+	}
+	//samplemark
     const TypePresets = ["chip wave", "FM", "basic noise", "spectrum", "drumset", "harmonics", "pulse width", "picked string", "custom chip", "mod", "advanced FM"];
     class Config {
     }
@@ -59,6 +279,8 @@ var beepbox = (function (exports) {
 	    // todbox
 		{ name: "die", realName: "death", flags: [true, false, false, false, false, false, false, false, true, false, false, false] },
 		 //wackybox
+		// { name: "Rythmic", realName: "Pretty straightforward.", flags: [true, false, false, false, false, false, false, false, false, false, false, false] },
+        //todbox
         { name: "Custom", realName: "custom", flags: [true, false, true, true, false, false, false, true, true, false, true, true] },
     ]);
    Config.keys = toNameMap([
@@ -83,45 +305,6 @@ var beepbox = (function (exports) {
 		{ name: "oh no (F-)", isWhiteKey: true, basePitch: 5 },
 		//shitbox
     ]);
-	 //   Config.keysNew = toNameMap([
-    //    { name: "C", isWhiteKey: true, basePitch: 12 },
-    //    { name: "C♯", isWhiteKey: false, basePitch: 13 },
-    //    { name: "D", isWhiteKey: true, basePitch: 14 },
-    //    { name: "D♯", isWhiteKey: false, basePitch: 15 },
-    //    { name: "E", isWhiteKey: true, basePitch: 16 },
-   //     { name: "F", isWhiteKey: true, basePitch: 17 },
-   //     { name: "F♯", isWhiteKey: false, basePitch: 18 },
-   //     { name: "G", isWhiteKey: true, basePitch: 19 },
-  //      { name: "G♯", isWhiteKey: false, basePitch: 20 },
-  //      { name: "A", isWhiteKey: true, basePitch: 21 },
-  //      { name: "A♯", isWhiteKey: false, basePitch: 22 },
-    //    { name: "B", isWhiteKey: true, basePitch: 23 },
-	//	{ name: "C+", isWhiteKey: false, basePitch: 24 },
-	//	{ name: "C♯+", isWhiteKey: false, basePitch: 25 },
-   //     { name: "D+", isWhiteKey: true, basePitch: 26 },
-   //     { name: "D♯+", isWhiteKey: false, basePitch: 27 },
-    //    { name: "E+", isWhiteKey: true, basePitch: 28 },
-   //     { name: "F+", isWhiteKey: true, basePitch: 29 },
-    //    { name: "F♯+", isWhiteKey: false, basePitch: 30 },
-    //    { name: "G+", isWhiteKey: true, basePitch: 31 },
- //       { name: "G♯+", isWhiteKey: false, basePitch: 32 },
-//        { name: "A+", isWhiteKey: true, basePitch: 33 },
-   //     { name: "A♯+", isWhiteKey: false, basePitch: 34 },
- //       { name: "B+", isWhiteKey: true, basePitch: 35 },
-	//   { name: "C-", isWhiteKey: true, basePitch: 0 },
-//		  { name: "C♯-", isWhiteKey: false, basePitch: 1 },
-  //      { name: "D-", isWhiteKey: true, basePitch: 2 },
-  //      { name: "D♯-", isWhiteKey: false, basePitch: 3 },
-  //      { name: "E-", isWhiteKey: true, basePitch: 4 },
-  //      { name: "F-", isWhiteKey: true, basePitch: 5 },
-    //    { name: "F♯-", isWhiteKey: false, basePitch: 6 },
-  //      { name: "G-", isWhiteKey: true, basePitch: 7 },
-   //     { name: "G♯-", isWhiteKey: false, basePitch: 8 },
-  //      { name: "A-", isWhiteKey: true, basePitch: 9 },
-  //      { name: "A♯-", isWhiteKey: false, basePitch: 10 },
-    //    { name: "B-", isWhiteKey: true, basePitch: 11 },
-	    //currently unused
-  //  ]);
     Config.blackKeyNameParents = [-1, 1, -1, 1, -1, 1, -1, -1, 1, -1, 1, -1];
     Config.tempoMin = 1;
     Config.tempoMax = 500;
@@ -147,24 +330,19 @@ var beepbox = (function (exports) {
     Config.ticksPerArpeggio = 3;
     Config.arpeggioPatterns = [[0], [0, 1], [0, 1, 2, 1], [0, 1, 2, 3], [0, 1, 2, 3, 4], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5, 6], [0, 1, 2, 3, 4, 5, 6, 7]];
     Config.rhythms = toNameMap([
-   { name: "÷0 (song corrupter)", stepsPerBeat: 0, ticksPerArpeggio: 7, arpeggioPatterns: [[0], [0, 0, 1, 1], [0, 1, 2, 1]], roundUpThresholds: [] },
+   //{ name: "÷0 (song corrupter)", stepsPerBeat: 0, ticksPerArpeggio: 7, arpeggioPatterns: [[0], [0, 0, 1, 1], [0, 1, 2, 1]], roundUpThresholds: [] },
 	//corrups the song lol
-		{ name: "÷1", stepsPerBeat: 1, ticksPerArpeggio: 6, arpeggioPatterns: [[0], [0, 0, 1, 1], [0, 1, 2, 1]], roundUpThresholds: [3] },
-		{ name: "÷2", stepsPerBeat: 2, ticksPerArpeggio: 5, arpeggioPatterns: [[0], [0, 0, 1, 1], [0, 1, 2, 1]], roundUpThresholds: [3, 9] },
+		{ name: "÷1 (whole notes)", stepsPerBeat: 1, ticksPerArpeggio: 6, arpeggioPatterns: [[0], [0, 0, 1, 1], [0, 1, 2, 1]], roundUpThresholds: [3] },
+		{ name: "÷2 (half notes)", stepsPerBeat: 2, ticksPerArpeggio: 5, arpeggioPatterns: [[0], [0, 0, 1, 1], [0, 1, 2, 1]], roundUpThresholds: [3, 9] },
 		// these ones are from dogebox - names are from todbox
         { name: "÷3 (triplets)", stepsPerBeat: 3, roundUpThresholds: [5, 12, 18] },
         { name: "÷4 (standard)", stepsPerBeat: 4, roundUpThresholds: [3, 9, 17, 21] },
-        { name: "÷6", stepsPerBeat: 6, roundUpThresholds: null },
-        { name: "÷8", stepsPerBeat: 8, roundUpThresholds: null },
-	    { name: "÷12", stepsPerBeat: 12, ticksPerArpeggio: 3, arpeggioPatterns: [[0], [0, 1], [0, 1, 2, 1]], roundUpThresholds: null },
+        { name: "÷6 (sextuplets)", stepsPerBeat: 6, roundUpThresholds: null },
+        { name: "÷8 (eighth notes)", stepsPerBeat: 8, roundUpThresholds: null },
+	    { name: "÷12 (twelveth notes)", stepsPerBeat: 12, ticksPerArpeggio: 3, arpeggioPatterns: [[0], [0, 1], [0, 1, 2, 1]], roundUpThresholds: null },
 	    // from todbox
-	 //   { name: "Hemidemisemiquavers (÷16)", stepsPerBeat: 16, ticksPerArpeggio: 3, arpeggioPatterns: [[0], [0, 1], [0, 1, 2, 1]], roundUpThresholds: null },
-	    // dogebox
-		//corrupts the song
         { name: "freehand", stepsPerBeat: 24, roundUpThresholds: null },
-		// { name: "Freehand 2.0 (÷48)", stepsPerBeat: 48, ticksPerArpeggio: 12, arpeggioPatterns: [[0], [0, 1], [0, 1, 2, 1]], roundUpThresholds: null },
 		// wackybox
-		// corrupts the song lol
     ]);
     Config.instrumentTypeNames = ["chip", "FM", "noise", "spectrum", "drumset", "harmonics", "PWM", "Picked String", "custom chip", "mod", "FM6op"];
     Config.instrumentTypeHasSpecialInterval = [true, true, false, false, false, true, false, false, false, false];
@@ -178,8 +356,8 @@ var beepbox = (function (exports) {
     Config.pickedStringBaseExpression = 0.025;
     Config.distortionBaseVolume = 0.011;
     Config.bitcrusherBaseVolume = 0.010;
-      Config.rawChipWaves = toNameMap([
-        { name: "rounded", expression: 0.94, samples: centerWave([0.0, 0.2, 0.4, 0.5, 0.6, 0.7, 0.8, 0.85, 0.9, 0.95, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.95, 0.9, 0.85, 0.8, 0.7, 0.6, 0.5, 0.4, 0.2, 0.0, -0.2, -0.4, -0.5, -0.6, -0.7, -0.8, -0.85, -0.9, -0.95, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -0.95, -0.9, -0.85, -0.8, -0.7, -0.6, -0.5, -0.4, -0.2]) },
+	Config.rawChipWaves = toNameMap([
+          { name: "rounded", expression: 0.94, samples: centerWave([0.0, 0.2, 0.4, 0.5, 0.6, 0.7, 0.8, 0.85, 0.9, 0.95, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.95, 0.9, 0.85, 0.8, 0.7, 0.6, 0.5, 0.4, 0.2, 0.0, -0.2, -0.4, -0.5, -0.6, -0.7, -0.8, -0.85, -0.9, -0.95, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -0.95, -0.9, -0.85, -0.8, -0.7, -0.6, -0.5, -0.4, -0.2]) },
         { name: "triangle", expression: 1.0, samples: centerWave([1.0 / 15.0, 3.0 / 15.0, 5.0 / 15.0, 7.0 / 15.0, 9.0 / 15.0, 11.0 / 15.0, 13.0 / 15.0, 15.0 / 15.0, 15.0 / 15.0, 13.0 / 15.0, 11.0 / 15.0, 9.0 / 15.0, 7.0 / 15.0, 5.0 / 15.0, 3.0 / 15.0, 1.0 / 15.0, -1.0 / 15.0, -3.0 / 15.0, -5.0 / 15.0, -7.0 / 15.0, -9.0 / 15.0, -11.0 / 15.0, -13.0 / 15.0, -15.0 / 15.0, -15.0 / 15.0, -13.0 / 15.0, -11.0 / 15.0, -9.0 / 15.0, -7.0 / 15.0, -5.0 / 15.0, -3.0 / 15.0, -1.0 / 15.0]) },
         { name: "square", expression: 0.5, samples: centerWave([1.0, -1.0]) },
         { name: "1/4 pulse", expression: 0.5, samples: centerWave([1.0, -1.0, -1.0, -1.0]) },
@@ -259,7 +437,8 @@ var beepbox = (function (exports) {
 	//{ name: "zefbox double saw", expression: 0.5, samples: centerAndNormalizeWave([0.0, -0.2, -0.4, -0.6, -0.8, -1.0, 1.0, -0.8, -0.6, -0.4, -0.2, 1.0, 0.8, 0.6, 0.4, 0.2]) },
 	 { name: "zefbox sawtal", expression: 0.3, samples: centerAndNormalizeWave([1.5, 1.0, 1.25, -0.5, 1.5, -0.5, 0.0, -1.5, 1.5, 0.0, 0.5, -1.5, 0.5, 1.25, -1.0, -1.5]) },
 	{ name: "zefbox deep sawtal", expression: 0.7, samples: centerAndNormalizeWave([0.75, 0.25, 0.5, -0.5, 0.5, -0.5, -0.25, -0.75]) },
-	 { name: "zefbox squaretooth", expression: 0.25, samples: centerAndNormalizeWave([0.2, 1.0, 2.6, 1.0, 0.0, -2.4]) },
+//	 { name: "zefbox squaretooth", expression: 0.25, samples: centerAndNormalizeWave([0.2, 1.0, 2.6, 1.0, 0.0, -2.4]) },
+	//identical to the modbox squaretooth, just louder - this was pre-2.0 ultrabox, but I've added backwards compatibility stuff related to it so yeah
 	{ name: "zefbox pulse", expression: 0.5, samples: centerAndNormalizeWave([1.0, -2.0, -2.0, -1.5, -1.5, -1.25, -1.25, -1.0, -1.0]) },
 //{ name: "zefbox double pulse", expression: 0.4, samples: centerAndNormalizeWave([1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, -1.0, -1.0]) },
 { name: "zefbox triple pulse", expression: 0.4, samples: centerAndNormalizeWave([1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.5, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, -1.0, 1.5]) },
@@ -271,6 +450,9 @@ var beepbox = (function (exports) {
 		{ name: "wackybox intense", expression: 0.6, samples: centerAndNormalizeWave([36, 25, 33, 35, 18, 51, 22, 40, 27, 37, 31, 33, 25, 29, 41, 23, 31, 31, 45, 20, 37, 23, 29, 26, 42, 29, 33, 26, 31, 27, 40, 25, 40, 26, 37, 24, 41, 32, 0, 32, 33, 29, 32, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31]) },
 		{ name: "wackybox buzz wave", expression: 0.6, samples: centerAndNormalizeWave([0, 1, 1, 2, 4, 4, 4, 4, 5, 5, 6, 6, 6, 7, 8, 8, 8, 9, 9, 9, 9, 9, 9, 8, 8, 8, 11, 15, 23, 62, 61, 60, 58, 56, 56, 54, 53, 52, 50, 49, 48, 47, 47, 45, 45, 45, 44, 44, 43, 43, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 43, 43, 53]) },
         //wackybox
+		        { name: "todbox 1/3 pulse", expression: 0.5, samples: centerWave([1.0, -1.0, -1.0]) },
+        { name: "todbox 1/5 pulse", expression: 0.5, samples: centerWave([1.0, -1.0, -1.0, -1.0, -1.0]) },
+		//these WEREN'T in pre-2.0 ultrabox, but I've added backwards compatibility stuff related to it so yeah
 		{ name: "todbox slap bass", expression: 0.5, samples: centerAndNormalizeWave([1, 0.5, 0, 0.5, 1.25, 0.5, -0.25, 0.1, -0.1, 0.1, 1.1, 2.1, 3, 3.5, 2.9, 3.3, 2.7, 2.9, 2.3, 2, 1.9, 1.8, 1, 0.7, 0.9, 0.8, 0.4, 0.1, 0.0, 0.2, 0.4, 0.6, 0.5, 0.8]) },
 	{ name: "todbox harsh wave", expression: 0.45, samples: centerAndNormalizeWave([1.0, -1.0, -1.0, -1.0, 0.5, 0.5, 0.5, 0.7, 0.39, 1.3, 0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0]) },
 	{ name: "todbox accordian", expression: 0.5, samples: centerAndNormalizeWave([0, 1, 1, 2, 2, 1.5, 1.5, 0.8, 0, -2, -3.25, -4, -4.5, -5.5, -6, -5.75, -5.5, -5, -5, -5, -6, -6, -6, -5, -4, -3, -2, -1, 0.75, 1, 2, 3, 4, 5, 6, 6.5, 7.5, 8, 7.75, 6, 5.25, 5, 5, 5, 5, 5, 4.25, 3.75, 3.25, 2.75, 1.25, -0.75, -2, -0.75, 1.25, 1.25, 2, 2, 2, 2, 1.5, -1, -2, -1, 1.5, 2,  2.75, 2.75, 2.75, 3, 2.75, -1, -2, -2.5, -2, -1, -2.25, -2.75, -2, -3, -1.75, 1, 2, 3.5, 4, 5.25, 6, 8, 9.75, 10, 9.5, 9, 8.5, 7.5, 6.5, 5.25, 5, 4.5, 4, 4, 4, 3.25, 2.5, 2, 1, -0.5, -2, -3.5, -4, -4, -4, -3.75, -3, -2, -1]) },
@@ -293,105 +475,18 @@ var beepbox = (function (exports) {
 	{ name: "ultrabox shortened od guitar", expression: 0.5, samples: centerAndNormalizeWave([-0.82785,-0.67621,-0.40268,-0.43817,-0.45468,-0.22531,-0.18329,0.24750,0.71246,0.52155,0.56082,0.48395,0.33990,0.46957,0.27744,0.42313,0.47104,0.18796,0.12930,-0.13901,-0.07431,-0.16348,-0.74857,-0.73206,-0.35181,-0.26227,-0.41882,-0.27786,-0.19806,-0.19867,0.18643,0.24808,0.08847,-0.06964,0.06912,0.20474,-0.05304,0.29416,0.31967,0.14243,0.27521,-0.23932,-0.14752,0.12360,-0.26123,-0.26111,0.06616,0.26520,0.08090,0.15240,0.16254,-0.12061,0.04562,0.00131,0.04050,0.08182,-0.21729,-0.17041,-0.16312,-0.08563,0.06390,0.05099,0.05627,0.02728,0.00726,-0.13028,-0.05673,-0.14969,-0.17645,0.35492,0.16766,-0.00897,0.24326,-0.00461,-0.04456,0.01776,-0.04950,-0.01221,0.02039,0.07684,0.13397,0.39850,0.35962,0.13754,0.42310,0.27161,-0.17609,0.03659,0.10635,-0.21909,-0.22046,-0.20258,-0.40973,-0.40280,-0.40521,-0.66284]) },
 	//based off an old mp3 in #modded-beepbox where someone tried to shorten the overdrive guitar into the size of other chip waves 
 	//search "normie alert" in beepcord
-	
-	
-	// { name: "super epic test wave", expression: 0.5, samples: centerWave([6.9, 4.20]) },
-	//ow
-	//  { name: "super epic test wave", expression: 0.5, samples: centerAndNormalizeWave([6.9, 4.20]) },
-//made while testing fixes to the infamous chip wave bug (at least, it was infamous for nep and I...)
-//I still dont know a fix...
 
 //{ name: "super epic test wave", expression: 0.5, samples: centerAndNormalizeWave([2, 6.9, 3.9, 4.20, 5, 2, 6.9420, 3, 4.2069]) },
+//{ name: "ultrabox doom rng", expression: 0.5, samples: centerAndNormalizeWave([0, 8, 109, 220, 222, 241, 149, 107, 75, 248, 254, 140, 16, 66 , 74, 21, 211, 47, 80, 242, 154, 27, 205, 128, 161, 89, 77, 36 , 95, 110, 85, 48, 212, 140, 211, 249, 22, 79, 200, 50, 28, 188 , 52, 140, 202, 120, 68, 145, 62, 70, 184, 190, 91, 197, 152, 224 , 149, 104, 25, 178, 252, 182, 202, 182, 141, 197, 4, 81, 181, 242 , 145, 42, 39, 227, 156, 198, 225, 193, 219, 93, 122, 175, 249, 0 , 175, 143, 70, 239, 46, 246, 163, 53, 163, 109, 168, 135, 2, 235 , 25, 92, 20, 145, 138, 77, 69, 166, 78, 176, 173, 212, 166, 113 , 94, 161, 41, 50, 239, 49, 111, 164, 70, 60, 2, 37, 171, 75 , 136, 156, 11, 56, 42, 146, 138, 229, 73, 146, 77, 61, 98, 196 , 135, 106, 63, 197, 195, 86, 96, 203, 113, 101, 170, 247, 181, 113 , 80, 250, 108, 7, 255, 237, 129, 226, 79, 107, 112, 166, 103, 241 , 24, 223, 239, 120, 198, 58, 60, 82, 128, 3, 184, 66, 143, 224 , 145, 224, 81, 206, 163, 45, 63, 90, 168, 114, 59, 33, 159, 95 , 28, 139, 123, 98, 125, 196, 15, 70, 194, 253, 54, 14, 109, 226 , 71, 17, 161, 93, 186, 87, 244, 138, 20, 52, 123, 251, 26, 36 , 17, 46, 52, 231, 232, 76, 31, 221, 84, 37, 216, 165, 212, 106 , 197, 242, 98, 43, 39, 175, 254, 145, 190, 84, 118, 222, 187, 136 , 120, 163, 236, 249]) },
+		
+	]);
+		
+  //Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves).concat(rawChipToIntegrated(Config.sampledWaves)).concat(rawChipToIntegrated(Config.sampledWavesExtra));
+ // Config.rawRawChipWaves = Config.rawChipWaves.concat(Config.sampledWaves,Config.sampledWavesExtra);
 
-	]);
-	//console.log(beepbox.Config.rawChipWaves.length);
-	//CHANGE THIS WHENEVER YOU CHANGE THE WAVES
-	//currently 89
+Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
+	Config.rawRawChipWaves = Config.rawChipWaves;
 	
-		Config.sampledWaves = toNameMap([
-		{ name: "paandorasbox kick", expression: 4.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(kicksample) },
-	{ name: "paandorasbox snare", expression: 3.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(snaresample) },
-		{ name: "paandorasbox piano1", expression: 3.0, isSampled: true, isPercussion: false, extraSampleDetune: 2, samples: centerWave(pianosample) },
-		{ name: "paandorasbox WOW", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: 0, samples: centerWave(WOWsample) },
-		{ name: "paandorasbox overdrive", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -2, samples: centerWave(overdrivesample) },
-		{ name: "paandorasbox trumpet", expression: 3.0, isSampled: true, isPercussion: false, extraSampleDetune: 1.2, samples: centerWave(trumpetsample) },
-		{ name: "paandorasbox saxophone", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -5, samples: centerWave(saxophonesample) },
-		{ name: "paandorasbox orchestrahit", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: 4.2, samples: centerWave(orchhitsample) },
-		{ name: "paandorasbox detatched violin", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: 4.2, samples: centerWave(detatchedviolinsample) },
-		{ name: "paandorasbox synth", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -0.8, samples: centerWave(synthsample) },
-		{ name: "paandorasbox sonic3snare", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(sonic3snaresample) },
-		{ name: "paandorasbox come on", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: 0, samples: centerWave(comeonsample) },
-	{ name: "paandorasbox choir", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -3, samples: centerWave(choirsample) },
-		{ name: "paandorasbox overdriveguitar", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -6.2, samples: centerWave(overdrivensample) },
-		{ name: "paandorasbox flute", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -6, samples: centerWave(flutesample) },
-		{ name: "paandorasbox legato violin", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -28, samples: centerWave(legatoviolinsample) },
-		{ name: "paandorasbox tremolo violin", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -33, samples: centerWave(tremoloviolinsample) },
-		{ name: "paandorasbox amen break", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -55, samples: centerWave(amenbreaksample) },
-		{ name: "paandorasbox pizzicato violin", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -11, samples: centerWave(pizzicatoviolinsample) },
-		{ name: "paandorasbox tim allen grunt", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -20, samples: centerWave(timallengruntsample) },
-		{ name: "paandorasbox tuba", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: 44, samples: centerWave(tubasample) },
-		{ name: "paandorasbox loopingcymbal", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -17, samples: centerWave(loopingcymbalsample) },
-		{ name: "paandorasbox standardkick", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -7, samples: centerWave(kickdrumsample) },
-	{ name: "paandorasbox standardsnare", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 0, samples: centerWave(snaredrumsample) },
-		{ name: "paandorasbox closedhihat", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 5, samples: centerWave(closedhihatsample) },
-		{ name: "paandorasbox foothihat", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: 4, samples: centerWave(foothihatsample) },
-		{ name: "paandorasbox openhihat", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -31, samples: centerWave(openhihatsample) },
-		{ name: "paandorasbox crashcymbal", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -43, samples: centerWave(crashsample) },
-		{ name: "paandorasbox pianoC4", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -42.5, samples: centerWave(pianoC4sample) }, 
-		{ name: "paandorasbox liver pad", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -22.5, samples: centerWave(liverpadsample) }, 
-		{ name: "paandorasbox marimba", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -15.5, samples: centerWave(marimbasample) }, 
-		{ name: "paandorasbox susdotwav", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -24.5, samples: centerWave(susdotwavsample) },
-		{ name: "paandorasbox wackyboxtts", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -17.5, samples: centerWave(wackyboxttssample) }, 
-		{ name: "paandorasbox peppersteak_1", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -42.2, samples: centerWave(peppersteak1) }, 
-		{ name: "paandorasbox peppersteak_2", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -47, samples: centerWave(peppersteak2) },
-		{ name: "paandorasbox vinyl_noise", expression: 2.0, isSampled: true, isPercussion: true, extraSampleDetune: -50, samples: centerWave(vinyl) },
-		//normal pandoraasbox
-	]);
-	Config.sampledWavesExtra = toNameMap([
-	//{ name: "plok distortion guitar", expression: 2.0, isSampled: true, isPercussion: false, extraSampleDetune: -53.5, samples: centerWave(plokdistortion) },
-		{ name: "paandorasbeta slap bass", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -56, samples: centerWave(slapbass) },
-		{ name: "paandorasbeta HD EB overdrive guitar", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -60, samples: centerWave(hdeboverdrive) },
-		{ name: "paandorasbeta sunsoft bass", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -18.5, samples: centerWave(sunsoftbass) },
-		{ name: "paandorasbeta masculine choir", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -50, samples: centerWave(masculinechoir) },
-		{ name: "paandorasbeta feminine choir", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -60.5, samples: centerWave(femininechoir) },
-		{ name: "paandorasbeta tololoche", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -29.5, samples: centerWave(southtololoche) },
-		{ name: "paandorasbeta harp", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -54, samples: centerWave(harp) },
-		{ name: "paandorasbeta pan flute", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -58, samples: centerWave(panflute) },
-		{ name: "paandorasbeta krumhorn", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -46, samples: centerWave(krumhorn) },
-		{ name: "paandorasbeta timpani", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -50, samples: centerWave(timpani) },
-		{ name: "paandorasbeta crowd hey", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -29, samples: centerWave(crowdhey) },
-		{ name: "paandorasbeta wario land 4 brass", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -68, samples: centerWave(warioland4brass) },
-		{ name: "paandorasbeta wario land 4 rock organ", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -63, samples: centerWave(warioland4organ) },
-		{ name: "paandorasbeta wario land 4 DAOW", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -35, samples: centerWave(warioland4daow) },
-		{ name: "paandorasbeta wario land 4 hour chime", expression: 1.0, isSampled: true, isPercussion: false, extraSampleDetune: -47.5, samples: centerWave(warioland4hourchime) },
-		{ name: "paandorasbeta wario land 4 tick", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -12.5, samples: centerWave(warioland4tick) },
-		{ name: "paandorasbeta kirby kick", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbykick) },
-		{ name: "paandorasbeta kirby snare", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbysnare) },
-		{ name: "paandorasbeta kirby bongo", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbybongo) },
-		{ name: "paandorasbeta kirby click", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46.5, samples: centerWave(kirbyclick) },
-		{ name: "paandorasbeta sonor kick", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -28.5, samples: centerWave(funkkick) },
-	{ name: "paandorasbeta sonor snare", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -28.5, samples: centerWave(funksnare) },
-			{ name: "paandorasbeta sonor snare (left hand)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -22.5, samples: centerWave(funksnareleft) },
-		{ name: "paandorasbeta sonor snare (right hand)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -22.5, samples: centerWave(funksnareright) },
-		{ name: "paandorasbeta sonor high tom", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -41.5, samples: centerWave(funktomhigh) },
-		{ name: "paandorasbeta sonor low tom", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -41.5, samples: centerWave(funktomlow) },
-	{ name: "paandorasbeta sonor hihat (closed)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -17, samples: centerWave(funkhihatclosed) },
-		{ name: "paandorasbeta sonor hihat (half opened)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -21, samples: centerWave(funkhihathalfopen) },
-		{ name: "paandorasbeta sonor hihat (open)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -54.5, samples: centerWave(funkhihatopen) },
-		{ name: "paandorasbeta sonor hihat (open tip)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -43.5, samples: centerWave(funkhihatopentip) },
-		{ name: "paandorasbeta sonor hihat (pedal)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -28, samples: centerWave(funkhihatfoot) },
-	{ name: "paandorasbeta sonor crash", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -51, samples: centerWave(funkcrash) },
-		{ name: "paandorasbeta sonor crash (tip)", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -50.5, samples: centerWave(funkcrashtip) },
-		{ name: "paandorasbeta sonor ride", expression: 1.0, isSampled: true, isPercussion: true, extraSampleDetune: -46, samples: centerWave(funkride) },
-		//pandoraasbox beta
-		//	{ name: "DONT CLICK, WILL CORRUPT SONG", expression: 0.5, samples: centerWave([0, 1]) },
-	]);
-  Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves).concat(rawChipToIntegrated(Config.sampledWaves)).concat(rawChipToIntegrated(Config.sampledWavesExtra));
-  Config.rawRawChipWaves = Config.rawChipWaves.concat(Config.sampledWaves,Config.sampledWavesExtra);
-   
-   //Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves).concat(rawChipToIntegrated(Config.sampledWaves).concat(rawChipToIntegrated(Config.sampledWavesExtra));
-  // Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves).concat(rawChipToIntegrated(Config.sampledWaves));
-   //Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);      
     Config.chipNoises = toNameMap([
         { name: "retro", expression: 0.25, basePitch: 69, pitchFilterMult: 1024.0, isSoft: false, samples: null },
         { name: "white", expression: 1.0, basePitch: 69, pitchFilterMult: 8.0, isSoft: true, samples: null },
@@ -403,10 +498,13 @@ var beepbox = (function (exports) {
         { name: "cutter", expression: 0.005, basePitch: 96, pitchFilterMult: 1024.0, isSoft: false, samples: null },
         { name: "metallic", expression: 1.0, basePitch: 96, pitchFilterMult: 1024.0, isSoft: false, samples: null },
         { name: "static", expression: 1.0, basePitch: 96, pitchFilterMult: 1024.0, isSoft: false, samples: null },
-			{ name: "ultrabox 1-bit white", expression: 0.5, basePitch: 74.41, pitchFilterMult: 1024.0, isSoft: false, samples: null },
-	{ name: "ultrabox 1-bit metallic", expression: 0.5, basePitch: 86.41, pitchFilterMult: 1024.0, isSoft: false, samples: null },
-	//technically these are from the pandorasbox beta but whatever
-	{ name: "ultrabox crackling", expression: 0.9, basePitch: 69, pitchFilterMult: 1024.0, isSoft: false, samples: null },
+		{ name: "1-bit white", expression: 0.5, basePitch: 74.41, pitchFilterMult: 1024.0, isSoft: false, samples: null },
+		{ name: "1-bit metallic", expression: 0.5, basePitch: 86.41, pitchFilterMult: 1024.0, isSoft: false, samples: null },
+		//technically these are from the pandorasbox beta but whatever
+		{ name: "crackling", expression: 0.9, basePitch: 69, pitchFilterMult: 1024.0, isSoft: false, samples: null },
+		{ name: "pink noise", expression: 1.0, basePitch: 69, pitchFilterMult: 8.0, isSoft: true, samples: null },
+		{ name: "brownian noise", expression: 1.0, basePitch: 69, pitchFilterMult: 8.0, isSoft: true, samples: null },
+		//{ name: "doom random", expression: 1.0, basePitch: 84, pitchFilterMult: 1024.0, isSoft: false, samples: null },
     ]);
     Config.filterFreqStep = 1.0 / 4.0;
     Config.filterFreqRange = 34;
@@ -1075,9 +1173,52 @@ var beepbox = (function (exports) {
 			else if (index == 12) {
                 for (let i = 0; i < Config.chipNoiseLength; i++) {
                    var ultraboxnewchipnoiserand = Math.random();
-				   wave[i] = Math.sin(Math.pow(ultraboxnewchipnoiserand, Math.clz32(ultraboxnewchipnoiserand)));
+				   wave[i] = Math.pow(ultraboxnewchipnoiserand, Math.clz32(ultraboxnewchipnoiserand));
                 }
             }
+			else if (index == 13) {
+				var b0 = 0, b1 = 0, b2 = 0, b3, b4, b5, b6;
+				b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
+				
+				for (let i = 0; i < Config.chipNoiseLength; i++) {
+					var white = Math.random() * 2 - 1;
+					b0 = 0.99886 * b0 + white * 0.0555179;
+					b1 = 0.99332 * b1 + white * 0.0750759;
+					b2 = 0.96900 * b2 + white * 0.1538520;
+					b3 = 0.86650 * b3 + white * 0.3104856;
+					b4 = 0.55000 * b4 + white * 0.5329522;
+					b5 = -0.7616 * b5 - white * 0.0168980;
+					wave[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+					wave[i] *= 0.44;
+					b6 = white * 0.115926;
+					//https://noisehack.com/generate-noise-web-audio-api/ ?
+                }
+            }
+			else if (index == 14) {
+				var lastOut = 0.0;
+				
+                for (let i = 0; i < Config.chipNoiseLength; i++) {
+					var white = Math.random() * 2 - 1;
+					wave[i] = (lastOut + (0.02 * white)) / 1.02;
+					lastOut = wave[i];
+					wave[i] *= 14;
+					//^^^
+                }
+            }
+			//	else if (index == 15) {
+		//		const doomRandArray = [0, 8, 109, 220, 222, 241, 149, 107, 75, 248, 254, 140, 16, 66 , 74, 21, 211, 47, 80, 242, 154, 27, 205, 128, 161, 89, 77, 36 , 95, 110, 85, 48, 212, 140, 211, 249, 22, 79, 200, 50, 28, 188 , 52, 140, 202, 120, 68, 145, 62, 70, 184, 190, 91, 197, 152, 224 , 149, 104, 25, 178, 252, 182, 202, 182, 141, 197, 4, 81, 181, 242 , 145, 42, 39, 227, 156, 198, 225, 193, 219, 93, 122, 175, 249, 0 , 175, 143, 70, 239, 46, 246, 163, 53, 163, 109, 168, 135, 2, 235 , 25, 92, 20, 145, 138, 77, 69, 166, 78, 176, 173, 212, 166, 113 , 94, 161, 41, 50, 239, 49, 111, 164, 70, 60, 2, 37, 171, 75 , 136, 156, 11, 56, 42, 146, 138, 229, 73, 146, 77, 61, 98, 196 , 135, 106, 63, 197, 195, 86, 96, 203, 113, 101, 170, 247, 181, 113 , 80, 250, 108, 7, 255, 237, 129, 226, 79, 107, 112, 166, 103, 241 , 24, 223, 239, 120, 198, 58, 60, 82, 128, 3, 184, 66, 143, 224 , 145, 224, 81, 206, 163, 45, 63, 90, 168, 114, 59, 33, 159, 95 , 28, 139, 123, 98, 125, 196, 15, 70, 194, 253, 54, 14, 109, 226 , 71, 17, 161, 93, 186, 87, 244, 138, 20, 52, 123, 251, 26, 36 , 17, 46, 52, 231, 232, 76, 31, 221, 84, 37, 216, 165, 212, 106 , 197, 242, 98, 43, 39, 175, 254, 145, 190, 84, 118, 222, 187, 136 , 120, 163, 236, 249];
+		//		const randomSeed = Math.floor(Math.random() * 256);
+		//		var amountOfLoops = 0;
+		//		var newWaveValue = 0;
+       //         for (let i = 0; i < Config.chipNoiseLength; i++) {
+		//			if (i / 256 > amountOfLoops) {amountOfLoops++;}
+		//			newWaveValue = doomRandArray.at(i - amountOfLoops * 256 + randomSeed);
+		//			if (newWaveValue > 256) {newWaveValue += - 256;}
+		//			wave[i] = newWaveValue * 0.0025;
+					//this sucks
+					//also the randomized starting point code I spent 5 minutes on does nothing (auditorily)
+        //        }
+            //}
             else {
                 throw new Error("Unrecognized drum index: " + index);
             }
@@ -2870,122 +3011,122 @@ var beepbox = (function (exports) {
 			`,
         "beachcombing": `
 			:root {
-			--page-margin: #010121;
-			--editor-background: #020222;
-			--hover-preview: #f3ffff;
-			--playhead: #fff;
-			--primary-text: #c1f1ff;
-			--secondary-text: #546775;
-			--inverted-text: black;
-			--text-selection: rgba(119,68,255,0.99);
-			--box-selection-fill: #3e0028;
-			--loop-accent: #5a00ff;
-			--link-accent: #ff00c8fc;
-			--ui-widget-background: #1f2b52;
-			--ui-widget-focus: #384e91;
-			--pitch-background: #2c3155;
-			--tonic: #a32f6e;
-			--fifth-note: #0044a0;
-			--white-piano-key: #fff;
-			--black-piano-key: #202d42;
-			--white-piano-key-text: #131200;
-			--black-piano-key-text: #fff;
-			--use-color-formula: false;
-			--track-editor-bg-pitch: #34406c;
-			--track-editor-bg-pitch-dim: #1c1d28;
-			--track-editor-bg-noise: #562e3b;
-			--track-editor-bg-noise-dim: #161313;
-			--track-editor-bg-mod: #372e66;
-			--track-editor-bg-mod-dim: #2a1640;
-			--multiplicative-mod-slider: #606c9f;
-			--overwriting-mod-slider: #6850b5;
-			--indicator-primary: #ff67c2;
-			--indicator-secondary: #393e4f;
-			--select2-opt-group: #5d576f;
-			--input-box-outline: #222;
-			--mute-button-normal: #7ce1ff;
-			--mute-button-mod: #db519d;
-			--pitch1-secondary-channel: #329b70;
-			--pitch1-primary-channel: #53ffb8;
-			--pitch1-secondary-note: #4cb98c;
-			--pitch1-primary-note: #98ffd4;
-			--pitch2-secondary-channel: #8e8632;
-			--pitch2-primary-channel: #fff36a;
-			--pitch2-secondary-note: #afaf22;
-			--pitch2-primary-note: #f9f93f;
-			--pitch3-secondary-channel: #018e8e;
-			--pitch3-primary-channel: #00ffff;
-			--pitch3-secondary-note: #24b7b7;
-			--pitch3-primary-note: #a7ffff;
-			--pitch4-secondary-channel: #6c003d;
-			--pitch4-primary-channel: #ff0090;
-			--pitch4-secondary-note: #a73c78;
-			--pitch4-primary-note: #ff98d2;
-			--pitch5-secondary-channel: #0e8153;
-			--pitch5-primary-channel: #59ffbd;
-			--pitch5-secondary-note: #489979;
-			--pitch5-primary-note: #b0ffe0;
-			--pitch6-secondary-channel: #185aab;
-			--pitch6-primary-channel: #4e7ce5;
-			--pitch6-secondary-note: #3e99d9;
-			--pitch6-primary-note: #b3e3ff;
-			--pitch7-secondary-channel: #4f007d;
-			--pitch7-primary-channel: #a200ff;
-			--pitch7-secondary-note: #9741c9;
-			--pitch7-primary-note: #d386ff;
-			--pitch8-secondary-channel: #101c8d;
-			--pitch8-primary-channel: #1c5df1;
-			--pitch8-secondary-note: #FF4E63;
-			--pitch8-primary-note: #FFB2BB;
-			--pitch9-secondary-channel: #00A170;
-			--pitch9-primary-channel: #50FFC9;
-			--pitch9-secondary-note: #00C78A;
-			--pitch9-primary-note: #83FFD9;
-			--pitch10-secondary-channel: #A11FFF;
-			--pitch10-primary-channel: #CE8BFF;
-			--pitch10-secondary-note: #B757FF;
-			--pitch10-primary-note: #DFACFF;
-			--noise1-secondary-channel: #635070;
-			--noise1-primary-channel: #9071db;
-			--noise1-secondary-note: #915dc1;
-			--noise1-primary-note: #c5a5ff;
-			--noise2-secondary-channel: #993367;
-			--noise2-primary-channel: #dd777c;
-			--noise2-secondary-note: #cc6695;
-			--noise2-primary-note: #f0bbd1;
-			--noise3-secondary-channel: #4a8c8f;
-			--noise3-primary-channel: #77c5dd;
-			--noise3-secondary-note: #6fb4cf;
-			--noise3-primary-note: #bbf2ff;
-			--noise4-secondary-channel: #8e3e7d;
-			--noise4-primary-channel: #c682d2;
-			--noise4-secondary-note: #b871c1;
-			--noise4-primary-note: #ffb8f0;
-			--noise5-secondary-channel: #785e37;
-			--noise5-primary-channel: #bb9d77;
-			--noise5-secondary-note: #aa8c66;
-			--noise5-primary-note: #e2d1b2;
-			--mod1-secondary-channel: #4e8397;
-			--mod1-primary-channel: #92e6f3;
-			--mod1-secondary-note: #76b9d9;
-			--mod1-primary-note: #cde3ff;
-			--mod2-secondary-channel: #ad5774;
-			--mod2-primary-channel: #eba4ae;
-			--mod2-secondary-note: #c9719b;
-			--mod2-primary-note: #fdcee7;
-			--mod3-secondary-channel: #6f579f;
-			--mod3-primary-channel: #b192f7;
-			--mod3-secondary-note: #a778e1;
-			--mod3-primary-note: #f8ddff;
-			--mod4-secondary-channel: #a88a36;
-			--mod4-primary-channel: #bec825;
-			--mod4-secondary-note: #aecb57;
-			--mod4-primary-note: #dee9bd;
-			--mod-label-primary: #2c2c56;
-			--mod-label-secondary-text: rgb(71,69,147);
-			--mod-label-primary-text: white;
-			--disabled-note-primary: #91879f;
-			--disabled-note-secondary: #6a677a;
+			  --page-margin: #010121;
+  --editor-background: #020222;
+  --hover-preview: #f3ffff;
+  --playhead: #fff;
+  --primary-text: #c1f1ff;
+  --secondary-text: #546775;
+  --inverted-text: black;
+  --text-selection: rgba(119,68,255,0.99);
+  --box-selection-fill: #3e0028;
+  --loop-accent: #5e68fffc;
+  --link-accent: #ff3ad5fc;
+  --ui-widget-background: #1f2b52;
+  --ui-widget-focus: #384e91;
+  --pitch-background: #2c3155;
+  --tonic: #935175;
+  --fifth-note: #1f569f;
+  --white-piano-key: #f3f2ff;
+  --black-piano-key: #4b4471;
+  --white-piano-key-text: #4b4471;
+  --black-piano-key-text: #fff;
+  --use-color-formula: false;
+  --track-editor-bg-pitch: #34406c;
+  --track-editor-bg-pitch-dim: #121931;
+  --track-editor-bg-noise: #562e3b;
+  --track-editor-bg-noise-dim: #161313;
+  --track-editor-bg-mod: #372e66;
+  --track-editor-bg-mod-dim: #2a1640;
+  --multiplicative-mod-slider: #606c9f;
+  --overwriting-mod-slider: #6850b5;
+  --indicator-primary: #ff8bd1;
+  --indicator-secondary: #393e4f;
+  --select2-opt-group: #5d576f;
+  --input-box-outline: #222;
+  --mute-button-normal: #7ce1ff;
+  --mute-button-mod: #db519d;
+  --pitch1-secondary-channel: #329b70;
+  --pitch1-primary-channel: #53ffb8;
+  --pitch1-secondary-note: #4cb98c;
+  --pitch1-primary-note: #98ffd4;
+  --pitch2-secondary-channel: #b08e4d;
+  --pitch2-primary-channel: #ffe185;
+  --pitch2-secondary-note: #91782e;
+  --pitch2-primary-note: #ffd968;
+  --pitch3-secondary-channel: #018e8e;
+  --pitch3-primary-channel: #3de4ff;
+  --pitch3-secondary-note: #24b7b7;
+  --pitch3-primary-note: #a7ffff;
+  --pitch4-secondary-channel: #792354;
+  --pitch4-primary-channel: #ff68bd;
+  --pitch4-secondary-note: #a73c78;
+  --pitch4-primary-note: #ff98d2;
+  --pitch5-secondary-channel: #185aab;
+  --pitch5-primary-channel: #6493ff;
+  --pitch5-secondary-note: #3e99d9;
+  --pitch5-primary-note: #b3e3ff;
+  --pitch6-secondary-channel: #953C47;
+  --pitch6-primary-channel: #FF7888;
+  --pitch6-secondary-note: #DF4F60;
+  --pitch6-primary-note: #FFB2BB;
+  --pitch7-secondary-channel: #4f007d;
+  --pitch7-primary-channel: #a54cd9;
+  --pitch7-secondary-note: #732b9d;
+  --pitch7-primary-note: #d386ff;
+  --pitch8-secondary-channel: #323c99;
+  --pitch8-primary-channel: #1b61ff;
+  --pitch8-secondary-note: #1848b3;
+  --pitch8-primary-note: #6f9bff;
+  --pitch9-secondary-channel: #1F605A;
+  --pitch9-primary-channel: #69FFEA;
+  --pitch9-secondary-note: #178076;
+  --pitch9-primary-note: #83FFD9;
+  --pitch10-secondary-channel: #6D438C;
+  --pitch10-primary-channel: #CE8BFF;
+  --pitch10-secondary-note: #8040B0;
+  --pitch10-primary-note: #DFACFF;
+  --noise1-secondary-channel: #635070;
+  --noise1-primary-channel: #9071db;
+  --noise1-secondary-note: #915dc1;
+  --noise1-primary-note: #c5a5ff;
+  --noise2-secondary-channel: #993367;
+  --noise2-primary-channel: #dd777c;
+  --noise2-secondary-note: #cc6695;
+  --noise2-primary-note: #f0bbd1;
+  --noise3-secondary-channel: #4a8c8f;
+  --noise3-primary-channel: #77c5dd;
+  --noise3-secondary-note: #6fb4cf;
+  --noise3-primary-note: #bbf2ff;
+  --noise4-secondary-channel: #8e3e7d;
+  --noise4-primary-channel: #c682d2;
+  --noise4-secondary-note: #b871c1;
+  --noise4-primary-note: #ffb8f0;
+  --noise5-secondary-channel: #785e37;
+  --noise5-primary-channel: #bb9d77;
+  --noise5-secondary-note: #aa8c66;
+  --noise5-primary-note: #e2d1b2;
+  --mod1-secondary-channel: #4e8397;
+  --mod1-primary-channel: #92e6f3;
+  --mod1-secondary-note: #76b9d9;
+  --mod1-primary-note: #cde3ff;
+  --mod2-secondary-channel: #ad5774;
+  --mod2-primary-channel: #eba4ae;
+  --mod2-secondary-note: #c9719b;
+  --mod2-primary-note: #fdcee7;
+  --mod3-secondary-channel: #6f579f;
+  --mod3-primary-channel: #b192f7;
+  --mod3-secondary-note: #7c3fc8;
+  --mod3-primary-note: #f8ddff;
+  --mod4-secondary-channel: #a88a36;
+  --mod4-primary-channel: #bec825;
+  --mod4-secondary-note: #aecb57;
+  --mod4-primary-note: #dee9bd;
+  --mod-label-primary: #2c2c56;
+  --mod-label-secondary-text: rgb(71,69,147);
+  --mod-label-primary-text: white;
+  --disabled-note-primary: #91879f;
+  --disabled-note-secondary: #6a677a;
 
 
 			}
@@ -5474,68 +5615,10 @@ var beepbox = (function (exports) {
 					--disabled-note-primary:    #999;
 					--disabled-note-secondary:  #666;
 				}
-			`,
-			 "shitbox 2.0 (original)": `
-			:root {
-				--page-margin: maroon;
-					--editor-background: black;
-					--hover-preview: white;
-					--playhead: firebrick;
-					--primary-text: silver;
-					--secondary-text: #999;
-					--inverted-text: black;
-					--text-selection: rgba(139,69,19,0.99);
-					--box-selection-fill: rgba(220,20,60,0.2);
-					--loop-accent: #841;
-					--link-accent: #841;
-					--ui-widget-background: #800;
-					--ui-widget-focus: #a00;
-					--pitch-background: #700;
-					--tonic: #522;
-					--fifth-note: #f75;
-					--white-piano-key: #bbb;
-					--black-piano-key: #444;
-					--pitch1-secondary-channel: #7e4a35;
-					--pitch1-primary-channel:   #c27251;
-					--pitch1-secondary-note:    #7e4a35;
-					--pitch1-primary-note:      #f09571;
-					--pitch2-secondary-channel: #998a5c;
-					--pitch2-primary-channel:   #d9c27c;
-					--pitch2-secondary-note:    #998a5c;
-					--pitch2-primary-note:      #fae196;
-					--pitch3-secondary-channel: #9c927c;
-					--pitch3-primary-channel:   #dbceb0;
-					--pitch3-secondary-note:    #9c927c;
-					--pitch3-primary-note:      #eddebb;
-					--pitch4-secondary-channel: #838060;
-					--pitch4-primary-channel:   #ccc795;
-					--pitch4-secondary-note:    #838060;
-					--pitch4-primary-note:      #f2ecb1;
-					--pitch5-secondary-channel: #8b6f47;
-					--pitch5-primary-channel:   #d1a76b;
-					--pitch5-secondary-note:    #8b6f47;
-					--pitch5-primary-note:      #ffcc82;
-					--pitch6-secondary-channel: #a96e5b;
-					--pitch6-primary-channel:   #e3967d;
-					--pitch6-secondary-note:    #a96e5b;
-					--pitch6-primary-note:      #ffa68a;
-					--noise1-secondary-channel: #6f6f6f;
-					--noise1-primary-channel:   #aaaaaa;
-					--noise1-secondary-note:    #a7a7a7;
-					--noise1-primary-note:      #e0e0e0;
-					--noise2-secondary-channel: #996633;
-					--noise2-primary-channel:   #ddaa77;
-					--noise2-secondary-note:    #cc9966;
-					--noise2-primary-note:      #f0d0bb;
-					--noise3-secondary-channel: #4a6d8f;
-					--noise3-primary-channel:   #77aadd;
-					--noise3-secondary-note:    #6f9fcf;
-					--noise3-primary-note:      #bbd7ff;
-				}
-			`,
+			`,	
 			 "shitbox 3.0": `
 			:root {
-				font: 32px/2 monospace;
+				font: 20px/2 monospace;
 				--page-margin: #252525;
 				--editor-background: black;
 				--hover-preview: white;
@@ -6470,6 +6553,126 @@ var beepbox = (function (exports) {
 					--disabled-note-secondary:  #666;
 				}
 			`,
+			"mainbox reimagined": `
+					:root {
+		 --page-margin: black;
+		 --editor-background: black;
+		 --hover-preview: white;
+		 --playhead: white;
+		 --primary-text: white;
+		 --secondary-text: #B6B7C4;
+		 --inverted-text: black;
+		 --text-selection: rgba(119,68,255,0.99);
+		 --box-selection-fill: rgba(255,255,255,0.2);
+		 --loop-accent: #8153E0;
+		 --link-accent: #8153E0;
+		 --ui-widget-background: #2D1C4C;
+		 --ui-widget-focus: #432C89;
+		 --pitch-background: #2B1E38;
+		 --tonic: #462C77;
+		 --fifth-note: #38477F;
+		 --white-piano-key: #D2D2DD;
+		 --black-piano-key: #020202;
+		 --white-piano-key-text: #131200;
+		 --black-piano-key-text: #fff;
+		 --use-color-formula: false;
+		 --track-editor-bg-pitch: #444;
+		 --track-editor-bg-pitch-dim: #333;
+		 --track-editor-bg-noise: #444;
+		 --track-editor-bg-noise-dim: #333;
+		 --track-editor-bg-mod: #234;
+		 --track-editor-bg-mod-dim: #123;
+		 --multiplicative-mod-slider: #456;
+		 --overwriting-mod-slider: #654;
+		 --indicator-primary: #8153E0;
+		 --indicator-secondary: #3D303F;
+		 --select2-opt-group: #585858;
+		 --input-box-outline: #333;
+		 --mute-button-normal: #D8AE2B;
+		 --mute-button-mod: #8153E0;
+		 --pitch1-secondary-channel: #156C99;
+		 --pitch1-primary-channel:   #00CEE2;
+		 --pitch1-secondary-note:    #005CBF;
+		 --pitch1-primary-note:      #00CEE2;
+		 --pitch2-secondary-channel: #C13C40;
+		 --pitch2-primary-channel:   #E0C218;
+		 --pitch2-secondary-note:    #C13C40;
+		 --pitch2-primary-note:      #E0C218;
+		 --pitch3-secondary-channel: #4D4529;
+		 --pitch3-primary-channel:   #C62936;
+		 --pitch3-secondary-note:    #4D4529;
+		 --pitch3-primary-note:      #C62936;
+		 --pitch4-secondary-channel: #00333F;
+		 --pitch4-primary-channel:   #00A960;
+		 --pitch4-secondary-note:    #00333F;
+		 --pitch4-primary-note:      #00A960;
+		 --pitch5-secondary-channel: #590CA8;
+		 --pitch5-primary-channel:   #8874C9;
+		 --pitch5-secondary-note:    #590CA8;
+		 --pitch5-primary-note:      #8874C9;
+		 --pitch6-secondary-channel: #7017BC;
+		 --pitch6-primary-channel:   #8CACE2;
+		 --pitch6-secondary-note:    #7017BC;
+		 --pitch6-primary-note:      #8CACE2;
+		 --pitch7-secondary-channel: #631A21;
+		 --pitch7-primary-channel:   #BADB3A;
+		 --pitch7-secondary-note:    #631A21;
+		 --pitch7-primary-note:      #BADB3A;
+		 --pitch8-secondary-channel: #690076;
+		 --pitch8-primary-channel:   #ED6DCA;
+		 --pitch8-secondary-note:    #690076;
+		 --pitch8-primary-note:      #ED6DCA;
+		 --pitch9-secondary-channel: #194945;
+		 --pitch9-primary-channel:   #1ECD58;
+		 --pitch9-secondary-note:    #194945;
+		 --pitch9-primary-note:      #1ECD58;
+		 --pitch10-secondary-channel: #561070;
+		 --pitch10-primary-channel:   #9E71CE;
+		 --pitch10-secondary-note:    #561070;
+		 --pitch10-primary-note:      #9E71CE;
+		 --noise1-secondary-channel: #572C59;
+		 --noise1-primary-channel:   #CAC9CC;
+		 --noise1-secondary-note:    #572C59;
+		 --noise1-primary-note:      #CAC9CC;
+		 --noise2-secondary-channel: #77174B;
+		 --noise2-primary-channel:   #DBBE85;
+		 --noise2-secondary-note:    #77174B;
+		 --noise2-primary-note:      #DBBE85;
+		 --noise3-secondary-channel: #70195D;
+		 --noise3-primary-channel:   #B19998;
+		 --noise3-secondary-note:    #70195D;
+		 --noise3-primary-note:      #EDDCEC;
+		 --noise4-secondary-channel: #720B87;
+		 --noise4-primary-channel:   #BD81DB;
+		 --noise4-secondary-note:    #720B87;
+		 --noise4-primary-note:      #BD81DB;
+		 --noise5-secondary-channel: #821B5C;
+		 --noise5-primary-channel:   #C6D88A;
+		 --noise5-secondary-note:    #821B5C;
+		 --noise5-primary-note:      #C6D88A;
+		 --mod1-secondary-channel: #156C99;
+		 --mod1-primary-channel:   #00CEE2;
+		 --mod1-secondary-note:    #005CBF;
+		 --mod1-primary-note:      #00CEE2;
+		 --mod2-secondary-channel: #C13C40;
+		 --mod2-primary-channel:   #E0C218;
+		 --mod2-secondary-note:    #C13C40;
+		 --mod2-primary-note:      #E0C218;
+		 --mod3-secondary-channel: #4D4529;
+		 --mod3-primary-channel:   #C62936;
+		 --mod3-secondary-note:    #4D4529;
+		 --mod3-primary-note:      #C62936;
+		 --mod4-secondary-channel: #00333F;
+		 --mod4-primary-channel:   #00A960;
+		 --mod4-secondary-note:    #00333F;
+		 --mod4-primary-note:      #00A960;
+		 --mod-label-primary:        #999;
+		 --mod-label-secondary-text: #333;
+		 --mod-label-primary-text:   black;
+		 --disabled-note-primary:    #B6B7C4;
+		 --disabled-note-secondary:  #3D303F;
+		}
+			`,
 			 "fogbox": `
 			:root {
 				--page-margin: #252525;
@@ -6591,127 +6794,141 @@ var beepbox = (function (exports) {
 				}
 			`,
 			 "ultrabox terminal": `
-		
-				@import url(https://fonts.googleapis.com/css?family=VT323);
+				
+				@import url(https://fonts.googleapis.com/css?family=VT323);		
 :root {
-				font-family: 'VT323', Courier;
 				--page-margin: black;
 				--editor-background: black;
-				--hover-preview: #121;
+				--hover-preview: #000200;
 				--playhead: #393;
 				--primary-text: #393;
-				--secondary-text: #999;
-				--inverted-text: #121;
+				--secondary-text: #393;
+				--inverted-text: #011910;
 				--text-selection: #393;
 				--box-selection-fill: #393;
 				--loop-accent: #393;
 				--link-accent: #393;
-				--ui-widget-background: #222;
-				--ui-widget-focus: #242;
-				--pitch-background: #131;
-				--tonic: #121;
+				--ui-widget-background:  #000800;
+				--ui-widget-focus: #011910;
+				--pitch-background: #000800;
+				--tonic: #000600;
 				--fifth-note: #393;
-				--white-piano-key: #bbb;
-				--black-piano-key: #444;
+				--white-piano-key: white;
+				--black-piano-key: black;
 				--white-piano-key-text: #131200;
 				--black-piano-key-text: #fff;
 					--use-color-formula: false;
-					--track-editor-bg-pitch: #121;
-					--track-editor-bg-pitch-dim: #121;
-					--track-editor-bg-noise: #121;
-					--track-editor-bg-noise-dim: #121;
-					--track-editor-bg-mod: #121;
-					--track-editor-bg-mod-dim: #121;
+					--track-editor-bg-pitch: #000800;
+					--track-editor-bg-pitch-dim: #000600;
+					--track-editor-bg-noise: #000800;
+					--track-editor-bg-noise-dim: #000600;
+					--track-editor-bg-mod: #000800;
+					--track-editor-bg-mod-dim: #000600;
 					--multiplicative-mod-slider: #456;
 					--overwriting-mod-slider: #393;
 					--indicator-primary: #393;
 					--indicator-secondary: #222;
-					--select2-opt-group: #585858;
+					--select2-opt-group: #393;
 					--input-box-outline: transparent;
 					--mute-button-normal: #393;
 					--mute-button-mod: #393;
-				--pitch1-secondary-channel: #242;
+				--pitch1-secondary-channel: #011910;
 				--pitch1-primary-channel:   #393;
-				--pitch1-secondary-note:    #242;
+				--pitch1-secondary-note:    #011910;
 				--pitch1-primary-note:      #393;
-			--pitch2-secondary-channel: #242;
+			--pitch2-secondary-channel: #011910;
 				--pitch2-primary-channel:   #393;
-				--pitch2-secondary-note:    #242;
+				--pitch2-secondary-note:    #011910;
 				--pitch2-primary-note:      #393;
-				--pitch3-secondary-channel: #242;
+				--pitch3-secondary-channel: #011910;
 				--pitch3-primary-channel:   #393;
-				--pitch3-secondary-note:    #242;
+				--pitch3-secondary-note:    #011910;
 				--pitch3-primary-note:      #393;
-			--pitch4-secondary-channel: #242;
+			--pitch4-secondary-channel: #011910;
 				--pitch4-primary-channel:   #393;
-				--pitch4-secondary-note:    #242;
+				--pitch4-secondary-note:    #011910;
 				--pitch4-primary-note:      #393;
-			--pitch5-secondary-channel: #242;
+			--pitch5-secondary-channel: #011910;
 				--pitch5-primary-channel:   #393;
-				--pitch5-secondary-note:    #242;
+				--pitch5-secondary-note:    #011910;
 				--pitch5-primary-note:      #393;
-			--pitch6-secondary-channel: #242;
+			--pitch6-secondary-channel: #011910;
 				--pitch6-primary-channel:   #393;
-				--pitch6-secondary-note:    #242;
+				--pitch6-secondary-note:    #011910;
 				--pitch6-primary-note:      #393;
-				--pitch7-secondary-channel: #242;
+				--pitch7-secondary-channel: #011910;
 				--pitch7-primary-channel:   #393;
-				--pitch7-secondary-note:    #242;
+				--pitch7-secondary-note:    #011910;
 				--pitch7-primary-note:      #393;
-			--pitch8-secondary-channel: #242;
+			--pitch8-secondary-channel: #011910;
 				--pitch8-primary-channel:   #393;
-				--pitch8-secondary-note:    #242;
+				--pitch8-secondary-note:    #011910;
 				--pitch8-primary-note:      #393;
-				--pitch9-secondary-channel: #242;
+				--pitch9-secondary-channel: #011910;
 				--pitch9-primary-channel:   #393;
-				--pitch9-secondary-note:    #242;
+				--pitch9-secondary-note:    #011910;
 				--pitch9-primary-note:      #393;
-			--pitch10-secondary-channel: #242;
+			--pitch10-secondary-channel: #011910;
 				--pitch10-primary-channel:   #393;
-				--pitch10-secondary-note:    #242;
+				--pitch10-secondary-note:    #011910;
 				--pitch10-primary-note:      #393;
-				--noise1-secondary-channel: #242;
+				--noise1-secondary-channel: #011910;
 				--noise1-primary-channel:   #393;
-				--noise1-secondary-note:    #242;
+				--noise1-secondary-note:    #011910;
 				--noise1-primary-note:      #393;
-				--noise2-secondary-channel: #242;
+				--noise2-secondary-channel: #011910;
 				--noise2-primary-channel:   #393;
-				--noise2-secondary-note:    #242;
+				--noise2-secondary-note:    #011910;
 				--noise2-primary-note:      #393;
-				--noise3-secondary-channel: #242;
+				--noise3-secondary-channel: #011910;
 				--noise3-primary-channel:   #393;
-				--noise3-secondary-note:    #242;
+				--noise3-secondary-note:    #011910;
 				--noise3-primary-note:      #393;
-				--noise4-secondary-channel: #242;
+				--noise4-secondary-channel: #011910;
 				--noise4-primary-channel:   #393;
-				--noise4-secondary-note:    #242;
+				--noise4-secondary-note:    #011910;
 				--noise4-primary-note:      #393;
-				--noise5-secondary-channel: #242;
+				--noise5-secondary-channel: #011910;
 				--noise5-primary-channel:   #393;
-				--noise5-secondary-note:    #242;
+				--noise5-secondary-note:    #011910;
 				--noise5-primary-note:      #393;
-          --mod1-secondary-channel:   #242;
+          --mod1-secondary-channel:   #011910;
 					--mod1-primary-channel:     #393;
-					--mod1-secondary-note:      #242;
+					--mod1-secondary-note:      #011910;
 					--mod1-primary-note:        #393;
-					--mod2-secondary-channel:   #242;
+					--mod2-secondary-channel:   #011910;
 					--mod2-primary-channel:     #393;
-					--mod2-secondary-note:      #242;
+					--mod2-secondary-note:      #011910;
 					--mod2-primary-note:        #393;
-					--mod3-secondary-channel:   #242;
+					--mod3-secondary-channel:   #011910;
 					--mod3-primary-channel:     #393;
-					--mod3-secondary-note:      #242;
+					--mod3-secondary-note:      #011910;
 					--mod3-primary-note:	    #393;
-					--mod4-secondary-channel:   #242;
+					--mod4-secondary-channel:   #011910;
 					--mod4-primary-channel:     #393;
-					--mod4-secondary-note:      #242;
+					--mod4-secondary-note:      #011910;
 					--mod4-primary-note:        #393;
 					--mod-label-primary:        #999;
 					--mod-label-secondary-text: #333;
 					--mod-label-primary-text:  #222;
 					--disabled-note-primary:    #242;
-					--disabled-note-secondary:  #121;	
+					--disabled-note-secondary:  #121;
+					font-family: 'VT323', Courier;
+					
 				}
+				#beepboxEditorContainer::after {
+    content: "";
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.5) 50%);
+    left: 0;
+    top: 0;
+    background-size: 100% 2px;
+    touch-action: none;
+    pointer-events: none;
+    z-index: 100;
+}
 			`,
 			 "ultrabox rainbow": `
 			:root {
@@ -6955,494 +7172,7 @@ var beepbox = (function (exports) {
 				.beepboxEditor{
 	transform: rotate(0.5turn);
 }
-			`,
-			  "ultrabox squashed beepbox": `
-			:root {
-				
-				--page-margin: black;
-				--editor-background: black;
-				--hover-preview: white;
-				--playhead: white;
-				--primary-text: white;
-				--secondary-text: #999;
-				--inverted-text: black;
-				--text-selection: rgba(119,68,255,0.99);
-				--box-selection-fill: rgba(255,255,255,0.2);
-				--loop-accent: #74f;
-				--link-accent: #98f;
-				--ui-widget-background: #444;
-				--ui-widget-focus: #777;
-				--pitch-background: #444;
-				--tonic: #864;
-				--fifth-note: #468;
-				--white-piano-key: #bbb;
-				--black-piano-key: #444;
-				--white-piano-key-text: #131200;
-				--black-piano-key-text: #fff;
-					--use-color-formula: false;
-					--track-editor-bg-pitch: #444;
-					--track-editor-bg-pitch-dim: #333;
-					--track-editor-bg-noise: #444;
-					--track-editor-bg-noise-dim: #333;
-					--track-editor-bg-mod: #234;
-					--track-editor-bg-mod-dim: #123;
-					--multiplicative-mod-slider: #456;
-					--overwriting-mod-slider: #654;
-					--indicator-primary: #74f;
-					--indicator-secondary: #444;
-					--select2-opt-group: #585858;
-					--input-box-outline: #333;
-					--mute-button-normal: #ffa033;
-					--mute-button-mod: #9a6bff;
-				--pitch1-secondary-channel: #0099A1;
-				--pitch1-primary-channel:   #25F3FF;
-				--pitch1-secondary-note:    #00BDC7;
-				--pitch1-primary-note:      #92F9FF;
-				--pitch2-secondary-channel: #A1A100;
-				--pitch2-primary-channel:   #FFFF25;
-				--pitch2-secondary-note:    #C7C700;
-				--pitch2-primary-note:      #FFFF92;
-				--pitch3-secondary-channel: #C75000;
-				--pitch3-primary-channel:   #FF9752;
-				--pitch3-secondary-note:    #FF771C;
-				--pitch3-primary-note:      #FFCDAB;
-				--pitch4-secondary-channel: #00A100;
-				--pitch4-primary-channel:   #50FF50;
-				--pitch4-secondary-note:    #00C700;
-				--pitch4-primary-note:      #A0FFA0;
-				--pitch5-secondary-channel: #D020D0;
-				--pitch5-primary-channel:   #FF90FF;
-				--pitch5-secondary-note:    #E040E0;
-				--pitch5-primary-note:      #FFC0FF;
-				--pitch6-secondary-channel: #7777B0;
-				--pitch6-primary-channel:   #A0A0FF;
-				--pitch6-secondary-note:    #8888D0;
-				--pitch6-primary-note:      #D0D0FF;
-				--pitch7-secondary-channel: #8AA100;
-				--pitch7-primary-channel:   #DEFF25;
-				--pitch7-secondary-note:    #AAC700;
-				--pitch7-primary-note:      #E6FF92;
-				--pitch8-secondary-channel: #DF0019;
-				--pitch8-primary-channel:   #FF98A4;
-				--pitch8-secondary-note:    #FF4E63;
-				--pitch8-primary-note:      #FFB2BB;
-				--pitch9-secondary-channel: #00A170;
-				--pitch9-primary-channel:   #50FFC9;
-				--pitch9-secondary-note:    #00C78A;
-				--pitch9-primary-note:      #83FFD9;
-				--pitch10-secondary-channel:#A11FFF;
-				--pitch10-primary-channel:  #CE8BFF;
-				--pitch10-secondary-note:   #B757FF;
-				--pitch10-primary-note:     #DFACFF;
-				--noise1-secondary-channel: #6F6F6F;
-				--noise1-primary-channel:   #AAAAAA;
-				--noise1-secondary-note:    #A7A7A7;
-				--noise1-primary-note:      #E0E0E0;
-				--noise2-secondary-channel: #996633;
-				--noise2-primary-channel:   #DDAA77;
-				--noise2-secondary-note:    #CC9966;
-				--noise2-primary-note:      #F0D0BB;
-				--noise3-secondary-channel: #4A6D8F;
-				--noise3-primary-channel:   #77AADD;
-				--noise3-secondary-note:    #6F9FCF;
-				--noise3-primary-note:      #BBD7FF;
-				--noise4-secondary-channel: #7A4F9A;
-				--noise4-primary-channel:   #AF82D2;
-				--noise4-secondary-note:    #9E71C1;
-				--noise4-primary-note:      #D4C1EA;
-				--noise5-secondary-channel: #607837;
-				--noise5-primary-channel:   #A2BB77;
-				--noise5-secondary-note:    #91AA66;
-				--noise5-primary-note:      #C5E2B2;
-          --mod1-secondary-channel:   #339955;
-					--mod1-primary-channel:     #77fc55;
-					--mod1-secondary-note:      #77ff8a;
-					--mod1-primary-note:        #cdffee;
-					--mod2-secondary-channel:   #993355;
-					--mod2-primary-channel:     #f04960;
-					--mod2-secondary-note:      #f057a0;
-					--mod2-primary-note:        #ffb8de;
-					--mod3-secondary-channel:   #553399;
-					--mod3-primary-channel:     #8855fc;
-					--mod3-secondary-note:      #aa64ff;
-					--mod3-primary-note:	    #f8ddff;
-					--mod4-secondary-channel:   #a86436;
-					--mod4-primary-channel:     #c8a825;
-					--mod4-secondary-note:      #e8ba46;
-					--mod4-primary-note:        #fff6d3;
-					--mod-label-primary:        #999;
-					--mod-label-secondary-text: #333;
-					--mod-label-primary-text:   black;
-					--disabled-note-primary:    #999;
-					--disabled-note-secondary:  #666;
-				}
-				.beepboxEditor{
-transform: scale(2, 0.5);
-}
-			`,
-			  "ultrabox skewed beepbox": `
-			:root {
-				--page-margin: black;
-				--editor-background: black;
-				--hover-preview: white;
-				--playhead: white;
-				--primary-text: white;
-				--secondary-text: #999;
-				--inverted-text: black;
-				--text-selection: rgba(119,68,255,0.99);
-				--box-selection-fill: rgba(255,255,255,0.2);
-				--loop-accent: #74f;
-				--link-accent: #98f;
-				--ui-widget-background: #444;
-				--ui-widget-focus: #777;
-				--pitch-background: #444;
-				--tonic: #864;
-				--fifth-note: #468;
-				--white-piano-key: #bbb;
-				--black-piano-key: #444;
-				--white-piano-key-text: #131200;
-				--black-piano-key-text: #fff;
-					--use-color-formula: false;
-					--track-editor-bg-pitch: #444;
-					--track-editor-bg-pitch-dim: #333;
-					--track-editor-bg-noise: #444;
-					--track-editor-bg-noise-dim: #333;
-					--track-editor-bg-mod: #234;
-					--track-editor-bg-mod-dim: #123;
-					--multiplicative-mod-slider: #456;
-					--overwriting-mod-slider: #654;
-					--indicator-primary: #74f;
-					--indicator-secondary: #444;
-					--select2-opt-group: #585858;
-					--input-box-outline: #333;
-					--mute-button-normal: #ffa033;
-					--mute-button-mod: #9a6bff;
-				--pitch1-secondary-channel: #0099A1;
-				--pitch1-primary-channel:   #25F3FF;
-				--pitch1-secondary-note:    #00BDC7;
-				--pitch1-primary-note:      #92F9FF;
-				--pitch2-secondary-channel: #A1A100;
-				--pitch2-primary-channel:   #FFFF25;
-				--pitch2-secondary-note:    #C7C700;
-				--pitch2-primary-note:      #FFFF92;
-				--pitch3-secondary-channel: #C75000;
-				--pitch3-primary-channel:   #FF9752;
-				--pitch3-secondary-note:    #FF771C;
-				--pitch3-primary-note:      #FFCDAB;
-				--pitch4-secondary-channel: #00A100;
-				--pitch4-primary-channel:   #50FF50;
-				--pitch4-secondary-note:    #00C700;
-				--pitch4-primary-note:      #A0FFA0;
-				--pitch5-secondary-channel: #D020D0;
-				--pitch5-primary-channel:   #FF90FF;
-				--pitch5-secondary-note:    #E040E0;
-				--pitch5-primary-note:      #FFC0FF;
-				--pitch6-secondary-channel: #7777B0;
-				--pitch6-primary-channel:   #A0A0FF;
-				--pitch6-secondary-note:    #8888D0;
-				--pitch6-primary-note:      #D0D0FF;
-				--pitch7-secondary-channel: #8AA100;
-				--pitch7-primary-channel:   #DEFF25;
-				--pitch7-secondary-note:    #AAC700;
-				--pitch7-primary-note:      #E6FF92;
-				--pitch8-secondary-channel: #DF0019;
-				--pitch8-primary-channel:   #FF98A4;
-				--pitch8-secondary-note:    #FF4E63;
-				--pitch8-primary-note:      #FFB2BB;
-				--pitch9-secondary-channel: #00A170;
-				--pitch9-primary-channel:   #50FFC9;
-				--pitch9-secondary-note:    #00C78A;
-				--pitch9-primary-note:      #83FFD9;
-				--pitch10-secondary-channel:#A11FFF;
-				--pitch10-primary-channel:  #CE8BFF;
-				--pitch10-secondary-note:   #B757FF;
-				--pitch10-primary-note:     #DFACFF;
-				--noise1-secondary-channel: #6F6F6F;
-				--noise1-primary-channel:   #AAAAAA;
-				--noise1-secondary-note:    #A7A7A7;
-				--noise1-primary-note:      #E0E0E0;
-				--noise2-secondary-channel: #996633;
-				--noise2-primary-channel:   #DDAA77;
-				--noise2-secondary-note:    #CC9966;
-				--noise2-primary-note:      #F0D0BB;
-				--noise3-secondary-channel: #4A6D8F;
-				--noise3-primary-channel:   #77AADD;
-				--noise3-secondary-note:    #6F9FCF;
-				--noise3-primary-note:      #BBD7FF;
-				--noise4-secondary-channel: #7A4F9A;
-				--noise4-primary-channel:   #AF82D2;
-				--noise4-secondary-note:    #9E71C1;
-				--noise4-primary-note:      #D4C1EA;
-				--noise5-secondary-channel: #607837;
-				--noise5-primary-channel:   #A2BB77;
-				--noise5-secondary-note:    #91AA66;
-				--noise5-primary-note:      #C5E2B2;
-          --mod1-secondary-channel:   #339955;
-					--mod1-primary-channel:     #77fc55;
-					--mod1-secondary-note:      #77ff8a;
-					--mod1-primary-note:        #cdffee;
-					--mod2-secondary-channel:   #993355;
-					--mod2-primary-channel:     #f04960;
-					--mod2-secondary-note:      #f057a0;
-					--mod2-primary-note:        #ffb8de;
-					--mod3-secondary-channel:   #553399;
-					--mod3-primary-channel:     #8855fc;
-					--mod3-secondary-note:      #aa64ff;
-					--mod3-primary-note:	    #f8ddff;
-					--mod4-secondary-channel:   #a86436;
-					--mod4-primary-channel:     #c8a825;
-					--mod4-secondary-note:      #e8ba46;
-					--mod4-primary-note:        #fff6d3;
-					--mod-label-primary:        #999;
-					--mod-label-secondary-text: #333;
-					--mod-label-primary-text:   black;
-					--disabled-note-primary:    #999;
-					--disabled-note-secondary:  #666;
-				}
-				.beepboxEditor{
-	transform: skewY(0.2rad);
-}
-			`,
-			 "ultrabox pink, purple, and blue": `
-			:root {
-			--page-margin: linear-gradient(90deg, rgba(214,2,112) 0%, rgba(155, 79, 150) 25%, rgba(0, 56, 168) 100%);
---editor-background: transparent;
---hover-preview: rgb(0, 56, 168);
---playhead: rgb(0, 56, 168);
---primary-text: rgb(214, 2, 112);
---secondary-text: rgb(155, 79, 150);
---inverted-text: black;
---text-selection: rgb(155, 79, 150);
---box-selection-fill: rgba(255,255,255,0.2);
---loop-accent: rgb(0, 56, 168);
---link-accent: rgb(0, 56, 168);
---ui-widget-background: linear-gradient(90deg, rgba(214,2,112) 0%, rgba(155, 79, 150) 50%, rgba(0, 56, 168) 100%);
---ui-widget-focus: linear-gradient(90deg, rgba(214,2,112) 0%, rgba(155, 79, 150) 50%, rgba(0, 56, 168) 100%);
---pitch-background: #444;
---tonic: indigo;
---fifth-note: #468;
---white-piano-key: linear-gradient(90deg, rgba(214,2,112) 0%, rgba(155, 79, 150) 50%, rgba(0, 56, 168) 100%);
---black-piano-key: linear-gradient(90deg, rgba(214,2,112) 0%, rgba(155, 79, 150) 50%, rgba(0, 56, 168) 100%);
---white-piano-key-text: rgb(214, 2, 112);
---black-piano-key-text: rgb(0, 56, 168);
---use-color-formula: false;
---track-editor-bg-pitch: #444;
---track-editor-bg-pitch-dim: #333;
---track-editor-bg-noise: #444;
---track-editor-bg-noise-dim: #333;
---track-editor-bg-mod: #234;
---track-editor-bg-mod-dim: #123;
---multiplicative-mod-slider: #456;
---overwriting-mod-slider: #654;
---indicator-primary: #74f;
---indicator-secondary: #444;
---select2-opt-group: #585858;
---input-box-outline: #333;
---mute-button-normal: #ffa033;
---mute-button-mod: #9a6bff;
---pitch1-secondary-channel: #0099A1;
---pitch1-primary-channel: #25F3FF;
---pitch1-secondary-note: #00BDC7;
---pitch1-primary-note: #92F9FF;
---pitch2-secondary-channel: #A1A100;
---pitch2-primary-channel: #FFFF25;
---pitch2-secondary-note: #C7C700;
---pitch2-primary-note: #FFFF92;
---pitch3-secondary-channel: #C75000;
---pitch3-primary-channel: #FF9752;
---pitch3-secondary-note: #FF771C;
---pitch3-primary-note: #FFCDAB;
---pitch4-secondary-channel: #00A100;
---pitch4-primary-channel: #50FF50;
---pitch4-secondary-note: #00C700;
---pitch4-primary-note: #A0FFA0;
---pitch5-secondary-channel: #D020D0;
---pitch5-primary-channel: #FF90FF;
---pitch5-secondary-note: #E040E0;
---pitch5-primary-note: #FFC0FF;
---pitch6-secondary-channel: #7777B0;
---pitch6-primary-channel: #A0A0FF;
---pitch6-secondary-note: #8888D0;
---pitch6-primary-note: #D0D0FF;
---pitch7-secondary-channel: #8AA100;
---pitch7-primary-channel: #DEFF25;
---pitch7-secondary-note: #AAC700;
---pitch7-primary-note: #E6FF92;
---pitch8-secondary-channel: #DF0019;
---pitch8-primary-channel: #FF98A4;
---pitch8-secondary-note: #FF4E63;
---pitch8-primary-note: #FFB2BB;
---pitch9-secondary-channel: #00A170;
---pitch9-primary-channel: #50FFC9;
---pitch9-secondary-note: #00C78A;
---pitch9-primary-note: #83FFD9;
---pitch10-secondary-channel: #A11FFF;
---pitch10-primary-channel: #CE8BFF;
---pitch10-secondary-note: #B757FF;
---pitch10-primary-note: #DFACFF;
---noise1-secondary-channel: #6F6F6F;
---noise1-primary-channel: #AAAAAA;
---noise1-secondary-note: #A7A7A7;
---noise1-primary-note: #E0E0E0;
---noise2-secondary-channel: #996633;
---noise2-primary-channel: #DDAA77;
---noise2-secondary-note: #CC9966;
---noise2-primary-note: #F0D0BB;
---noise3-secondary-channel: #4A6D8F;
---noise3-primary-channel: #77AADD;
---noise3-secondary-note: #6F9FCF;
---noise3-primary-note: #BBD7FF;
---noise4-secondary-channel: #7A4F9A;
---noise4-primary-channel: #AF82D2;
---noise4-secondary-note: #9E71C1;
---noise4-primary-note: #D4C1EA;
---noise5-secondary-channel: #607837;
---noise5-primary-channel: #A2BB77;
---noise5-secondary-note: #91AA66;
---noise5-primary-note: #C5E2B2;
---mod1-secondary-channel: #339955;
---mod1-primary-channel: #77fc55;
---mod1-secondary-note: #77ff8a;
---mod1-primary-note: #cdffee;
---mod2-secondary-channel: #993355;
---mod2-primary-channel: #f04960;
---mod2-secondary-note: #f057a0;
---mod2-primary-note: #ffb8de;
---mod3-secondary-channel: #553399;
---mod3-primary-channel: #8855fc;
---mod3-secondary-note: #aa64ff;
---mod3-primary-note: #f8ddff;
---mod4-secondary-channel: #a86436;
---mod4-primary-channel: #c8a825;
---mod4-secondary-note: #e8ba46;
---mod4-primary-note: #fff6d3;
---mod-label-primary: #999;
---mod-label-secondary-text: #333;
---mod-label-primary-text: black;
---disabled-note-primary: #999;
---disabled-note-secondary: #666;
-				}
-			`,
-			 "ultrabox blue, pink, and white": `
-			:root {
-				--page-margin: black;
---editor-background: black;
---hover-preview: white;
---playhead: white;
---primary-text: white;
---secondary-text: #999;
---inverted-text: black;
---text-selection: rgba(119,68,255,0.99);
---box-selection-fill: rgba(255,255,255,0.2);
---loop-accent: rgb(245, 169, 184);
---link-accent: rgb(91, 206, 250);
---ui-widget-background: rgb(175, 99, 114);
---ui-widget-focus: rgb(21, 136, 180);
-				--pitch-background: #444;
-				--tonic: rgb(175, 99, 114);
-				--fifth-note: rgb(21, 136, 180);
---white-piano-key: #bbb;
---black-piano-key: #444;
---white-piano-key-text: #131200;
---black-piano-key-text: #fff;
---use-color-formula: false;
---track-editor-bg-pitch: #444;
---track-editor-bg-pitch-dim: #333;
---track-editor-bg-noise: #444;
---track-editor-bg-noise-dim: #333;
---track-editor-bg-mod: #234;
---track-editor-bg-mod-dim: #123;
---multiplicative-mod-slider: #456;
---overwriting-mod-slider: #654;
---indicator-primary: rgb(91, 206, 250);
---indicator-secondary: rgb(21, 136, 180);
---select2-opt-group: #585858;
---input-box-outline: #333;
---mute-button-normal: #ffa033;
---mute-button-mod: #9a6bff;
---pitch1-secondary-channel: rgb(21, 136, 180);
---pitch1-primary-channel: rgb(91, 206, 250);
---pitch1-secondary-note: rgb(21, 136, 180);
---pitch1-primary-note: rgb(91, 206, 250);
---pitch2-secondary-channel: rgb(175, 99, 114);
---pitch2-primary-channel: rgb(245, 169, 184);
---pitch2-secondary-note: rgb(175, 99, 114);
---pitch2-primary-note: rgb(245, 169, 184);
---pitch3-secondary-channel: rgb(185,185,185);
---pitch3-primary-channel: rgb(255,255,255);
---pitch3-secondary-note: rgb(185,185,185);
---pitch3-primary-note: rgb(255,255,255);
---pitch4-secondary-channel: rgb(175, 99, 114);
---pitch4-primary-channel: rgb(245, 169, 184);
---pitch4-secondary-note: rgb(175, 99, 114);
---pitch4-primary-note: rgb(245, 169, 184);
---pitch5-secondary-channel: rgb(21, 136, 180);
---pitch5-primary-channel: rgb(91, 206, 250);
---pitch5-secondary-note: rgb(21, 136, 180);
---pitch5-primary-note: rgb(91, 206, 250);
---pitch6-secondary-channel: rgb(175, 99, 114);
---pitch6-primary-channel: rgb(245, 169, 184);
---pitch6-secondary-note: rgb(175, 99, 114);
---pitch6-primary-note: rgb(245, 169, 184);
---pitch7-secondary-channel: rgb(185,185,185);
---pitch7-primary-channel: rgb(255,255,255);
---pitch7-secondary-note: rgb(185,185,185);
---pitch7-primary-note: rgb(255,255,255);
---pitch8-secondary-channel: rgb(175, 99, 114);
---pitch8-primary-channel: rgb(245, 169, 184);
---pitch8-secondary-note: rgb(175, 99, 114);
---pitch8-primary-note: rgb(245, 169, 184);
---pitch9-secondary-channel: rgb(21, 136, 180);
---pitch9-primary-channel: rgb(91, 206, 250);
---pitch9-secondary-note: rgb(21, 136, 180);
---pitch9-primary-note: rgb(91, 206, 250);
---pitch10-secondary-channel: rgb(175, 99, 114);
---pitch10-primary-channel: rgb(245, 169, 184);
---pitch10-secondary-note: rgb(175, 99, 114);
---pitch10-primary-note: rgb(245, 169, 184);
---noise1-secondary-channel: rgb(185,185,185;
---noise1-primary-channel: rgb(255,255,255);
---noise1-secondary-note: rgb(185,185,185);
---noise1-primary-note: rgb(255,255,255);
---noise2-secondary-channel: rgb(185,185,185;
---noise2-primary-channel: rgb(255,255,255);
---noise2-secondary-note: rgb(185,185,185);
---noise2-primary-note: rgb(255,255,255);
---noise3-secondary-channel: rgb(185,185,185;
---noise3-primary-channel: rgb(255,255,255);
---noise3-secondary-note: rgb(185,185,185);
---noise3-primary-note: rgb(255,255,255);
---noise4-secondary-channel: rgb(185,185,185;
---noise4-primary-channel: rgb(255,255,255);
---noise4-secondary-note: rgb(185,185,185);
---noise4-primary-note: rgb(255,255,255);
---noise5-secondary-channel: rgb(185,185,185;
---noise5-primary-channel: rgb(255,255,255);
---noise5-secondary-note: rgb(185,185,185);
---noise5-primary-note: rgb(255,255,255);
---mod1-secondary-channel: rgb(21, 136, 180);
---mod1-primary-channel: rgb(91, 206, 250);
---mod1-secondary-note: rgb(21, 136, 180);
---mod1-primary-note: rgb(91, 206, 250);
---mod2-secondary-channel: rgb(175, 99, 114);
---mod2-primary-channel: rgb(245, 169, 184);
---mod2-secondary-note: rgb(175, 99, 114);
---mod2-primary-note: rgb(245, 169, 184);
---mod3-secondary-channel: rgb(185,185,185);
---mod3-primary-channel: rgb(255,255,255);
---mod3-secondary-note: rgb(185,185,185);
---mod3-primary-note: rgb(255,255,255);
---mod4-secondary-channel: rgb(175, 99, 114);
---mod4-primary-channel: rgb(245, 169, 184);
---mod4-secondary-note: rgb(175, 99, 114);
---mod4-primary-note: rgb(245, 169, 184);
---mod-label-primary: #999;
---mod-label-secondary-text: #333;
---mod-label-primary-text: black;
---disabled-note-primary: #999;
---disabled-note-secondary: #666;
-				}
-			`,
+			`,	
 			 "slushie": `
 			:root {
 				--page-margin: #040814;
@@ -7671,120 +7401,6 @@ transform: scale(2, 0.5);
 				--mod-primary-note-lum: 85;
 				--mod-primary-note-lum-scale: 0;
 			}`}`,
-			 "69420": `
-			:root {
-				--page-margin: #000420;
-    --editor-background: #000420;
-    --hover-preview: white;
-    --playhead: rgba(255, 255, 255, 0.9);
-    --primary-text: white;
-    --secondary-text: #84859a;
-    --inverted-text: black;
-    --text-selection: rgba(119,68,255,0.99);
-    --box-selection-fill: #042069;
-    --loop-accent: #74f;
-    --link-accent: #98f;
-    --ui-widget-background: #042069;
-    --ui-widget-focus: #042069;
-    --pitch-background: #042069;
-    --tonic: #073eca;
-    --fifth-note: #121d3b;
-    --white-piano-key: #cdcdcd;
-    --black-piano-key: #232323;
-    --use-color-formula: true;
-    --track-editor-bg-pitch: #00669969;
-    --track-editor-bg-pitch-dim: #07330069;
-    --track-editor-bg-noise: #69696969;
-    --track-editor-bg-noise-dim: #36363669;
-    --track-editor-bg-mod: #00669969;
-    --track-editor-bg-mod-dim: #07330069;
-    --multiplicative-mod-slider: #606c9f;
-    --overwriting-mod-slider: #6850b5;
-    --indicator-primary: #690420;
-    --indicator-secondary: #006969;
-    --select2-opt-group: #062f99;
-    --input-box-outline: #042069;
-    --mute-button-normal: #690420;
-    --mute-button-mod: #006969;
-    --mod-label-primary: #282840;
-    --mod-label-secondary-text: #006969;
-    --mod-label-primary-text: white;
-    --pitch-secondary-channel-hue: 69;
-    --pitch-secondary-channel-hue-scale: 4.20;
-    --pitch-secondary-channel-sat: 0.69;
-    --pitch-secondary-channel-sat-scale: 0;
-    --pitch-secondary-channel-lum: 69;
-    --pitch-secondary-channel-lum-scale: 0.05;
-    --pitch-primary-channel-hue: 69;
-    --pitch-primary-channel-hue-scale: 4.20;
-    --pitch-primary-channel-sat: 69;
-    --pitch-primary-channel-sat-scale: 0;
-    --pitch-primary-channel-lum: 69;
-    --pitch-primary-channel-lum-scale: 0.05;
-    --pitch-secondary-note-hue: 69;
-    --pitch-secondary-note-hue-scale: 4.20;
-    --pitch-secondary-note-sat: 0.69;
-    --pitch-secondary-note-sat-scale: 0;
-    --pitch-secondary-note-lum: 69;
-    --pitch-secondary-note-lum-scale: 0.05;
-    --pitch-primary-note-hue: 69;
-    --pitch-primary-note-hue-scale: 4.20;
-    --pitch-primary-note-sat: 69;
-    --pitch-primary-note-sat-scale: 0;
-    --pitch-primary-note-lum: 69;
-    --pitch-primary-note-lum-scale: 0.025;
-    --noise-secondary-channel-hue: 69;
-    --noise-secondary-channel-hue-scale: 4.20;
-    --noise-secondary-channel-sat: 0.69;
-    --noise-secondary-channel-sat-scale: 0;
-    --noise-secondary-channel-lum: 69;
-    --noise-secondary-channel-lum-scale: 0;
-    --noise-primary-channel-hue: 69;
-    --noise-primary-channel-hue-scale: 4.20;
-    --noise-primary-channel-sat: 69;
-    --noise-primary-channel-sat-scale: 0;
-    --noise-primary-channel-lum: 69;
-    --noise-primary-channel-lum-scale: 0;
-    --noise-secondary-note-hue: 69;
-    --noise-secondary-note-hue-scale: 4.20;
-    --noise-secondary-note-sat: 0.69;
-    --noise-secondary-note-sat-scale: 0;
-    --noise-secondary-note-lum: 69;
-    --noise-secondary-note-lum-scale: 0;
-    --noise-primary-note-hue: 69;
-    --noise-primary-note-hue-scale: 4.20;
-    --noise-primary-note-sat: 69;
-    --noise-primary-note-sat-scale: 0;
-    --noise-primary-note-lum: 69;
-    --noise-primary-note-lum-scale: 0;
-    --mod-secondary-channel-hue: 69;
-    --mod-secondary-channel-hue-scale: 4.20;
-    --mod-secondary-channel-sat: 0.69;
-    --mod-secondary-channel-sat-scale: 0;
-    --mod-secondary-channel-lum: 69;
-    --mod-secondary-channel-lum-scale: 0;
-    --mod-primary-channel-hue: 69;
-    --mod-primary-channel-hue-scale: 4.20;
-    --mod-primary-channel-sat: 69;
-    --mod-primary-channel-sat-scale: 0;
-    --mod-primary-channel-lum: 69;
-    --mod-primary-channel-lum-scale: 0;
-    --mod-secondary-note-hue: 69;
-    --mod-secondary-note-hue-scale: 4.20;
-    --mod-secondary-note-sat: 0.69;
-    --mod-secondary-note-sat-scale: 0;
-    --mod-secondary-note-lum: 69;
-    --mod-secondary-note-lum-scale: 0;
-    --mod-primary-note-hue: 69;
-    --mod-primary-note-hue-scale: 4.20;
-    --mod-primary-note-sat: 69;
-    --mod-primary-note-sat-scale: 0;
-    --mod-primary-note-lum: 69;
-    --mod-primary-note-lum-scale: 0;
-    --disabled-note-primary: #91879f;
-    --disabled-note-secondary: #6a677a;
-				}
-			`,
 				"foxbox": `
 			:root {
 				--page-margin: #ADD8E6;
@@ -8418,7 +8034,7 @@ transform: scale(2, 0.5);
             return (_a = EditorConfig.presetCategories[0].presets.dictionary) === null || _a === void 0 ? void 0 : _a[TypePresets === null || TypePresets === void 0 ? void 0 : TypePresets[instrument]];
         }
     }
-    EditorConfig.version = "1.2.1";
+    EditorConfig.version = "2.0.0";
     EditorConfig.versionDisplayName = "UltraBox " + EditorConfig.version + " Player";
     EditorConfig.releaseNotesURL = "https://jummbus.bitbucket.io/patch_notes/" + EditorConfig.version + ".html";
     EditorConfig.isOnMac = /^Mac/i.test(navigator.platform) || /Mac OS X/i.test(navigator.userAgent) || /^(iPhone|iPad|iPod)/i.test(navigator.platform) || /(iPhone|iPad|iPod)/i.test(navigator.userAgent);
@@ -8440,82 +8056,6 @@ transform: scale(2, 0.5);
                 { name: TypePresets[10], customType: 10 },
             ])
         },
-     { name: "Sampled Instruments", presets: toNameMap([
-                { name: "Earthbound O. Guitar", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox overdrive", "unison": "none", "envelopes": [] } },
-				{ name: "Earthbound Piano", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox piano1", "unison": "none", "envelopes": [] } },
-				{ name: "Zunpet", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox trumpet", "unison": "none", "envelopes": [] } },
-				{ name: "Saxophone", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox saxophone", "unison": "none", "envelopes": [] } },
-				{ name: "Orchestra Hit", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox orchestrahit", "unison": "none", "envelopes": [] } },
-			{ name: "Detatched Violin", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox detatched violin", "unison": "none", "envelopes": [] } },
-				{ name: "Synth", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox synth", "unison": "none", "envelopes": [] } },
-				{ name: "Choir Lead", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox choir", "unison": "none", "envelopes": [] } },
-				{ name: "Overdrive Guitar", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox overdriveguitar", "unison": "none", "envelopes": [] } },
-				{ name: "Flute", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox flute", "unison": "none", "envelopes": [] } },
-        { name: "Legato Violin", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox legato violin", "unison": "none", "envelopes": [] } },
-        { name: "Tremolo Violin", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox tremolo violin", "unison": "none", "envelopes": [] } },
-        { name: "Pizzicato Violin", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox pizzicato violin", "unison": "none", "envelopes": [] } },
-	{ name: "Tuba", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox tuba", "unison": "none", "envelopes": [] } },
-	{ name: "Piano", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox pianoC4", "unison": "none", "envelopes": [] } },
-	{ name: "Marimba", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox marimba", "unison": "none", "envelopes": [] } },
-	{ name: "Liver Pad", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox liver pad", "unison": "none", "envelopes": [] } },
-	{ name: "Sus.wav", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox susdotwav", "unison": "none", "envelopes": [] } },
-        { name: "Slap Bass", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta slap bass", "unison": "none", "envelopes": [] } },
-     { name: "Earthbound HD O. Guitar", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta HD EB overdrive guitar", "unison": "none", "envelopes": [] } },
-     { name: "Sunsoft Bass", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta sunsoft bass", "unison": "none", "envelopes": [] } },
-     { name: "Masculine Choir", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta masculine choir", "unison": "none", "envelopes": [] } },
-     { name: "Feminine Choir", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta feminine choir", "unison": "none", "envelopes": [] } },
-     { name: "Tololoche", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta tololoche", "unison": "none", "envelopes": [] } },
-     { name: "Harp", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta harp", "unison": "none", "envelopes": [] } },
-     { name: "Pan Flute", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta pan flute", "unison": "none", "envelopes": [] } },
-		{ name: "Krumhorn", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta krumhorn", "unison": "none", "envelopes": [] } },
-		{ name: "Timpani", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta timpani", "unison": "none", "envelopes": [] } },
-		{ name: "Wario Land 4 Brass", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta wario land 4 brass", "unison": "none", "envelopes": [] } },
-		{ name: "Wario Land 4 Rock Organ", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta wario land 4 rock organ", "unison": "none", "envelopes": [] } },
-		]) },
-		{ name: "Sampled Drums", presets: toNameMap([
-				{ name: "Retro Kick", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox kick", "unison": "none", "envelopes": [] } },
-				{ name: "Retro Snare", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox snare", "unison": "none", "envelopes": [] } },
-				{ name: "Sonic 1 Snare", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox sonic3snare", "unison": "none", "envelopes": [] } },
-        			{ name: "Standard Kick", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox standardkick", "unison": "none", "envelopes": [] } },
-				{ name: "Standard Snare", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox standardsnare", "unison": "none", "envelopes": [] } },
-				{ name: "Standard Closed Hi-hat", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox closedhihat", "unison": "none", "envelopes": [] } },
-				{ name: "Standard Foot Hi-hat", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox foothihat", "unison": "none", "envelopes": [] } },
-				{ name: "Standard Open Hi-hat", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox openhihat", "unison": "none", "envelopes": [] } },
-				{ name: "Standard Crash Cymbal", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox crashcymbal", "unison": "none", "envelopes": [] } },
-				{ name: "Looped Cymbal", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox loopingcymbal", "unison": "none", "envelopes": [] } },
-				{ name: "Amen Break", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox amen break", "unison": "none", "envelopes": [] } },
-      { name: "Kirby Kick", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta kirby kick", "unison": "none", "envelopes": [] } },
-		{ name: "Kirby Snare", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta kirby snare", "unison": "none", "envelopes": [] } },
-		{ name: "Kirby Bongo", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta kirby bongo", "unison": "none", "envelopes": [] } },
-		{ name: "Kirby Click", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta kirby click", "unison": "none", "envelopes": [] } },
-	{ name: "Sonor Kick", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta sonor kick", "unison": "none", "envelopes": [] } },
-	{ name: "Sonor Snare", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta sonor snare", "unison": "none", "envelopes": [] } },
-	{ name: "Sonor Left-hand Snare", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta sonor snare (left hand)", "unison": "none", "envelopes": [] } },
-	{ name: "Sonor Right-hand Snare", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta sonor snare (right hand)", "unison": "none", "envelopes": [] } },
-	{ name: "Sonor High Tom", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta sonor high tom", "unison": "none", "envelopes": [] } },
-	{ name: "Sonor Low Tom", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta sonor low tom", "unison": "none", "envelopes": [] } },
-	{ name: "Sonor Closed Hi-hat", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta sonor hihat (closed)", "unison": "none", "envelopes": [] } },
-	{ name: "Sonor Half-closed Hi-hat", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta sonor hihat (half opened)", "unison": "none", "envelopes": [] } },
-	{ name: "Sonor Open Hi-hat", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta sonor hihat (open)", "unison": "none", "envelopes": [] } },
-	{ name: "Sonor Open Hi-hat Tip", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta sonor hihat (open tip)", "unison": "none", "envelopes": [] } },
-	{ name: "Sonor Pedal Hi-hat", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta sonor hihat (pedal)", "unison": "none", "envelopes": [] } },
-	{ name: "Sonor Crash", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta sonor crash", "unison": "none", "envelopes": [] } },
-	{ name: "Sonor Crash Tip", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta sonor crash (tip)", "unison": "none", "envelopes": [] } },
-	{ name: "Sonor Ride", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta sonor ride", "unison": "none", "envelopes": [] } },
-	]) },
-		{ name: "Sampled Sound Effects", presets: toNameMap([
-				{ name: "Earthbound WOW", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox WOW", "unison": "none", "envelopes": [] } },
-				{ name: "Sonic 3 COME ON", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox come on", "unison": "none", "envelopes": [] } },
-				{ name: "Tim Allen Grunt", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox tim allen grunt", "unison": "none", "envelopes": [] } },
-				{ name: "Wackybox TTS", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox wackyboxtts", "unison": "none", "envelopes": [] } },
-        	{ name: "Peppersteak 1", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox peppersteak_1", "unison": "none", "envelopes": [] } },
-      	{ name: "Peppersteak 2", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox peppersteak_2", "unison": "none", "envelopes": [] } },
-      { name: "Vinyl Noise", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbox vinyl_noise", "unison": "none", "envelopes": [] } },
-	 { name: "Crowd Hey", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta crowd hey", "unison": "none", "envelopes": [] } },
-		{ name: "Wario Land 4 DAOW", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta wario land 4 DAOW", "unison": "none", "envelopes": [] } },
-		{ name: "Wario Land 4 Hour Chime", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta wario land 4 hour chime", "unison": "none", "envelopes": [] } },
-		{ name: "Wario Land 4 Tick", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": [], "transition": "normal", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "paandorasbeta wario land 4 tick", "unison": "none", "envelopes": [] } },
-	]) },
         {
             name: "Retro Presets",
             presets: toNameMap([
@@ -8829,6 +8369,11 @@ transform: scale(2, 0.5);
      //          { name: "nerdbox unnamed 1", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": ["aliasing"], "transition": "interrupt", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "nerdbox unnamed 1", "unison": "none", "envelopes": [] } },
      //         { name: "nerdbox unnamed 2", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": ["aliasing"], "transition": "interrupt", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "nerdbox unnamed 2", "unison": "none", "envelopes": [] } },
       //       ]) }, 
+	  { name: "Blackbox Presets", presets: toNameMap([
+               	{ name: "deep key", midiProgram: 9, generalMidi: true, settings: { "type": "harmonics", "effects": "reverb", "transition": "hard fade", "chord": "harmony", "filterCutoffHz": 8000, "filterResonance": 32, "filterEnvelope": "twang 1", "interval": "shimmer", "vibrato": "light", "harmonics": [100, 86, 86, 86, 86, 71, 71, 57, 0, 57, 29, 43, 57, 57, 57, 43, 43, 0, 29, 43, 43, 43, 43, 43, 43, 29, 0, 30] } },
+				{ name: "ring ding", midiProgram: 78, generalMidi: true, settings: { "type": "FM", "effects": "reverb", "transition": "hard", "chord": "strum", "filterCutoffHz": 1500, "filterResonance": 16, "filterEnvelope": "twang 2", "vibrato": "none", "algorithm": "1 2 3 4", "feedbackType": "1⟲ 2⟲", "feedbackAmplitude": 0, "feedbackEnvelope": "steady", "operators": [{ "frequency": "1×", "amplitude": 9, "envelope": "custom" }, { "frequency": "4×", "amplitude": 8, "envelope": "custom" }, { "frequency": "12×", "amplitude": 9, "envelope": "custom" }, { "frequency": "22×", "amplitude": 4, "envelope": "twang 2" }] } },
+				//blackbox adds LITERALLY TWO presets. that's it.
+			  ]) },
 		//	  { name: "Zefbox Presets", presets: toNameMap([
        //         { name: "zefbox semi-square", settings: { "type": "custom chip", "transition": "hard", "effects": "none", "chord": "arpeggio", "filterCutoffHz": 4000, "filterResonance": 0, "filterEnvelope": "steady", "interval": "union", "vibrato": "none", "customChipWave": [24, 24, 24, 24, 24, 24, 24, 24, 8, 8, 8, 8, 8, 8, 8, -8, -8, -8, -8, -8, -8, -8, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -8, -8, -8, -8, -8, -8, -8, 8, 8, 8, 8, 8, 8, 8, 24, 24, 24, 24, 24, 24, 24] } },
        //         { name: "zefbox deep square", settings: { "type": "custom chip", "transition": "hard", "effects": "none", "chord": "arpeggio", "filterCutoffHz": 4000, "filterResonance": 0, "filterEnvelope": "steady", "interval": "union", "vibrato": "none", "customChipWave": [-10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11] } },
@@ -8904,11 +8449,12 @@ transform: scale(2, 0.5);
                 { name: "super saw 1", midiProgram: null, settings: { "type": "custom chip", "volume": 0, "eqFilter": [ { "type": "low-pass", "cutoffHz": 19027.31, "linearGain": 0.7071 } ], "eqFilterType": true, "eqSimpleCut": 10, "eqSimplePeak": 0, "eqSubFilters1": [], "effects": [ "panning", "transition type", "vibrato", "chorus", "reverb" ], "transition": "interrupt", "clicklessTransition": false, "vibrato": "delayed", "vibratoDepth": 0.3, "vibratoDelay": 18.5, "vibratoSpeed": 10, "vibratoType": 0, "pan": 0, "panDelay": 10, "chorus": 29, "reverb": 29, "fadeInSeconds": 0, "fadeOutTicks": -1, "wave": "square", "unison": "dissonant", "customChipWave": { "0": 22, "1": 22, "2": 16, "3": 6, "4": 0, "5": -3, "6": -8, "7": -10, "8": -13, "9": -16, "10": -19, "11": -19, "12": -20, "13": -22, "14": -22, "15": -24, "16": -24, "17": -24, "18": -24, "19": -24, "20": -24, "21": -24, "22": -24, "23": -24, "24": -24, "25": -24, "26": -24, "27": -24, "28": -24, "29": -24, "30": -24, "31": 24, "32": 24, "33": 16, "34": 9, "35": 6, "36": 4, "37": 2, "38": 0, "39": -1, "40": -3, "41": -4, "42": -4, "43": -6, "44": -6, "45": -6, "46": -6, "47": -5, "48": -5, "49": -4, "50": -2, "51": -2, "52": 1, "53": 4, "54": 6, "55": 8, "56": 10, "57": 12, "58": 14, "59": 16, "60": 18, "61": 19, "62": 22, "63": 24 }, "customChipWaveIntegral": { "0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0, "8": 0, "9": 0, "10": 0, "11": 0, "12": 0, "13": 0, "14": 0, "15": 0, "16": 0, "17": 0, "18": 0, "19": 0, "20": 0, "21": 0, "22": 0, "23": 0, "24": 0, "25": 0, "26": 0, "27": 0, "28": 0, "29": 0, "30": 0, "31": 0, "32": 0, "33": 0, "34": 0, "35": 0, "36": 0, "37": 0, "38": 0, "39": 0, "40": 0, "41": 0, "42": 0, "43": 0, "44": 0, "45": 0, "46": 0, "47": 0, "48": 0, "49": 0, "50": 0, "51": 0, "52": 0, "53": 0, "54": 0, "55": 0, "56": 0, "57": 0, "58": 0, "59": 0, "60": 0, "61": 0, "62": 0, "63": 0, "64": 0 }, "envelopes": [] } },
               { name: "super saw 2", midiProgram: null, settings: { "type": "FM6op", "volume": 0, "eqFilter": [ { "type": "low-pass", "cutoffHz": 19027.31, "linearGain": 1.4142 }, { "type": "high-pass", "cutoffHz": 148.65, "linearGain": 0.7071 } ], "eqFilterType": false, "eqSimpleCut": 10, "eqSimplePeak": 0, "eqSubFilters0": [ { "type": "low-pass", "cutoffHz": 19027.31, "linearGain": 1.4142 }, { "type": "high-pass", "cutoffHz": 148.65, "linearGain": 0.7071 } ], "effects": [ "panning", "transition type", "pitch shift", "note filter", "chorus", "reverb" ], "transition": "continue", "clicklessTransition": false, "pitchShiftSemitones": 0, "noteFilterType": false, "noteSimpleCut": 10, "noteSimplePeak": 0, "noteFilter": [], "noteSubFilters0": [], "noteSubFilters1": [ { "type": "low-pass", "cutoffHz": 4756.83, "linearGain": 1 } ], "pan": 0, "panDelay": 10, "chorus": 71, "reverb": 0, "fadeInSeconds": 0, "fadeOutTicks": -1, "algorithm": "1 2 3 4 5 6", "feedbackType": "1⟲", "feedbackAmplitude": 0, "operators": [ { "frequency": "1×", "amplitude": 13, "waveform": "sawtooth", "pulseWidth": 5 }, { "frequency": "~1×", "amplitude": 15, "waveform": "sawtooth", "pulseWidth": 5 }, { "frequency": "2×", "amplitude": 10, "waveform": "sawtooth", "pulseWidth": 5 }, { "frequency": "3×", "amplitude": 7, "waveform": "sawtooth", "pulseWidth": 5 }, { "frequency": "4×", "amplitude": 9, "waveform": "sawtooth", "pulseWidth": 5 }, { "frequency": "8×", "amplitude": 6, "waveform": "sawtooth", "pulseWidth": 5 } ], "envelopes": [] } },
 			 //THANKS ANSWEARING MACHINE
+			 { name: "obama why", midiProgram: null, settings:{ "type": "harmonics", "volume": 80, "eqFilter": [], "effects": [ "note filter", "panning", "reverb" ], "noteFilter": [ { "type": "low-pass", "cutoffHz": 840.9, "linearGain": 11.3137 } ], "pan": 0, "reverb": 0, "fadeInSeconds": 0.0263, "fadeOutTicks": -3, "harmonics": [ 100, 86, 29, 29, 14, 14, 0, 14, 14, 43, 71, 100, 100, 86, 71, 71, 57, 57, 43, 43, 43, 43, 43, 0, 0, 0, 0, 0 ], "unison": "octave", "envelopes": [ { "target": "noteFilterAllFreqs", "envelope": "note size" } ] } },
+			 //thanks to nobo ig? (this is from a beepcord inside joke)
 			 
 			  //{ name: "overdrive guitar custom chip", midiProgram: null, settings: { "type": "custom chip", "volume": 10, "eqFilter": [ { "type": "peak", "cutoffHz": 297.3, "linearGain": 0.3536 }, { "type": "peak", "cutoffHz": 500, "linearGain": 0.25 }, { "type": "peak", "cutoffHz": 1189.21, "linearGain": 0.25 }, { "type": "high-pass", "cutoffHz": 125, "linearGain": 2.8284 }, { "type": "high-pass", "cutoffHz": 62.5, "linearGain": 0.1768 }, { "type": "low-pass", "cutoffHz": 16000, "linearGain": 0.3536 }, { "type": "low-pass", "cutoffHz": 8000, "linearGain": 0.5 }, { "type": "peak", "cutoffHz": 2378.41, "linearGain": 0.25 } ], "eqFilterType": false, "eqSimpleCut": 10, "eqSimplePeak": 0, "eqSubFilters0": [ { "type": "peak", "cutoffHz": 297.3, "linearGain": 0.3536 }, { "type": "peak", "cutoffHz": 500, "linearGain": 0.25 }, { "type": "peak", "cutoffHz": 1189.21, "linearGain": 0.25 }, { "type": "high-pass", "cutoffHz": 125, "linearGain": 2.8284 }, { "type": "high-pass", "cutoffHz": 62.5, "linearGain": 0.1768 }, { "type": "low-pass", "cutoffHz": 16000, "linearGain": 0.3536 }, { "type": "low-pass", "cutoffHz": 8000, "linearGain": 0.5 }, { "type": "peak", "cutoffHz": 2378.41, "linearGain": 0.25 } ], "eqSubFilters1": [], "effects": [ "panning", "note filter" ], "noteFilterType": false, "noteSimpleCut": 10, "noteSimplePeak": 0, "noteFilter": [ { "type": "high-pass", "cutoffHz": 105.11, "linearGain": 0.5 }, { "type": "low-pass", "cutoffHz": 11313.71, "linearGain": 1 }, { "type": "peak", "cutoffHz": 420.45, "linearGain": 0.7071 }, { "type": "peak", "cutoffHz": 2000, "linearGain": 0.3536 }, { "type": "peak", "cutoffHz": 6727.17, "linearGain": 0.25 } ], "noteSubFilters0": [ { "type": "high-pass", "cutoffHz": 105.11, "linearGain": 0.5 }, { "type": "low-pass", "cutoffHz": 11313.71, "linearGain": 1 }, { "type": "peak", "cutoffHz": 420.45, "linearGain": 0.7071 }, { "type": "peak", "cutoffHz": 2000, "linearGain": 0.3536 }, { "type": "peak", "cutoffHz": 6727.17, "linearGain": 0.25 } ], "pan": 0, "panDelay": 10, "fadeInSeconds": 0, "fadeOutTicks": -3, "wave": "square", "unison": "none", "customChipWave": { "0": 0, "1": -2, "2": -6, "3": -6, "4": -8, "5": -11, "6": -12, "7": -14, "8": -16, "9": -17, "10": -19, "11": -16, "12": -16, "13": -15, "14": -12, "15": -10, "16": -7, "17": -5, "18": 2, "19": 5, "20": 11, "21": 2, "22": 2, "23": 2, "24": 8, "25": 8, "26": 8, "27": 8, "28": 8, "29": 8, "30": 8, "31": 8, "32": 8, "33": 8, "34": 8, "35": 9, "36": 10, "37": -12, "38": 0, "39": -3, "40": -4, "41": -10, "42": -15, "43": -4, "44": 2, "45": 4, "46": 2, "47": 2, "48": -4, "49": -6, "50": 22, "51": 24, "52": 24, "53": -5, "54": 24, "55": 24, "56": 24, "57": 24, "58": 24, "59": 24, "60": 22, "61": -2, "62": 0, "63": 1 }, "customChipWaveIntegral": { "0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0, "8": 0, "9": 0, "10": 0, "11": 0, "12": 0, "13": 0, "14": 0, "15": 0, "16": 0, "17": 0, "18": 0, "19": 0, "20": 0, "21": 0, "22": 0, "23": 0, "24": 0, "25": 0, "26": 0, "27": 0, "28": 0, "29": 0, "30": 0, "31": 0, "32": 0, "33": 0, "34": 0, "35": 0, "36": 0, "37": 0, "38": 0, "39": 0, "40": 0, "41": 0, "42": 0, "43": 0, "44": 0, "45": 0, "46": 0, "47": 0, "48": 0, "49": 0, "50": 0, "51": 0, "52": 0, "53": 0, "54": 0, "55": 0, "56": 0, "57": 0, "58": 0, "59": 0, "60": 0, "61": 0, "62": 0, "63": 0, "64": 0 }, "envelopes": [] } },  
 			// { name: "overdrive guitar wave", midiProgram: null, settings: { "type": "chip", "eqFilter": [], "effects": ["aliasing"], "transition": "interrupt", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "ultrabox shortened od guitar", "unison": "none", "envelopes": [] } },  
-			 //  { name: "dubsteb bwah", midiProgram: null, settings:  },
-              //  { name: "dubsteb bwah", midiProgram: null, settings:  },
+			
 				 //custom presets from this mod		 
 			]) },
     ]);
@@ -10274,6 +9820,14 @@ transform: scale(2, 0.5);
             this.type = 0;
             this.preset = 0;
             this.chipWave = 2;
+			 // advloop addition
+            this.isUsingAdvancedLoopControls = false;
+            this.chipWaveLoopStart = 0;
+            this.chipWaveLoopEnd = Config.rawRawChipWaves[this.chipWave].samples.length - 1;
+            this.chipWaveLoopMode = 0; // 0: loop, 1: ping-pong, 2: once
+            this.chipWavePlayBackwards = false;
+            this.chipWaveStartOffset = 0;
+            // advloop addition
             this.chipNoise = 1;
             this.eqFilter = new FilterSettings();
             this.eqFilterType = false;
@@ -10416,6 +9970,14 @@ transform: scale(2, 0.5);
                 case 0:
                     this.chipWave = 2;
                     this.chord = Config.chords.dictionary["arpeggio"].index;
+					 // advloop addition
+                    this.isUsingAdvancedLoopControls = false;
+                    this.chipWaveLoopStart = 0;
+                    this.chipWaveLoopEnd = Config.rawRawChipWaves[this.chipWave].samples.length - 1;
+                    this.chipWaveLoopMode = 0;
+                    this.chipWavePlayBackwards = false;
+                    this.chipWaveStartOffset = 0;
+                    // advloop addition
                     break;
                 case 8:
                     this.chipWave = 2;
@@ -10647,7 +10209,6 @@ transform: scale(2, 0.5);
                 if (this.vibrato == -1) {
                     this.vibrato = 5;
                 }
-				//bookmark
                 if (this.vibrato != 5) {
                     instrumentObject["vibrato"] = Config.vibratos[this.vibrato].name;
                 }
@@ -10726,6 +10287,14 @@ transform: scale(2, 0.5);
             else if (this.type == 0) {
                 instrumentObject["wave"] = Config.chipWaves[this.chipWave].name;
                 instrumentObject["unison"] = Config.unisons[this.unison].name;
+				// advloop addition
+                instrumentObject["isUsingAdvancedLoopControls"] = this.isUsingAdvancedLoopControls;
+                instrumentObject["chipWaveLoopStart"] = this.chipWaveLoopStart;
+                instrumentObject["chipWaveLoopEnd"] = this.chipWaveLoopEnd;
+                instrumentObject["chipWaveLoopMode"] = this.chipWaveLoopMode;
+                instrumentObject["chipWavePlayBackwards"] = this.chipWavePlayBackwards;
+                instrumentObject["chipWaveStartOffset"] = this.chipWaveStartOffset;
+                // advloop addition
             }
             else if (this.type == 6) {
                 instrumentObject["pulseWidth"] = this.pulseWidth;
@@ -11043,9 +10612,9 @@ transform: scale(2, 0.5);
                 const legacyWaveNames = { "triangle": 1, "square": 2, "pulse wide": 3, "pulse narrow": 4, "sawtooth": 5, "double saw": 6, "double pulse": 7, "spiky": 8, "plateau": 0 };
 				 const modboxWaveNames = { "10% pulse": 22, "sunsoft bass": 23, "loud pulse": 24, "sax": 25, "guitar": 26, "atari bass": 28, "atari pulse": 29, "1% pulse": 30, "curved sawtooth": 31, "viola": 32, "brass": 33, "acoustic bass": 34, "lyre": 35, "ramp pulse": 36, "piccolo": 37, "squaretooth": 38, "flatline": 39, "pnryshk a (u5)": 40, "pnryshk b (riff)": 41 };
              	 const sandboxWaveNames = { "shrill lute": 42, "shrill bass": 44, "nes pulse": 45, "saw bass": 46, "euphonium": 47, "shrill pulse": 48, "r-sawtooth": 49, "recorder": 50, "narrow saw": 51, "deep square": 52, "ring pulse": 53, "double sine": 54, "contrabass": 55, "double bass": 56 };
-			 const zefboxWaveNames = {"semi-square": 63, "deep square": 64, "squaretal": 65, "saw wide": 66, "saw narrow ": 67, "deep sawtooth": 68, "sawtal": 69, "pulse": 70, "triple pulse": 71, "high pulse": 72,"deep pulse": 73 };
-			 const miscWaveNames = {"test1": 57, "pokey 4bit lfsr": 58, "pokey 5step bass": 59, "isolated spiky": 60, "unnamed 1": 61, "unnamed 2": 62, "guitar string": 76, "intense": 77, "buzz wave": 78, "pokey square": 58, "pokey bass": 59, "banana wave": 82, "test 1": 83, "test 2": 83, "real snare": 84, "earthbound o. guitar": 85 };
-			 const paandorasboxWaveNames = {"kick": 86, "snare": 87, "piano1": 88, "WOW": 89, "overdrive": 90, "trumpet": 91, "saxophone": 92, "orchestrahit": 93, "detached violin": 94, "synth": 95, "sonic3snare": 96, "come on": 97, "choir": 98, "overdriveguitar": 99, "legato violin": 101, "tremolo violin": 102, "amen break": 103, "pizzicato violin": 104, "tim allen grunt": 105, "tuba": 106, "loopingcymbal": 107, "standardkick": 108, "standardsnare": 109, "closedhihat": 110, "foothihat": 111, "openhihat": 112, "crashcymbal": 113, "pianoC4": 114, "liver pad": 115, "marimba": 116, "susdotwav": 117, "wackyboxtts": 118};
+			 const zefboxWaveNames = {"semi-square": 63, "deep square": 64, "squaretal": 40, "saw wide": 65, "saw narrow ": 66, "deep sawtooth": 67, "sawtal": 68, "pulse": 69, "triple pulse": 70, "high pulse": 71,"deep pulse": 72 };
+			 const miscWaveNames = {"test1": 56, "pokey 4bit lfsr": 57, "pokey 5step bass": 58, "isolated spiky": 59, "unnamed 1": 60, "unnamed 2": 61, "guitar string": 75, "intense": 76, "buzz wave": 77, "pokey square": 57, "pokey bass": 58, "banana wave": 83, "test 1": 84, "test 2": 84, "real snare": 85, "earthbound o. guitar": 86 };
+			 const paandorasboxWaveNames = {"kick": 87, "snare": 88, "piano1": 89, "WOW": 90, "overdrive": 91, "trumpet": 92, "saxophone": 93, "orchestrahit": 94, "detached violin": 95, "synth": 96, "sonic3snare": 97, "come on": 98, "choir": 99, "overdriveguitar": 100, "legato violin": 102, "tremolo violin": 103, "amen break": 104, "pizzicato violin": 105, "tim allen grunt": 106, "tuba": 107, "loopingcymbal": 108, "standardkick": 109, "standardsnare": 110, "closedhihat": 111, "foothihat": 112, "openhihat": 113, "crashcymbal": 114, "pianoC4": 115, "liver pad": 116, "marimba": 117, "susdotwav": 118, "wackyboxtts": 119};
 			// const paandorasbetaWaveNames = {"contrabass": 55, "double bass": 56 };
 			//  this.chipWave = legacyWaveNames[instrumentObject["wave"]] != undefined ? legacyWaveNames[instrumentObject["wave"]] : Config.chipWaves.findIndex(wave => wave.name == instrumentObject["wave"]);
               //  this.chipWave = legacyWaveNames[instrumentObject["wave"]] != undefined ? legacyWaveNames[instrumentObject["wave"]] : modboxWaveNames[instrumentObject["wave"]] != undefined ? modboxWaveNames[instrumentObject["wave"]] : Config.chipWaves.findIndex(wave => wave.name == instrumentObject["wave"]); 
@@ -11053,7 +10622,6 @@ transform: scale(2, 0.5);
 				this.chipWave = legacyWaveNames[instrumentObject["wave"]] != undefined ? legacyWaveNames[instrumentObject["wave"]] : modboxWaveNames[instrumentObject["wave"]] != undefined ? modboxWaveNames[instrumentObject["wave"]] : sandboxWaveNames[instrumentObject["wave"]] != undefined ? sandboxWaveNames[instrumentObject["wave"]] : zefboxWaveNames[instrumentObject["wave"]] != undefined ? zefboxWaveNames[instrumentObject["wave"]] : miscWaveNames[instrumentObject["wave"]] != undefined ? miscWaveNames[instrumentObject["wave"]] : paandorasboxWaveNames[instrumentObject["wave"]] != undefined ? paandorasboxWaveNames[instrumentObject["wave"]] : Config.chipWaves.findIndex(wave => wave.name == instrumentObject["wave"]); 
 				if (this.chipWave == -1)
                     this.chipWave = 1;
-				//compatmark
             }
             if (this.type == 1 || this.type == 10) {
                 if (this.type == 1) {
@@ -11278,6 +10846,24 @@ transform: scale(2, 0.5);
                     }
                 }
             }
+			// advloop addition
+            if (type === 0) {
+                if (instrumentObject["isUsingAdvancedLoopControls"] != undefined) {
+                    this.isUsingAdvancedLoopControls = instrumentObject["isUsingAdvancedLoopControls"];
+                    this.chipWaveLoopStart = instrumentObject["chipWaveLoopStart"];
+                    this.chipWaveLoopEnd = instrumentObject["chipWaveLoopEnd"];
+                    this.chipWaveLoopMode = instrumentObject["chipWaveLoopMode"];
+                    this.chipWavePlayBackwards = instrumentObject["chipWavePlayBackwards"];
+                    this.chipWaveStartOffset = instrumentObject["chipWaveStartOffset"];
+                } else {
+                    this.isUsingAdvancedLoopControls = false;
+                    this.chipWaveLoopStart = 0;
+                    this.chipWaveLoopEnd = Config.rawRawChipWaves[this.chipWave].samples.length - 1;
+                    this.chipWaveLoopMode = 0;
+                    this.chipWavePlayBackwards = false;
+                    this.chipWaveStartOffset = 0;
+                }
+            }
         }
         static frequencyFromPitch(pitch) {
             return 440.0 * Math.pow(2.0, (pitch - 69.0) / 12.0);
@@ -11467,7 +11053,7 @@ transform: scale(2, 0.5);
             this.beatsPerBar = 8;
             this.barCount = 16;
             this.patternsPerChannel = 8;
-            this.rhythm = 4;
+            this.rhythm = 3;
             this.layeredInstruments = false;
             this.patternInstruments = false;
             this.title = "Untitled";
@@ -11512,7 +11098,8 @@ transform: scale(2, 0.5);
             let bits;
             let buffer = [];
             buffer.push(Song._variant);
-            buffer.push(base64IntToCharCode[Song._latestGoldBoxVersion]);
+         //   buffer.push(base64IntToCharCode[Song._latestGoldBoxVersion]);
+		 buffer.push(base64IntToCharCode[Song._latestUltraBoxVersion]);
             buffer.push(78);
             var encodedSongTitle = encodeURIComponent(this.title);
             buffer.push(base64IntToCharCode[encodedSongTitle.length >> 6], base64IntToCharCode[encodedSongTitle.length & 0x3f]);
@@ -11696,15 +11283,18 @@ transform: scale(2, 0.5);
                         }
                         harmonicsBits.encodeBase64(buffer);
                     }
-                  if (instrument.type == 0) {
+                 if (instrument.type == 0) {
 						if (instrument.chipWave > 124) {
-							buffer.push(121, base64IntToCharCode[instrument.chipWave - 124]);	
+							buffer.push(119, base64IntToCharCode[instrument.chipWave - 124]);	
+							buffer.push(base64IntToCharCode[2]);	
 						}
 						else if (instrument.chipWave > 62) {
-							buffer.push(120, base64IntToCharCode[instrument.chipWave -62]);	
+							buffer.push(119, base64IntToCharCode[instrument.chipWave -62]);	
+							buffer.push(base64IntToCharCode[1]);	
 						}
 						else {
 							buffer.push(119, base64IntToCharCode[instrument.chipWave]);	
+							buffer.push(base64IntToCharCode[0]);	
 						}
 						buffer.push(104, base64IntToCharCode[instrument.unison]);
 					 //code bookmark
@@ -11757,19 +11347,20 @@ transform: scale(2, 0.5);
                         }
                     }
                     else if (instrument.type == 8) {
-                       // buffer.push(119, instrument.chipWave + 37);
-					if (instrument.chipWave > 124) {
-							buffer.push(121, base64IntToCharCode[instrument.chipWave - 124]);	
+                   if (instrument.chipWave > 124) {
+							buffer.push(119, base64IntToCharCode[instrument.chipWave - 124]);	
+							buffer.push(base64IntToCharCode[2]);	
 						}
 						else if (instrument.chipWave > 62) {
-							buffer.push(120, base64IntToCharCode[instrument.chipWave -62]);	
+							buffer.push(119, base64IntToCharCode[instrument.chipWave -62]);	
+							buffer.push(base64IntToCharCode[1]);	
 						}
 						else {
 							buffer.push(119, base64IntToCharCode[instrument.chipWave]);	
+							buffer.push(base64IntToCharCode[0]);	
 						}
-						
-						//code bookmark
-                        buffer.push(104, base64IntToCharCode[instrument.unison]);
+						buffer.push(104, base64IntToCharCode[instrument.unison]);
+					 //code bookmark
                         buffer.push(77);
                         for (let j = 0; j < 64; j++) {
                             buffer.push(base64IntToCharCode[(instrument.customChipWave[j] + 24)]);
@@ -12019,7 +11610,79 @@ transform: scale(2, 0.5);
             buffer.push(base64IntToCharCode[digits.length]);
             Array.prototype.push.apply(buffer, digits);
             bits.encodeBase64(buffer);
+			// advloop addition
+            // I don't think this will be the final serialization code.
+            buffer.push(121 /* lowercase y */);
+            function encode32BitNumber(x) {
+                // 0b11_
+                buffer.push(base64IntToCharCode[(x >>> (6 * 5)) & 0x3]);
+                //      111111_
+                buffer.push(base64IntToCharCode[(x >>> (6 * 4)) & 0x3f]);
+                //             111111_
+                buffer.push(base64IntToCharCode[(x >>> (6 * 3)) & 0x3f]);
+                //                    111111_
+                buffer.push(base64IntToCharCode[(x >>> (6 * 2)) & 0x3f]);
+                //                           111111_
+                buffer.push(base64IntToCharCode[(x >>> (6 * 1)) & 0x3f]);
+                //                                  111111
+                buffer.push(base64IntToCharCode[(x >>> (6 * 0)) & 0x3f]);
+            }
+            const sampleLoopInfo = [];
+            for (let channelIndex = 0; channelIndex < this.getChannelCount(); channelIndex++) {
+                for (let i = 0; i < this.channels[channelIndex].instruments.length; i++) {
+                    const instrument = this.channels[channelIndex].instruments[i];
+                    let storedInfo = {};
+                    let isStoringSomething = false;
+                    if (instrument.type === 0) {
+                        const isUsingAdvancedLoopControls = instrument.isUsingAdvancedLoopControls;
+                        const chipWaveLength = Config.rawRawChipWaves[instrument.chipWave].samples.length;
+                        const chipWaveLoopStart = instrument.chipWaveLoopStart;
+                        const chipWaveLoopEnd = instrument.chipWaveLoopEnd;
+                        const chipWaveLoopMode = instrument.chipWaveLoopMode;
+                        const chipWavePlayBackwards = instrument.chipWavePlayBackwards;
+                        const chipWaveStartOffset = instrument.chipWaveStartOffset;
+                        storedInfo["isUsingAdvancedLoopControls"] = isUsingAdvancedLoopControls;
+                        storedInfo["chipWaveLoopStart"] = chipWaveLoopStart;
+                        storedInfo["chipWaveLoopEnd"] = chipWaveLoopEnd;
+                        storedInfo["chipWaveLoopMode"] = chipWaveLoopMode;
+                        storedInfo["chipWavePlayBackwards"] = chipWavePlayBackwards;
+                        storedInfo["chipWaveStartOffset"] = chipWaveStartOffset;
+                        isStoringSomething = true;
+                    }
+                    if (isStoringSomething) {
+                        sampleLoopInfo.push({
+                            channel: channelIndex,
+                            instrument: i,
+                            info: storedInfo,
+                        });
+                    }
+                }
+            }
+            // console.log("saving:", sampleLoopInfo);
+            const sampleLoopInfoEncoded = btoa(JSON.stringify(sampleLoopInfo)).replace(/=+$/, "");
+            const sampleLoopInfoEncodedLength = sampleLoopInfoEncoded.length;
+           encode32BitNumber(sampleLoopInfoEncodedLength);
+            for (const c of sampleLoopInfoEncoded) {
+                buffer.push(c.charCodeAt(0));
+            }
+           // advloop addition
             const maxApplyArgs = 64000;
+			  let customSamplesStr = "";
+            if(EditorConfig.customSamples != undefined && EditorConfig.customSamples.length > 0){
+              customSamplesStr = "|" + EditorConfig.customSamples.join("|")
+              
+          }
+		  if (buffer.length < maxApplyArgs) {
+                return String.fromCharCode.apply(null, buffer) + customSamplesStr;
+            }
+            else {
+                let result = "";
+                for (let i = 0; i < buffer.length; i += maxApplyArgs) {
+                    result += String.fromCharCode.apply(null, buffer.slice(i, i + maxApplyArgs));
+                }
+               return result + customSamplesStr;
+			   //samplemark
+            }
             if (buffer.length < maxApplyArgs) {
                 return String.fromCharCode.apply(null, buffer);
             }
@@ -12038,11 +11701,187 @@ transform: scale(2, 0.5);
                 legacyIndex = 0;
             return Config.envelopes[clamp(0, Config.envelopes.length, legacyIndex)];
         }
-        fromBase64String(compressed) {
+		fromBase64String(compressed) {
             if (compressed == null || compressed == "") {
                 this.initToDefault(true);
                 return;
             }
+        compressed = compressed.replaceAll("%7C", "|")
+            var compressed_array = compressed.split("|");
+            compressed = compressed_array.shift();
+            if(EditorConfig.customSamples == null || EditorConfig.customSamples.join(", ") != compressed_array.join(", ")) {
+            
+                let willLoadLegacySamples = false;
+				//this is currently unused - not removing it incase LeoV has a planned purpose for it
+                const customSampleUrls = [];
+                const customSamplePresets = [];
+                const defaultIndex = 0;
+                const defaultIntegratedSamples = Config.chipWaves[defaultIndex].samples;
+                const defaultSamples = Config.rawRawChipWaves[defaultIndex].samples;
+                  for (const url of compressed_array) {
+                    if (url.toLowerCase() === "legacysamples") {
+                        if (!willLoadLegacySamples) {
+                            willLoadLegacySamples = true;
+                            customSampleUrls.push(url);
+                            
+							loadBuiltInSamples(0);
+						
+                        }
+                    } 
+					//else if (url.toLowerCase() === "nintariboxsamples") {
+                        // if (!willLoadLegacySamples) {
+                           // willLoadLegacySamples = true;
+                            //customSampleUrls.push(url);
+                            
+							//loadBuiltInSamples(1);
+						
+                        // }
+                    //}
+					//else if (url.toLowerCase() === "mariopaintboxsamples") {
+                        // if (!willLoadLegacySamples) {
+                           // willLoadLegacySamples = true;
+                            //customSampleUrls.push(url);
+                            
+							//loadBuiltInSamples(2);
+						
+                        // }
+                    //}
+					
+					else {
+                         customSampleUrls.push(url);
+                        // This depends on `Config.chipWaves` being the same
+                        // length as `Config.rawRawChipWaves`.
+                        const chipWaveIndex = Config.chipWaves.length;
+						function isProperUrl(string) {
+							try { 
+								return Boolean(new URL(string)); 
+							}
+							catch(x){ 
+								return false; 
+							}
+						}
+						
+					    if (isProperUrl(url)) {
+							let urlSliced = url;
+							let parsedUrl = new URL(url);
+							let customSampleRate = 44100;
+							let isCustomPercussive = false;
+							let customRootKey = 60;
+							
+							if (url.indexOf("@") != -1) {
+								//urlSliced = url.slice(url.indexOf("@"), url.indexOf("@"));
+								urlSliced = url.replaceAll("@", "")
+								parsedUrl = new URL(urlSliced);
+								isCustomPercussive = true;	
+							}	
+							
+							function sliceForSampleRate() {
+								urlSliced = url.slice(0, url.indexOf(","));
+								parsedUrl = new URL(urlSliced);
+								customSampleRate = clamp(8000, 96000, parseFloat(url.slice(url.indexOf(",") + 1)));
+								//should this be parseFloat or parseInt?
+								//ig floats let you do decimals and such, but idk where that would be useful
+							}
+							
+							function sliceForRootKey() {
+								urlSliced = url.slice(0, url.indexOf("!"));
+								parsedUrl = new URL(urlSliced);
+								customRootKey = parseFloat(url.slice(url.indexOf("!") + 1));
+								
+							}
+							
+							
+							if (url.indexOf(",") != -1 && url.indexOf("!") != -1) {
+								if (url.indexOf(",") < url.indexOf("!")) {
+									sliceForRootKey();
+									sliceForSampleRate();
+								}
+								else {
+									sliceForSampleRate();
+									sliceForRootKey();
+								}	
+							}
+							else {
+								if (url.indexOf(",") != -1) {
+									sliceForSampleRate();
+								}	
+								if (url.indexOf("!") != -1) {
+									sliceForRootKey();
+								}	
+							}
+
+							// @TODO: Could also remove known extensions, but it
+							// would probably be much better to be able to specify
+							// a custom name.
+							// @TODO: If for whatever inexplicable reason someone
+							// uses an url like `https://example.com`, this will
+							// result in an empty name here.
+							const name = decodeURIComponent(parsedUrl.pathname.replace(/^([^\/]*\/)+/, ""));
+							// @TODO: What to do about samples with the same name?
+							// The problem with using the url is that the name is
+							// user-facing and long names break assumptions of the
+							// UI.
+							const expression = 0.5;
+						  Config.chipWaves[chipWaveIndex] = {
+								name: name,
+								expression: expression,
+								isCustomSampled: true,
+								isPercussion: isCustomPercussive,
+								rootKey: customRootKey,
+								sampleRate: customSampleRate,
+								samples: defaultIntegratedSamples,
+								index: chipWaveIndex,
+							};
+							Config.rawRawChipWaves[chipWaveIndex] = {
+								name: name,
+								expression: expression,
+								isCustomSampled: true,
+								isPercussion: isCustomPercussive,
+								rootKey: customRootKey,
+								sampleRate: customSampleRate,
+								samples: defaultSamples,
+								index: chipWaveIndex,
+							};
+							customSamplePresets.push({
+								name: name,
+								midiProgram: 80,
+								settings: {
+									"type": "chip",
+									"eqFilter": [],
+									"effects": [],
+									"transition": "normal",
+									"fadeInSeconds": 0,
+									"fadeOutTicks": -3,
+									"chord": "harmony",
+									"wave": name,
+									"unison": "none",
+									"envelopes": [],
+								},
+							});
+							startLoadingSample(urlSliced, chipWaveIndex, customSampleRate);
+							
+						}
+						
+						else {
+							alert(url + " is not a valid url");
+						}
+						
+                    }
+                }
+                if (customSampleUrls.length > 0) {
+                    EditorConfig.customSamples = customSampleUrls;
+                }
+                if (customSamplePresets.length > 0) {
+                    EditorConfig.presetCategories[EditorConfig.presetCategories.length] = {
+                        name: "Custom Sample Presets",
+                        presets: customSamplePresets,
+                        index: EditorConfig.presetCategories.length,
+                    };
+                }
+
+      
+			}
+			//samplemark
             let charIndex = 0;
             while (compressed.charCodeAt(charIndex) <= 32)
                 charIndex++;
@@ -12053,25 +11892,36 @@ transform: scale(2, 0.5);
                 return;
             }
             const variantTest = compressed.charCodeAt(charIndex);
-            let fromBeepBox;
+             let fromBeepBox;
             let fromJummBox;
             let fromGoldBox;
+			let fromUltraBox;
             if (variantTest == 0x6A) {
                 fromBeepBox = false;
                 fromJummBox = true;
                 fromGoldBox = false;
+				fromUltraBox = false;
                 charIndex++;
             }
             else if (variantTest == 0x67) {
                 fromBeepBox = false;
                 fromJummBox = false;
                 fromGoldBox = true;
+				fromUltraBox = false;
+                charIndex++;
+            }
+			 else if (variantTest == 0x75) {
+                fromBeepBox = false;
+                fromJummBox = false;
+                fromGoldBox = false;
+				fromUltraBox = true;
                 charIndex++;
             }
             else {
                 fromBeepBox = true;
                 fromJummBox = false;
                 fromGoldBox = false;
+				fromUltraBox = false;
             }
             const version = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
             if (fromBeepBox && (version == -1 || version > Song._latestBeepboxVersion || version < Song._oldestBeepboxVersion))
@@ -12080,6 +11930,9 @@ transform: scale(2, 0.5);
                 return;
             if (fromGoldBox && (version == -1 || version > Song._latestGoldBoxVersion || version < Song._oldestGoldBoxVersion))
                 return;
+			if (fromUltraBox && (version == -1 || version > Song._latestUltraBoxVersion || version < Song._oldestUltraBoxVersion))
+                return;
+			//2.0 update-related changes
             const beforeTwo = version < 2;
             const beforeThree = version < 3;
             const beforeFour = version < 4;
@@ -12098,7 +11951,7 @@ transform: scale(2, 0.5);
                 this.channels[3].instruments[0].chipNoise = 0;
             }
             let legacySettingsCache = null;
-            if ((fromBeepBox && beforeNine) || ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox))) {
+           if ((fromBeepBox && beforeNine) || ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox))) {
                 legacySettingsCache = [];
                 for (let i = legacySettingsCache.length; i < this.getChannelCount(); i++) {
                     legacySettingsCache[i] = [];
@@ -12210,7 +12063,7 @@ transform: scale(2, 0.5);
                                 legacyGlobalReverb = base64CharCodeToInt[compressed.charCodeAt(charIndex++)] * 12;
                                 legacyGlobalReverb = clamp(0, Config.reverbRange, legacyGlobalReverb);
                             }
-                            else if ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox)) {
+                           else if ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox)) {
                                 legacyGlobalReverb = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
                                 legacyGlobalReverb = clamp(0, Config.reverbRange, legacyGlobalReverb);
                             }
@@ -12262,7 +12115,7 @@ transform: scale(2, 0.5);
                         break;
                     case 105:
                         {
-                            if ((beforeNine && fromBeepBox) || ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox))) {
+                             if ((beforeNine && fromBeepBox) || ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox))) {
                                 const instrumentsPerChannel = validateRange(Config.instrumentCountMin, Config.patternInstrumentCountMax, base64CharCodeToInt[compressed.charCodeAt(charIndex++)] + Config.instrumentCountMin);
                                 this.layeredInstruments = false;
                                 this.patternInstruments = (instrumentsPerChannel > 1);
@@ -12305,15 +12158,27 @@ transform: scale(2, 0.5);
                         break;
                     case 114:
                         {
-                            this.rhythm = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
-                            if (fromJummBox && beforeThree || fromBeepBox) {
-                                if (this.rhythm == Config.rhythms.dictionary["÷3 (triplets)"].index || this.rhythm == Config.rhythms.dictionary["÷6"].index) {
-                                    useSlowerArpSpeed = true;
-                                }
-                                if (this.rhythm >= Config.rhythms.dictionary["÷6"].index) {
-                                    useFastTwoNoteArp = true;
-                                }
-                            }
+							if (!fromUltraBox) {
+								
+								let newRhythm = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];		
+								
+								this.rhythm = clamp(0, Config.rhythms.length, newRhythm + 2);
+								
+								if (fromJummBox && beforeThree || fromBeepBox) {
+									if (this.rhythm == 2 || this.rhythm == 3) {
+										useSlowerArpSpeed = true;
+									}
+									if (this.rhythm >= 2) {
+										useFastTwoNoteArp = true;
+									}
+								}
+								
+							}
+							
+							else {
+								this.rhythm = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
+							}
+							
                         }
                         break;
                     case 111:
@@ -12324,7 +12189,7 @@ transform: scale(2, 0.5);
                                 if (channelIndex >= this.pitchChannelCount)
                                     this.channels[channelIndex].octave = 0;
                             }
-                            else if ((beforeNine && fromBeepBox) || ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox))) {
+                           else if ((beforeNine && fromBeepBox) || ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox))) {
                                 for (let channelIndex = 0; channelIndex < this.getChannelCount(); channelIndex++) {
                                     this.channels[channelIndex].octave = clamp(0, Config.pitchOctaves, base64CharCodeToInt[compressed.charCodeAt(charIndex++)] + 1);
                                     if (channelIndex >= this.pitchChannelCount)
@@ -12426,26 +12291,117 @@ transform: scale(2, 0.5);
                                     this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipNoise = clamp(0, Config.chipNoises.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
                                 }
                                 else {
-                                  	this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);											   					   	 						  
-											
-									  //code bookmark
-							   }
+                                  	if (fromUltraBox) {
+										const chipWaveReal = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
+										const chipWaveCounter = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
+									
+										if (chipWaveCounter == 2) {
+											this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, chipWaveReal + 124);											   					   	 						  								
+										}
+										else if (chipWaveCounter == 1) {
+											this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, chipWaveReal + 62);											   					   	 						  								
+										}
+										else {
+											this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, chipWaveReal);											   					   	 						  								
+										}
+
+									}
+									else {
+										this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
+									}
+
+							 }
                             }
+							// advloop addition
+									//	this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWaveLoopStart = 0;
+								//		this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWaveLoopEnd = Config.rawRawChipWaves[this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave].samples.length - 1;
+								//		this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWaveLoopMode = 0;
+								//		this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWavePlayBackwards = false;
+								//		this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWaveStartOffset = 0;
+										// advloop addition
                         }
                         break;
-						case 120:
-							//this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, compressed.charCodeAt(charIndex++) - 37 + Config.rawChipWaves.length + 13);						   					   	 						  
-						this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)] + 62);										   					   	 						  				
+					case 120:
+						if (fromGoldBox && !beforeFour && beforeSix) {
+							const chipWaveForCompat = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
+							if ((chipWaveForCompat + 62) > 85) {
+								if (document.URL.substring(document.URL.length - 13).toLowerCase() != "legacysamples") {
+									document.location = document.URL.concat("|legacysamples");
+									location.reload();
+									//loadBuiltInSamples(0);
+									//run the loadBuiltInSamples function so it doesn't have to reload
+								}
+							}
+							
+							if ((chipWaveForCompat + 62) > 78) {
+								this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, chipWaveForCompat + 63);	
+							}
+							else if ((chipWaveForCompat + 62) > 67) {
+								this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, chipWaveForCompat + 61);	
+							}
+							else if ((chipWaveForCompat + 62) == 67) {
+								this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = 40;	
+							}
+							else {
+								this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, chipWaveForCompat + 62);			
+							}							
+						}
+						//is it more useful to save base64 characters or url length?
 					break;
 					case 121:
-							//this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, compressed.charCodeAt(charIndex++) - 37 + Config.rawChipWaves.length + 13);						   					   	 						  
-						this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)] + 124);										   					   	 						  				
+						if (fromUltraBox) {
+							 // I don't think this will be the final deserialization code.
+                            function decode32BitNumber() {
+                                let x = 0;
+                                // 0b11_
+                                x |= base64CharCodeToInt[compressed.charCodeAt(charIndex++)] << (6 * 5);
+                                //      111111_
+                                x |= base64CharCodeToInt[compressed.charCodeAt(charIndex++)] << (6 * 4);
+                                //             111111_
+                                x |= base64CharCodeToInt[compressed.charCodeAt(charIndex++)] << (6 * 3);
+                                //                    111111_
+                                x |= base64CharCodeToInt[compressed.charCodeAt(charIndex++)] << (6 * 2);
+                                //                           111111_
+                                x |= base64CharCodeToInt[compressed.charCodeAt(charIndex++)] << (6 * 1);
+                                //                                  111111
+                                x |= base64CharCodeToInt[compressed.charCodeAt(charIndex++)] << (6 * 0);
+                                return x;
+                            }
+                            const sampleLoopInfoEncodedLength = decode32BitNumber();
+                            const sampleLoopInfoEncoded = compressed.slice(charIndex, charIndex + sampleLoopInfoEncodedLength);
+                            charIndex += sampleLoopInfoEncodedLength;
+                            const sampleLoopInfo = JSON.parse(atob(sampleLoopInfoEncoded));
+                            // console.log("loading:", sampleLoopInfo);
+                            for (const entry of sampleLoopInfo) {
+                                const channelIndex = entry["channel"];
+                                const instrumentIndex = entry["instrument"];
+                                const info = entry["info"];
+                                const instrument = this.channels[channelIndex].instruments[instrumentIndex];
+                                instrument.isUsingAdvancedLoopControls = info["isUsingAdvancedLoopControls"];
+                                instrument.chipWaveLoopStart = info["chipWaveLoopStart"];
+                                instrument.chipWaveLoopEnd = info["chipWaveLoopEnd"];
+                                instrument.chipWaveLoopMode = info["chipWaveLoopMode"];
+                                instrument.chipWavePlayBackwards = info["chipWavePlayBackwards"];
+                                instrument.chipWaveStartOffset = info["chipWaveStartOffset"];
+                            }
+						}
+					
+						else if (fromGoldBox && !beforeFour && beforeSix) {
+							
+							if (document.URL.substring(document.URL.length - 13).toLowerCase() != "legacysamples") {
+									document.location = document.URL.concat("|legacysamples");
+									location.reload();
+									//loadBuiltInSamples(0);
+									//run the loadBuiltInSamples function so it doesn't have to reload
+							}	
+
+							this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)] + 125);						
+														
+						}
 					break;
-						//this is for sampled chip waves
-						//code bookmark
                     case 102:
                         {
-                            if ((beforeNine && fromBeepBox) || (beforeFive && fromJummBox) || (beforeFour && fromGoldBox)) {
+                           if ((beforeNine && fromBeepBox) || (beforeFive && fromJummBox) || (beforeFour && fromGoldBox)) {
                                 if (beforeSeven && fromBeepBox) {
                                     const legacyToCutoff = [10, 6, 3, 0, 8, 5, 2];
                                     const legacyToEnvelope = ["none", "none", "none", "none", "decay 1", "decay 2", "decay 3"];
@@ -12502,7 +12458,7 @@ transform: scale(2, 0.5);
                                 let typeCheck = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
                                 if (fromBeepBox || typeCheck == 0) {
                                     instrument.eqFilterType = false;
-                                    if (fromJummBox || fromGoldBox)
+                                   if (fromJummBox || fromGoldBox || fromUltraBox)
                                         typeCheck = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
                                     const originalControlPointCount = typeCheck;
                                     instrument.eqFilter.controlPointCount = clamp(0, Config.filterMaxPoints + 1, originalControlPointCount);
@@ -12519,7 +12475,7 @@ transform: scale(2, 0.5);
                                         charIndex += 3;
                                     }
                                     instrument.eqSubFilters[0] = instrument.eqFilter;
-                                    if ((fromJummBox && !beforeFive) || (fromGoldBox && !beforeFour)) {
+                                   if ((fromJummBox && !beforeFive) || (fromGoldBox && !beforeFour) || fromUltraBox) {
                                         let usingSubFilterBitfield = (base64CharCodeToInt[compressed.charCodeAt(charIndex++)] << 6) | (base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
                                         for (let j = 0; j < Config.filterMorphCount - 1; j++) {
                                             if (usingSubFilterBitfield & (1 << j)) {
@@ -12570,7 +12526,7 @@ transform: scale(2, 0.5);
                                 if (instrument.type == 4) {
                                     for (let i = 0; i < Config.drumCount; i++) {
                                         let aa = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
-                                        if ((beforeTwo && fromGoldBox) || !fromGoldBox)
+                                        if ((beforeTwo && fromGoldBox) || (!fromGoldBox && !fromUltraBox))
                                             aa = pregoldToEnvelope[aa];
                                         instrument.drumsetEnvelopes[i] = Song._envelopeFromLegacyIndex(aa).index;
                                     }
@@ -12578,7 +12534,7 @@ transform: scale(2, 0.5);
                                 else {
                                     const legacySettings = legacySettingsCache[instrumentChannelIterator][instrumentIndexIterator];
                                     let aa = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
-                                    if ((beforeTwo && fromGoldBox) || !fromGoldBox)
+                                    if ((beforeTwo && fromGoldBox) || (!fromGoldBox && !fromUltraBox))
                                         aa = pregoldToEnvelope[aa];
                                     legacySettings.filterEnvelope = Song._envelopeFromLegacyIndex(aa);
                                     instrument.convertLegacySettings(legacySettings, forceSimpleFilter);
@@ -12587,7 +12543,7 @@ transform: scale(2, 0.5);
                             else {
                                 for (let i = 0; i < Config.drumCount; i++) {
                                     let aa = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
-                                    if ((beforeTwo && fromGoldBox) || !fromGoldBox)
+                                   if ((beforeTwo && fromGoldBox) || (!fromGoldBox && !fromUltraBox))
                                         aa = pregoldToEnvelope[aa];
                                     instrument.drumsetEnvelopes[i] = clamp(0, Config.envelopes.length, aa);
                                 }
@@ -12597,7 +12553,7 @@ transform: scale(2, 0.5);
                     case 87:
                         {
                             const instrument = this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator];
-                            instrument.pulseWidth = clamp(0, Config.pulseWidthRange + (+(fromJummBox)), base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
+                            instrument.pulseWidth = clamp(0, Config.pulseWidthRange + (+(fromJummBox) + 1), base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
                             if (fromBeepBox) {
                                 instrument.pulseWidth = Math.round(Math.pow(0.5, (7 - instrument.pulseWidth) * Config.pulseWidthStepPower) * Config.pulseWidthRange);
                             }
@@ -12605,7 +12561,7 @@ transform: scale(2, 0.5);
                                 const pregoldToEnvelope = [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14, 16, 17, 18, 19, 20, 21, 23, 24, 25, 27, 28, 29, 32, 33, 34, 31, 11];
                                 const legacySettings = legacySettingsCache[instrumentChannelIterator][instrumentIndexIterator];
                                 let aa = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
-                                if ((beforeTwo && fromGoldBox) || !fromGoldBox)
+                                if ((beforeTwo && fromGoldBox) || (!fromGoldBox && !fromUltraBox))
                                     aa = pregoldToEnvelope[aa];
                                 legacySettings.pulseEnvelope = Song._envelopeFromLegacyIndex(aa);
                                 instrument.convertLegacySettings(legacySettings, forceSimpleFilter);
@@ -12656,7 +12612,7 @@ transform: scale(2, 0.5);
                                         }
                                     }
                                 }
-                                else if ((beforeFour && !fromGoldBox) || fromBeepBox) {
+                                 else if ((beforeFour && !fromGoldBox && !fromUltraBox) || fromBeepBox) {
                                     const settings = legacySettings[clamp(0, legacySettings.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)])];
                                     const instrument = this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator];
                                     instrument.fadeIn = Synth.secondsToFadeInSetting(settings.fadeInSeconds);
@@ -12685,7 +12641,7 @@ transform: scale(2, 0.5);
                                 const instrument = this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator];
                                 instrument.fadeIn = clamp(0, Config.fadeInRange, base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
                                 instrument.fadeOut = clamp(0, Config.fadeOutTicks.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
-                                if (fromJummBox || fromGoldBox)
+                                  if (fromJummBox || fromGoldBox || fromUltraBox)
                                     instrument.clicklessTransition = base64CharCodeToInt[compressed.charCodeAt(charIndex++)] ? true : false;
                             }
                         }
@@ -12726,8 +12682,8 @@ transform: scale(2, 0.5);
                                                 if (instrument.vibrato != Config.vibratos.dictionary["none"].index) {
                                                     instrument.effects |= 1 << 9;
                                                 }
-                                                if ((legacyGlobalReverb != 0 || ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox))) && !this.getChannelIsNoise(channelIndex)) {
-                                                    instrument.effects |= 1 << 0;
+                                              if ((legacyGlobalReverb != 0 || ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox))) && !this.getChannelIsNoise(channelIndex)) {
+                                                     instrument.effects |= 1 << 0;
                                                     instrument.reverb = legacyGlobalReverb;
                                                 }
                                             }
@@ -12748,7 +12704,7 @@ transform: scale(2, 0.5);
                                             instrument.effects |= 1 << 9;
                                         }
                                         if (legacyGlobalReverb != 0 || ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox))) {
-                                            instrument.effects |= 1 << 0;
+											  instrument.effects |= 1 << 0;
                                             instrument.reverb = legacyGlobalReverb;
                                         }
                                     }
@@ -12780,7 +12736,7 @@ transform: scale(2, 0.5);
                     case 71:
                         {
                             if ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox)) {
-                                const instrument = this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator];
+								  const instrument = this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator];
                                 instrument.arpeggioSpeed = clamp(0, Config.modulators.dictionary["arp speed"].maxRawVol + 1, base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
                                 instrument.fastTwoNoteArp = base64CharCodeToInt[compressed.charCodeAt(charIndex++)] ? true : false;
                             }
@@ -12822,7 +12778,7 @@ transform: scale(2, 0.5);
                     case 67:
                         {
                             if ((beforeNine && fromBeepBox) || ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox))) {
-                                const instrument = this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator];
+								 const instrument = this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator];
                                 instrument.chord = clamp(0, Config.chords.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
                                 if (instrument.chord != Config.chords.dictionary["simultaneous"].index) {
                                     instrument.effects |= 1 << 11;
@@ -12833,10 +12789,10 @@ transform: scale(2, 0.5);
                     case 113:
                         {
                             const instrument = this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator];
-                            if ((beforeNine && fromBeepBox) || ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox))) {
-                                instrument.effects = (base64CharCodeToInt[compressed.charCodeAt(charIndex++)] & ((1 << 12) - 1));
+                           if ((beforeNine && fromBeepBox) || ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox))) {
+							  instrument.effects = (base64CharCodeToInt[compressed.charCodeAt(charIndex++)] & ((1 << 12) - 1));
                                 if (legacyGlobalReverb == 0 && !((fromJummBox && beforeFive) || (beforeFour && fromGoldBox))) {
-                                    instrument.effects &= ~(1 << 0);
+									 instrument.effects &= ~(1 << 0);
                                 }
                                 else if (effectsIncludeReverb(instrument.effects)) {
                                     instrument.reverb = legacyGlobalReverb;
@@ -12861,8 +12817,8 @@ transform: scale(2, 0.5);
                                     let typeCheck = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
                                     if (fromBeepBox || typeCheck == 0) {
                                         instrument.noteFilterType = false;
-                                        if (fromJummBox || fromGoldBox)
-                                            typeCheck = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
+                                        if (fromJummBox || fromGoldBox || fromUltraBox)
+										 typeCheck = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
                                         instrument.noteFilter.controlPointCount = clamp(0, Config.filterMaxPoints + 1, typeCheck);
                                         for (let i = instrument.noteFilter.controlPoints.length; i < instrument.noteFilter.controlPointCount; i++) {
                                             instrument.noteFilter.controlPoints[i] = new FilterControlPoint();
@@ -12877,8 +12833,8 @@ transform: scale(2, 0.5);
                                             charIndex += 3;
                                         }
                                         instrument.noteSubFilters[0] = instrument.noteFilter;
-                                        if ((fromJummBox && !beforeFive) || (fromGoldBox)) {
-                                            let usingSubFilterBitfield = (base64CharCodeToInt[compressed.charCodeAt(charIndex++)] << 6) | (base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
+                                       if ((fromJummBox && !beforeFive) || (fromGoldBox) || (fromUltraBox)) {
+											  let usingSubFilterBitfield = (base64CharCodeToInt[compressed.charCodeAt(charIndex++)] << 6) | (base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
                                             for (let j = 0; j < Config.filterMorphCount - 1; j++) {
                                                 if (usingSubFilterBitfield & (1 << j)) {
                                                     const originalSubfilterControlPointCount = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
@@ -12913,8 +12869,8 @@ transform: scale(2, 0.5);
                                 }
                                 if (effectsIncludeChord(instrument.effects)) {
                                     instrument.chord = clamp(0, Config.chords.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
-                                    if (instrument.chord == Config.chords.dictionary["arpeggio"].index && (fromJummBox || fromGoldBox)) {
-                                        instrument.arpeggioSpeed = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
+                                    if (instrument.chord == Config.chords.dictionary["arpeggio"].index && (fromJummBox || fromGoldBox || fromUltraBox)) {
+										  instrument.arpeggioSpeed = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
                                         instrument.fastTwoNoteArp = (base64CharCodeToInt[compressed.charCodeAt(charIndex++)]) ? true : false;
                                     }
                                 }
@@ -12932,8 +12888,8 @@ transform: scale(2, 0.5);
                                 }
                                 if (effectsIncludeVibrato(instrument.effects)) {
                                     instrument.vibrato = clamp(0, Config.vibratos.length + 1, base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
-                                    if (instrument.vibrato == Config.vibratos.length && (fromJummBox || fromGoldBox)) {
-                                        instrument.vibratoDepth = clamp(0, Config.modulators.dictionary["vibrato depth"].maxRawVol + 1, base64CharCodeToInt[compressed.charCodeAt(charIndex++)]) / 25;
+                                    if (instrument.vibrato == Config.vibratos.length && (fromJummBox || fromGoldBox || fromUltraBox)) {
+										 instrument.vibratoDepth = clamp(0, Config.modulators.dictionary["vibrato depth"].maxRawVol + 1, base64CharCodeToInt[compressed.charCodeAt(charIndex++)]) / 25;
                                         instrument.vibratoSpeed = clamp(0, Config.modulators.dictionary["vibrato speed"].maxRawVol + 1, base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
                                         instrument.vibratoDelay = clamp(0, Config.modulators.dictionary["vibrato delay"].maxRawVol + 1, base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
                                         instrument.vibratoType = clamp(0, Config.vibratoTypes.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
@@ -12947,8 +12903,8 @@ transform: scale(2, 0.5);
                                 }
                                 if (effectsIncludeDistortion(instrument.effects)) {
                                     instrument.distortion = clamp(0, Config.distortionRange, base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
-                                    if ((fromJummBox && !beforeFive) || fromGoldBox)
-                                        instrument.aliases = base64CharCodeToInt[compressed.charCodeAt(charIndex++)] ? true : false;
+                                    if ((fromJummBox && !beforeFive) || (fromGoldBox || fromUltraBox))
+										  instrument.aliases = base64CharCodeToInt[compressed.charCodeAt(charIndex++)] ? true : false;
                                 }
                                 if (effectsIncludeBitcrusher(instrument.effects)) {
                                     instrument.bitcrusherFreq = clamp(0, Config.bitcrusherFreqRange, base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
@@ -12961,8 +12917,8 @@ transform: scale(2, 0.5);
                                     else {
                                         instrument.pan = clamp(0, Config.panMax + 1, (base64CharCodeToInt[compressed.charCodeAt(charIndex++)] << 6) + base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
                                     }
-                                    if ((fromJummBox && !beforeTwo) || fromGoldBox)
-                                        instrument.panDelay = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
+                                    if ((fromJummBox && !beforeTwo) || (fromGoldBox || fromUltraBox))
+									  instrument.panDelay = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
                                 }
                                 if (effectsIncludeChorus(instrument.effects)) {
                                     if (fromBeepBox) {
@@ -13022,11 +12978,11 @@ transform: scale(2, 0.5);
                                 const instrument = this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator];
                                 instrument.pan = clamp(0, Config.panMax + 1, base64CharCodeToInt[compressed.charCodeAt(charIndex++)] * ((Config.panMax) / 8.0));
                             }
-                            else if ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox)) {
-                                const instrument = this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator];
+                           else if ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox)) {
+								const instrument = this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator];
                                 instrument.pan = clamp(0, Config.panMax + 1, (base64CharCodeToInt[compressed.charCodeAt(charIndex++)] << 6) + base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
-                                if (fromJummBox && !beforeThree || fromGoldBox) {
-                                    instrument.panDelay = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
+                                if (fromJummBox && !beforeThree || fromGoldBox || fromUltraBox) {
+									 instrument.panDelay = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
                                 }
                             }
                             else ;
@@ -13035,8 +12991,8 @@ transform: scale(2, 0.5);
                     case 68:
                         {
                             const instrument = this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator];
-                            if ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox)) {
-                                instrument.detune = clamp(Config.detuneMin, Config.detuneMax + 1, ((base64CharCodeToInt[compressed.charCodeAt(charIndex++)] << 6) + base64CharCodeToInt[compressed.charCodeAt(charIndex++)]) * 4);
+                           if ((fromJummBox && beforeFive) || (beforeFour && fromGoldBox)) {
+								   instrument.detune = clamp(Config.detuneMin, Config.detuneMax + 1, ((base64CharCodeToInt[compressed.charCodeAt(charIndex++)] << 6) + base64CharCodeToInt[compressed.charCodeAt(charIndex++)]) * 4);
                                 instrument.effects |= 1 << 8;
                             }
                         }
@@ -13085,8 +13041,8 @@ transform: scale(2, 0.5);
                         {
                             for (let channel = 0; channel < this.getChannelCount(); channel++) {
                                 var channelNameLength;
-                                if (beforeFour && !fromGoldBox)
-                                    channelNameLength = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
+                                 if (beforeFour && (!fromGoldBox && !fromUltraBox))
+									 channelNameLength = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
                                 else
                                     channelNameLength = ((base64CharCodeToInt[compressed.charCodeAt(charIndex++)] << 6) + base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
                                 this.channels[channel].name = decodeURIComponent(compressed.substring(charIndex, charIndex + channelNameLength));
@@ -13128,7 +13084,7 @@ transform: scale(2, 0.5);
                                 }
                             }
                             if ((beforeNine && fromBeepBox) || (beforeFive && fromJummBox) || (beforeFour && fromGoldBox)) {
-                                const legacySettings = legacySettingsCache[instrumentChannelIterator][instrumentIndexIterator];
+								 const legacySettings = legacySettingsCache[instrumentChannelIterator][instrumentIndexIterator];
                                 instrument.convertLegacySettings(legacySettings, forceSimpleFilter);
                             }
                         }
@@ -13170,8 +13126,8 @@ transform: scale(2, 0.5);
                         break;
                     case 86:
                         {
-                            if ((beforeNine && fromBeepBox) || (beforeFive && fromJummBox) || (beforeFour && fromGoldBox)) {
-                                const pregoldToEnvelope = [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14, 16, 17, 18, 19, 20, 21, 23, 24, 25, 27, 28, 29, 32, 33, 34, 31, 11];
+                           if ((beforeNine && fromBeepBox) || (beforeFive && fromJummBox) || (beforeFour && fromGoldBox)) {
+								 const pregoldToEnvelope = [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14, 16, 17, 18, 19, 20, 21, 23, 24, 25, 27, 28, 29, 32, 33, 34, 31, 11];
                                 const instrument = this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator];
                                 const legacySettings = legacySettingsCache[instrumentChannelIterator][instrumentIndexIterator];
                                 let aa = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
@@ -13185,12 +13141,21 @@ transform: scale(2, 0.5);
                     case 81:
                         {
                             const instrument = this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator];
-                            if ((beforeThree && fromGoldBox) || !fromGoldBox) {
-                                const freqToGold3 = [4, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16, 18, 20, 22, 24, 2, 1, 9, 17, 19, 21, 23, 0, 3];
-                                for (let o = 0; o < (instrument.type == 10 ? 6 : Config.operatorCount); o++) {
+                            if (beforeThree && fromGoldBox) {
+								const freqToGold3 = [4, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16, 18, 20, 22, 24, 2, 1, 9, 17, 19, 21, 23, 0, 3];
+                               
+								for (let o = 0; o < (instrument.type == 10 ? 6 : Config.operatorCount); o++) {
                                     instrument.operators[o].frequency = freqToGold3[clamp(0, freqToGold3.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)])];
                                 }
                             }
+							else if (!fromGoldBox && !fromUltraBox) {
+								const freqToUltraBox = [4, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16, 18, 20, 23, 27, 2, 1, 9, 17, 19, 21, 23, 0, 3];
+								
+								for (let o = 0; o < (instrument.type == 10 ? 6 : Config.operatorCount); o++) {
+                                    instrument.operators[o].frequency = freqToUltraBox[clamp(0, freqToUltraBox.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)])];
+                                }
+								
+							}
                             else {
                                 for (let o = 0; o < (instrument.type == 10 ? 6 : Config.operatorCount); o++) {
                                     instrument.operators[o].frequency = clamp(0, Config.operatorFrequencies.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
@@ -13211,12 +13176,12 @@ transform: scale(2, 0.5);
                             const pregoldToEnvelope = [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14, 16, 17, 18, 19, 20, 21, 23, 24, 25, 27, 28, 29, 32, 33, 34, 31, 11];
                             const instrument = this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator];
                             if ((beforeNine && fromBeepBox) || (beforeFive && fromJummBox) || (beforeFour && fromGoldBox)) {
-                                const legacySettings = legacySettingsCache[instrumentChannelIterator][instrumentIndexIterator];
+							 const legacySettings = legacySettingsCache[instrumentChannelIterator][instrumentIndexIterator];
                                 legacySettings.operatorEnvelopes = [];
                                 for (let o = 0; o < (instrument.type == 10 ? 6 : Config.operatorCount); o++) {
                                     let aa = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
-                                    if ((beforeTwo && fromGoldBox) || !fromGoldBox)
-                                        aa = pregoldToEnvelope[aa];
+                                    if ((beforeTwo && fromGoldBox) || (!fromGoldBox && !fromUltraBox))
+										  aa = pregoldToEnvelope[aa];
                                     legacySettings.operatorEnvelopes[o] = Song._envelopeFromLegacyIndex(aa);
                                 }
                                 instrument.convertLegacySettings(legacySettings, forceSimpleFilter);
@@ -13231,8 +13196,8 @@ transform: scale(2, 0.5);
                                         index = clamp(0, maxCount, base64CharCodeToInt[compressed.charCodeAt(charIndex++)]);
                                     }
                                     let aa = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
-                                    if ((beforeTwo && fromGoldBox) || !fromGoldBox)
-                                        aa = pregoldToEnvelope[aa];
+                                    if ((beforeTwo && fromGoldBox) || (!fromGoldBox && !fromUltraBox))
+										 aa = pregoldToEnvelope[aa];
                                     const envelope = clamp(0, Config.envelopes.length, aa);
                                     instrument.addEnvelope(target, index, envelope);
                                 }
@@ -13317,7 +13282,7 @@ transform: scale(2, 0.5);
                     case 88:
                         {
                             if ((fromJummBox && beforeFive) || (fromGoldBox && beforeFour)) {
-                                const instrument = this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator];
+								   const instrument = this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator];
                                 instrument.aliases = (base64CharCodeToInt[compressed.charCodeAt(charIndex++)]) ? true : false;
                                 if (instrument.aliases) {
                                     instrument.distortion = 0;
@@ -13403,7 +13368,7 @@ transform: scale(2, 0.5);
                                 const neededInstrumentIndexBits = Song.getNeededBits(channel.instruments.length - 1);
                                 if (isModChannel) {
                                     let jumfive = (beforeFive && fromJummBox) || (beforeFour && fromGoldBox);
-                                    const neededModInstrumentIndexBits = (jumfive) ? neededInstrumentIndexBits : Song.getNeededBits(this.getMaxInstrumentsPerChannel() + 2);
+									 const neededModInstrumentIndexBits = (jumfive) ? neededInstrumentIndexBits : Song.getNeededBits(this.getMaxInstrumentsPerChannel() + 2);
                                     for (let instrumentIndex = 0; instrumentIndex < channel.instruments.length; instrumentIndex++) {
                                         let instrument = channel.instruments[instrumentIndex];
                                         for (let mod = 0; mod < Config.modCount; mod++) {
@@ -13468,8 +13433,8 @@ transform: scale(2, 0.5);
                                 for (let j = 0; j < channel.instruments.length; j++) {
                                     detuneScaleNotes[j] = [];
                                     for (let i = 0; i < Config.modCount; i++) {
-                                        detuneScaleNotes[j][Config.modCount - 1 - i] = 1 + 3 * +(((beforeFive && fromJummBox) || (beforeFour && fromGoldBox)) && isModChannel && (channel.instruments[j].modulators[i] == Config.modulators.dictionary["detune"].index));
-                                    }
+                                    detuneScaleNotes[j][Config.modCount - 1 - i] = 1 + 3 * +(((beforeFive && fromJummBox) || (beforeFour && fromGoldBox)) && isModChannel && (channel.instruments[j].modulators[i] == Config.modulators.dictionary["detune"].index));
+                               }
                                 }
                                 const octaveOffset = (isNoiseChannel || isModChannel) ? 0 : channel.octave * 12;
                                 let lastPitch = ((isNoiseChannel || isModChannel) ? 4 : octaveOffset);
@@ -13481,7 +13446,7 @@ transform: scale(2, 0.5);
                                 for (let i = 0; i < this.patternsPerChannel; i++) {
                                     const newPattern = channel.patterns[i];
                                     if ((beforeNine && fromBeepBox) || (beforeFive && fromJummBox) || (beforeFour && fromGoldBox)) {
-                                        newPattern.instruments[0] = validateRange(0, channel.instruments.length - 1, bits.read(neededInstrumentIndexBits));
+										 newPattern.instruments[0] = validateRange(0, channel.instruments.length - 1, bits.read(neededInstrumentIndexBits));
                                         newPattern.instruments.length = 1;
                                     }
                                     else {
@@ -13677,11 +13642,11 @@ transform: scale(2, 0.5);
                                             note.pins.length = pinCount;
                                             if (note.start == 0) {
                                                 if (!((beforeNine && fromBeepBox) || (beforeFive && fromJummBox) || (beforeFour && fromGoldBox))) {
-                                                    note.continuesLastPattern = (bits.read(1) == 1);
+												   note.continuesLastPattern = (bits.read(1) == 1);
                                                 }
                                                 else {
-                                                    if (beforeFour || fromBeepBox) {
-                                                        note.continuesLastPattern = false;
+                                                     if ((beforeFour && !fromUltraBox) || fromBeepBox) {
+                                                       note.continuesLastPattern = false;
                                                     }
                                                     else {
                                                         note.continuesLastPattern = channel.instruments[newPattern.instruments[0]].legacyTieOver;
@@ -13703,7 +13668,7 @@ transform: scale(2, 0.5);
                                 }
                             }
                             if (((fromJummBox && beforeFive) || (beforeFour && fromGoldBox)) && songReverbIndex >= 0) {
-                                for (let channelIndex = 0; channelIndex < this.channels.length; channelIndex++) {
+							   for (let channelIndex = 0; channelIndex < this.channels.length; channelIndex++) {
                                     for (let instrumentIndex = 0; instrumentIndex < this.channels[channelIndex].instruments.length; instrumentIndex++) {
                                         const instrument = this.channels[channelIndex].instruments[instrumentIndex];
                                         if (effectsIncludeReverb(instrument.effects)) {
@@ -13796,7 +13761,8 @@ transform: scale(2, 0.5);
             return {
                 "name": this.title,
                 "format": Song._format,
-                "version": Song._latestGoldBoxVersion,
+                 //   "version": Song._latestGoldBoxVersion,
+			 "version": Song._latestUltraBoxVersion,
                 "scale": Config.scales[this.scale].name,
                 "customScale": this.scaleCustom,
                 "key": Config.keys[this.key].name,
@@ -14067,7 +14033,9 @@ transform: scale(2, 0.5);
     Song._latestJummBoxVersion = 5;
     Song._oldestGoldBoxVersion = 1;
     Song._latestGoldBoxVersion = 4;
-    Song._variant = 0x67;
+   Song._oldestUltraBoxVersion = 1;
+    Song._latestUltraBoxVersion = 2;
+    Song._variant = 0x75;
     class PickedString {
         constructor() {
             this.delayLine = null;
@@ -14479,6 +14447,10 @@ transform: scale(2, 0.5);
             this.phases = [];
             this.operatorWaves = [];
             this.phaseDeltas = [];
+			// advloop addition
+            this.directions = [];
+            this.chipWaveCompletions = [];
+            // advloop addition
             this.phaseDeltaScales = [];
             this.expression = 0.0;
             this.expressionDelta = 0.0;
@@ -14517,6 +14489,10 @@ transform: scale(2, 0.5);
             this.noiseSample = 0.0;
             for (let i = 0; i < Config.maxPitchOrOperatorCount; i++) {
                 this.phases[i] = 0.0;
+				// advloop addition
+                this.directions[i] = 1;
+                this.chipWaveCompletions[i] = false;
+                // advloop addition
                 this.operatorWaves[i] = Config.operatorWaves[0];
                 this.feedbackOutputs[i] = 0.0;
                 this.prevPitchExpressions[i] = null;
@@ -14553,6 +14529,14 @@ transform: scale(2, 0.5);
             this.type = 0;
             this.synthesizer = null;
             this.wave = null;
+			 // advloop addition
+            this.isUsingAdvancedLoopControls = false;
+            this.chipWaveLoopStart = 0;
+            this.chipWaveLoopEnd = 0;
+            this.chipWaveLoopMode = 0;
+            this.chipWavePlayBackwards = false;
+            this.chipWaveStartOffset = 0;
+            // advloop addition
             this.noisePitchFilterMult = 1.0;
             this.unison = null;
             this.chord = null;
@@ -15080,7 +15064,14 @@ transform: scale(2, 0.5);
             this.volumeScale = 1.0;
             if (instrument.type == 0) {
                 this.wave = (this.aliases) ? Config.rawRawChipWaves[instrument.chipWave].samples : Config.chipWaves[instrument.chipWave].samples;
-           //bookmark
+		      // advloop addition
+                this.isUsingAdvancedLoopControls = instrument.isUsingAdvancedLoopControls;
+                this.chipWaveLoopStart = instrument.chipWaveLoopStart;
+                this.chipWaveLoopEnd = instrument.chipWaveLoopEnd;
+                this.chipWaveLoopMode = instrument.chipWaveLoopMode;
+                this.chipWavePlayBackwards = instrument.chipWavePlayBackwards;
+                this.chipWaveStartOffset = instrument.chipWaveStartOffset;
+               // advloop addition
 		   }
             else if (instrument.type == 8) {
                 this.wave = (this.aliases) ? instrument.customChipWave : instrument.customChipWaveIntegral;
@@ -16828,13 +16819,24 @@ transform: scale(2, 0.5);
             else if (instrument.type == 1 || instrument.type == 10) {
                 baseExpression = Config.fmBaseExpression;
             }
-           else if (instrument.type == 0) {
+            else if (instrument.type == 0) {
                 baseExpression = Config.chipBaseExpression;
-				if (Config.chipWaves[instrument.chipWave].isSampled == true && Config.chipWaves[instrument.chipWave].isPercussion == false) {
-					basePitch = basePitch - 63 + Config.chipWaves[instrument.chipWave].extraSampleDetune
+				if (Config.chipWaves[instrument.chipWave].isCustomSampled) {
+					if (Config.chipWaves[instrument.chipWave].isPercussion){
+						basePitch = -84.37 + Math.log2(Config.chipWaves[instrument.chipWave].samples.length/Config.chipWaves[instrument.chipWave].sampleRate) * -12 - (-60 + Config.chipWaves[instrument.chipWave].rootKey);
+					}
+					
+					else {
+						basePitch += -96.37 + Math.log2(Config.chipWaves[instrument.chipWave].samples.length/Config.chipWaves[instrument.chipWave].sampleRate) * -12 - (-60 + Config.chipWaves[instrument.chipWave].rootKey); 
+					}
 				}
-				else if (Config.chipWaves[instrument.chipWave].isSampled == true && Config.chipWaves[instrument.chipWave].isPercussion == true) {
-				basePitch = -51 + Config.chipWaves[instrument.chipWave].extraSampleDetune
+				else {
+					if (Config.chipWaves[instrument.chipWave].isSampled && !Config.chipWaves[instrument.chipWave].isPercussion) {
+						basePitch = basePitch - 63 + Config.chipWaves[instrument.chipWave].extraSampleDetune
+					}
+					else if (Config.chipWaves[instrument.chipWave].isSampled && Config.chipWaves[instrument.chipWave].isPercussion) {
+					basePitch = -51 + Config.chipWaves[instrument.chipWave].extraSampleDetune
+					}
 				}
             }
 			 else if (instrument.type == 8) {
@@ -16860,6 +16862,21 @@ transform: scale(2, 0.5);
             }
             if ((tone.atNoteStart && !transition.isSeamless && !tone.forceContinueAtStart) || tone.freshlyAllocated) {
                 tone.reset();
+				 // advloop addition
+                const chipWaveLength = Config.rawRawChipWaves[instrument.chipWave].samples.length - 1;
+                const firstOffset = instrument.chipWaveStartOffset / chipWaveLength;
+                // const lastOffset = (chipWaveLength - 0.01) / chipWaveLength;
+                // @TODO: This is silly and I should actually figure out how to
+                // properly keep lastOffset as 1.0 and not get it wrapped back
+                // to 0 once it's in `Synth.loopableChipSynth`.
+                const lastOffset = 0.999999999999999;
+                for (let i = 0; i < Config.maxPitchOrOperatorCount; i++) {
+                    tone.phases[i] = instrument.chipWavePlayBackwards ? Math.min(lastOffset, lastOffset - firstOffset) : Math.max(0, firstOffset);
+                    tone.directions[i] = instrument.chipWavePlayBackwards ? -1 : 1;
+                    tone.chipWaveCompletions[i] = false;
+                }
+                // console.log(tone.directions);
+                // advloop addition
             }
             tone.freshlyAllocated = false;
             for (let i = 0; i < Config.maxPitchOrOperatorCount; i++) {
@@ -17442,6 +17459,12 @@ transform: scale(2, 0.5);
                 return Synth.fmSynthFunctionCache[fingerprint];
             }
             else if (instrument.type == 0) {
+				 // advloop addition
+                const chipWaveLength = Config.rawRawChipWaves[instrument.chipWave].samples.length;
+                if (instrument.isUsingAdvancedLoopControls) {
+                    return Synth.loopableChipSynth;
+                }
+                // advloop addition
                 return Synth.chipSynth;
             }
             else if (instrument.type == 8) {
@@ -17522,6 +17545,247 @@ transform: scale(2, 0.5);
                 throw new Error("Unrecognized instrument type: " + instrument.type);
             }
         }
+		  // advloop addition
+        static wrap(x, b) {
+            return (x % b + b) % b;
+        }
+        static wrap2(x, a, b) {
+            const n = b - a;
+            return ((x - a) % n + n) % n + a;
+        }
+        static loopableChipSynth(synth, bufferIndex, roundedSamplesPerTick, tone, instrumentState) {
+            // @TODO:
+            // - Add another loop mode to be used when the tone is released.
+            //   "Rel. Mode"?
+            //   Options:
+            //   - Use Loop Mode
+            //   - Loop
+            //   - Ping-Pong
+            //   - Play Once
+            //   - Loop Sample
+            //     This uses 0 and the sample length as loop points.
+            //   - Ping-Pong Sample
+            //     This uses 0 and the sample length as loop points.
+            // - Needs a fancy waveform view to pick sample points.
+            // - Make the relationship between "Offset" and "Backwards" less
+            //   awkward.
+            // - Longer declicking? This is more difficult than I thought.
+            //   When determining this automatically is difficult (or the input
+            //   samples are expected to vary too much), this is left up to the
+            //   user.
+            const aliases = (effectsIncludeDistortion(instrumentState.effects) && instrumentState.aliases);
+            // const aliases = false;
+            const data = synth.tempMonoInstrumentSampleBuffer;
+            const wave = instrumentState.wave;
+            const volumeScale = instrumentState.volumeScale;
+            const waveLength = (aliases && instrumentState.type == 8) ? wave.length : wave.length - 1;
+            const chipWaveStartOffset = Math.max(0, Math.min(waveLength - 1, instrumentState.chipWaveStartOffset));
+            let chipWaveLoopEnd = Math.max(0, Math.min(waveLength, instrumentState.chipWaveLoopEnd));
+            let chipWaveLoopStart = Math.max(0, Math.min(chipWaveLoopEnd - 1, instrumentState.chipWaveLoopStart));
+// @TODO: This is where to set things up for the release loop mode.
+            // const ticksSinceReleased = tone.ticksSinceReleased;
+            // if (ticksSinceReleased > 0) {
+            //     chipWaveLoopStart = 0;
+            //     chipWaveLoopEnd = waveLength - 1;
+            // }			
+            let chipWaveLoopLength = chipWaveLoopEnd - chipWaveLoopStart;
+			if (chipWaveLoopLength < 2) {
+                chipWaveLoopStart = 0;
+                chipWaveLoopEnd = waveLength;
+                chipWaveLoopLength = waveLength;
+            }
+            const chipWaveLoopMode = instrumentState.chipWaveLoopMode;
+            const chipWavePlayBackwards = instrumentState.chipWavePlayBackwards;
+            const unisonSign = tone.specialIntervalExpressionMult * instrumentState.unison.sign;
+            if (instrumentState.unison.voices == 1 && !instrumentState.chord.customInterval)
+                tone.phases[1] = tone.phases[0];
+            let phaseDeltaA = tone.phaseDeltas[0] * waveLength;
+            let phaseDeltaB = tone.phaseDeltas[1] * waveLength;
+            let directionA = tone.directions[0];
+            let directionB = tone.directions[1];
+            let chipWaveCompletionA = tone.chipWaveCompletions[0];
+            let chipWaveCompletionB = tone.chipWaveCompletions[1];
+            const phaseDeltaScaleA = +tone.phaseDeltaScales[0];
+            const phaseDeltaScaleB = +tone.phaseDeltaScales[1];
+            let expression = +tone.expression;
+            const expressionDelta = +tone.expressionDelta;
+            let phaseA = Synth.wrap(tone.phases[0], 1) * waveLength;
+            let phaseB = Synth.wrap(tone.phases[1], 1) * waveLength;
+            let prevWaveIntegralA = 0;
+            let prevWaveIntegralB = 0;
+            if (!aliases) {
+                const phaseAInt = Math.floor(phaseA);
+                const phaseBInt = Math.floor(phaseB);
+                const indexA = Synth.wrap(phaseAInt, waveLength);
+               const indexB = Synth.wrap(phaseBInt, waveLength);
+                const phaseRatioA = phaseA - phaseAInt;
+                const phaseRatioB = phaseB - phaseBInt;
+                prevWaveIntegralA = +wave[indexA];
+                prevWaveIntegralB = +wave[indexB];
+                prevWaveIntegralA += (wave[Synth.wrap(indexA + 1, waveLength)] - prevWaveIntegralA) * phaseRatioA;
+                prevWaveIntegralB += (wave[Synth.wrap(indexB + 1, waveLength)] - prevWaveIntegralB) * phaseRatioB;
+           }
+            const filters = tone.noteFilters;
+            const filterCount = tone.noteFilterCount | 0;
+            let initialFilterInput1 = +tone.initialNoteFilterInput1;
+            let initialFilterInput2 = +tone.initialNoteFilterInput2;
+            const applyFilters = Synth.applyFilters;
+            const stopIndex = bufferIndex + roundedSamplesPerTick;
+            for (let sampleIndex = bufferIndex; sampleIndex < stopIndex; sampleIndex++) {
+                if (chipWaveCompletionA && chipWaveCompletionB) break;
+               let wrapped = 0;
+			   const prevPhaseA = phaseA;
+                const prevPhaseB = phaseB;
+                phaseA += phaseDeltaA * directionA;
+                phaseB += phaseDeltaB * directionB;
+                if (chipWaveLoopMode === 2) {
+                    // once
+                    if (directionA === 1) {
+                        if (phaseA > waveLength) {
+                            chipWaveCompletionA = true;
+                            wrapped = 1;
+                        }
+                    } else if (directionA === -1) {
+                        if (phaseA < 0) {
+                            chipWaveCompletionA = true;
+                            wrapped = 1;
+                        }
+                    }
+                    if (directionB === 1) {
+                        if (phaseB > waveLength) {
+                            chipWaveCompletionB = true;
+                            wrapped = 1;
+                        }
+                    } else if (directionA === -1) {
+                        if (phaseB < 0) {
+                            chipWaveCompletionB = true;
+                            wrapped = 1;
+                        }
+                    }
+                } else if (chipWaveLoopMode === 0) {
+                    // loop
+                    if (directionA === 1) {
+                        if (phaseA > chipWaveLoopEnd) {
+                            phaseA = chipWaveLoopStart + Synth.wrap(phaseA - chipWaveLoopEnd, chipWaveLoopLength);
+                            // phaseA = chipWaveLoopStart;
+                            wrapped = 1;
+                        }
+                    } else if (directionA === -1) {
+                        if (phaseA < chipWaveLoopStart) {
+                            phaseA = chipWaveLoopEnd - Synth.wrap(chipWaveLoopStart - phaseA, chipWaveLoopLength);
+                            // phaseA = chipWaveLoopEnd;
+                            wrapped = 1;
+                        }
+                    }
+                    if (directionB === 1) {
+                        if (phaseB > chipWaveLoopEnd) {
+                            phaseB = chipWaveLoopStart + Synth.wrap(phaseB - chipWaveLoopEnd, chipWaveLoopLength);
+                            // phaseB = chipWaveLoopStart;
+                            wrapped = 1;
+                        }
+                    } else if (directionB === -1) {
+                        if (phaseB < chipWaveLoopStart) {
+                            phaseB = chipWaveLoopEnd - Synth.wrap(chipWaveLoopStart - phaseB, chipWaveLoopLength);
+                            // phaseB = chipWaveLoopEnd;
+                            wrapped = 1;
+                        }
+                    }
+                } else if (chipWaveLoopMode === 1) {
+                    // ping-pong
+                    if (directionA === 1) {
+                        if (phaseA > chipWaveLoopEnd) {
+                            phaseA = chipWaveLoopEnd - Synth.wrap(phaseA - chipWaveLoopEnd, chipWaveLoopLength);
+                            // phaseA = chipWaveLoopEnd;
+                            directionA = -1;
+                            wrapped = 1;
+                        }
+                    } else if (directionA === -1) {
+                        if (phaseA < chipWaveLoopStart) {
+                            phaseA = chipWaveLoopStart + Synth.wrap(chipWaveLoopStart - phaseA, chipWaveLoopLength);
+                            // phaseA = chipWaveLoopStart;
+                            directionA = 1;
+                           wrapped = 1;
+                        }
+                    }
+                    if (directionB === 1) {
+                        if (phaseB > chipWaveLoopEnd) {
+                            phaseB = chipWaveLoopEnd - Synth.wrap(phaseB - chipWaveLoopEnd, chipWaveLoopLength);
+                            // phaseB = chipWaveLoopEnd;
+                            directionB = -1;
+                            wrapped = 1;
+                        }
+                    } else if (directionB === -1) {
+                        if (phaseB < chipWaveLoopStart) {
+                            phaseB = chipWaveLoopStart + Synth.wrap(chipWaveLoopStart - phaseB, chipWaveLoopLength);
+                            // phaseB = chipWaveLoopStart;
+                            directionB = 1;
+                           wrapped = 1;
+                        }
+                    }
+               }
+                let waveA = 0;
+                let waveB = 0;
+                let inputSample = 0;
+                if (aliases) {
+                    if (!chipWaveCompletionA)
+                        waveA = wave[Synth.wrap(Math.floor(phaseA), waveLength)];
+                    if (!chipWaveCompletionB)
+                        waveB = wave[Synth.wrap(Math.floor(phaseB), waveLength)];
+                    inputSample = waveA + waveB;
+                }
+                else {
+                    const phaseAInt = Math.floor(phaseA);
+                    const phaseBInt = Math.floor(phaseB);
+                    const indexA = Synth.wrap(phaseAInt, waveLength);
+                    const indexB = Synth.wrap(phaseBInt, waveLength);
+                    let nextWaveIntegralA = wave[indexA];
+                    let nextWaveIntegralB = wave[indexB];
+                    const phaseRatioA = phaseA - phaseAInt;
+                    const phaseRatioB = phaseB - phaseBInt;
+                    nextWaveIntegralA += (wave[Synth.wrap(indexA + 1, waveLength)] - nextWaveIntegralA) * phaseRatioA;
+                    nextWaveIntegralB += (wave[Synth.wrap(indexB + 1, waveLength)] - nextWaveIntegralB) * phaseRatioB;
+                    waveA = (nextWaveIntegralA - prevWaveIntegralA) / phaseDeltaA;
+                    waveB = (nextWaveIntegralB - prevWaveIntegralB) / phaseDeltaB;
+                     if (!(chipWaveLoopMode === 0 && chipWaveLoopStart === 0 && chipWaveLoopEnd === waveLength) && wrapped !== 0) {
+                        // @TODO: This may be too harsh? In that case, the next
+                        // two lines should attenuate the large discontinuity
+                       // instead. The `* 2` may not be necessary either.
+                       // Needs testing.
+                       waveA = 0;
+                       waveB = 0;
+                       // waveA = (nextWaveIntegralA - prevWaveIntegralA) / ((Math.abs(prevPhaseA - phaseA) * 2));
+                        // waveB = (nextWaveIntegralB - prevWaveIntegralB) / ((Math.abs(prevPhaseB - phaseB) * 2));
+                    }
+					prevWaveIntegralA = nextWaveIntegralA;
+                    prevWaveIntegralB = nextWaveIntegralB;
+                    if (!chipWaveCompletionA)
+                        inputSample += waveA;
+                    if (!chipWaveCompletionB)
+                        inputSample += waveB * unisonSign;
+                }
+                const sample = applyFilters(inputSample * volumeScale, initialFilterInput1, initialFilterInput2, filterCount, filters);
+                initialFilterInput2 = initialFilterInput1;
+                initialFilterInput1 = inputSample * volumeScale;
+                phaseDeltaA *= phaseDeltaScaleA;
+                phaseDeltaB *= phaseDeltaScaleB;
+                const output = sample * expression;
+                expression += expressionDelta;
+                data[sampleIndex] += output;
+            }
+            tone.phases[0] = phaseA / waveLength;
+            tone.phases[1] = phaseB / waveLength;
+            tone.phaseDeltas[0] = phaseDeltaA / waveLength;
+            tone.phaseDeltas[1] = phaseDeltaB / waveLength;
+            tone.directions[0] = directionA;
+            tone.directions[1] = directionB;  
+            tone.chipWaveCompletions[0] = chipWaveCompletionA;
+            tone.chipWaveCompletions[1] = chipWaveCompletionB;
+            tone.expression = expression;
+            synth.sanitizeFilters(filters);
+            tone.initialNoteFilterInput1 = initialFilterInput1;
+            tone.initialNoteFilterInput2 = initialFilterInput2;
+        }
+        // advloop addition
         static chipSynth(synth, bufferIndex, roundedSamplesPerTick, tone, instrumentState) {
             const aliases = (effectsIncludeDistortion(instrumentState.effects) && instrumentState.aliases);
             const data = synth.tempMonoInstrumentSampleBuffer;

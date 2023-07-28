@@ -159,6 +159,7 @@
 <script test="beepbox_editor.js" src="kirby_samples.js"></script>
 <script test="beepbox_editor.js" src="wario_samples.js"></script>
 	 <!--WIP, DO NOT USE-->
+	 <!--<center>THIS URL IS MEANT FOR TESTING THE CHANGES MADE IN ULTRABOX 2.0. THIS URL WILL BE DELETED WHEN ULTRABOX 2.0 RELEASES, AND ANY SONGS YOU MAKE HERE MAY BE UNRECOVERABLE. YOU'VE BEEN WARNED.</center>-->
 <body id="secondImage">
     <script>
         const image = localStorage.getItem('customTheme2');
@@ -334,7 +335,7 @@
         // Randomize display of header
         // 1-in-10
         if (Math.floor(Math.random() * 8) == 0) {
-            switch (Math.floor(Math.random() * 11)) {
+            switch (Math.floor(Math.random() * 13)) {
                 case 0:
                     document.getElementById("goldboxPlant").innerHTML = "  🍂";
                     break;
@@ -373,6 +374,12 @@
                     break;
 			       case 12:
                     document.getElementById("goldboxPlant").innerHTML = "  ☀️⭐🕒👁️";
+                    break;
+			    case 13:
+                    document.getElementById("goldboxPlant").innerHTML = "  🪱";
+                    break;
+			     case 14:
+                    document.getElementById("goldboxPlant").innerHTML = "  :wackybox:";
                     break;
             }
         }
