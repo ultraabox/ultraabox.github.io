@@ -11284,7 +11284,11 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
                         harmonicsBits.encodeBase64(buffer);
                     }
                  if (instrument.type == 0) {
-						if (instrument.chipWave > 124) {
+					 if (instrument.chipWave > 186) {
+							buffer.push(119, base64IntToCharCode[instrument.chipWave - 186]);	
+							buffer.push(base64IntToCharCode[3]);	
+						}
+						else if (instrument.chipWave > 124) {
 							buffer.push(119, base64IntToCharCode[instrument.chipWave - 124]);	
 							buffer.push(base64IntToCharCode[2]);	
 						}
@@ -11347,7 +11351,11 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
                         }
                     }
                     else if (instrument.type == 8) {
-                   if (instrument.chipWave > 124) {
+						if (instrument.chipWave > 186) {
+							buffer.push(119, base64IntToCharCode[instrument.chipWave - 186]);	
+							buffer.push(base64IntToCharCode[3]);	
+						}
+						else if (instrument.chipWave > 124) {
 							buffer.push(119, base64IntToCharCode[instrument.chipWave - 124]);	
 							buffer.push(base64IntToCharCode[2]);	
 						}
@@ -12295,7 +12303,10 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
 										const chipWaveReal = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
 										const chipWaveCounter = base64CharCodeToInt[compressed.charCodeAt(charIndex++)];
 									
-										if (chipWaveCounter == 2) {
+										if (chipWaveCounter == 3) {
+											this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, chipWaveReal + 186);											   					   	 						  								
+										}
+										else if (chipWaveCounter == 2) {
 											this.channels[instrumentChannelIterator].instruments[instrumentIndexIterator].chipWave = clamp(0, Config.chipWaves.length, chipWaveReal + 124);											   					   	 						  								
 										}
 										else if (chipWaveCounter == 1) {
