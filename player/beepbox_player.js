@@ -1189,7 +1189,7 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
 					b4 = 0.55000 * b4 + white * 0.5329522;
 					b5 = -0.7616 * b5 - white * 0.0168980;
 					wave[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
-					wave[i] *= 0.22;
+					wave[i] *= 0.44;
 					b6 = white * 0.115926;
 					//https://noisehack.com/generate-noise-web-audio-api/ ?
                 }
@@ -1201,7 +1201,7 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
 					var white = Math.random() * 2 - 1;
 					wave[i] = (lastOut + (0.02 * white)) / 1.02;
 					lastOut = wave[i];
-					wave[i] *= 7;
+					wave[i] *= 14;
 					//^^^
                 }
             }
@@ -13148,7 +13148,7 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
                                     instrument.operators[o].frequency = freqToGold3[clamp(0, freqToGold3.length, base64CharCodeToInt[compressed.charCodeAt(charIndex++)])];
                                 }
                             }
-							else if ((!fromGoldBox && !fromUltraBox) || (fromGoldBox && !beforeFour && beforeSix)) {
+							else if (!fromGoldBox && !fromUltraBox) {
 								const freqToUltraBox = [4, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16, 18, 20, 23, 27, 2, 1, 9, 17, 19, 21, 23, 0, 3];
 								
 								for (let o = 0; o < (instrument.type == 10 ? 6 : Config.operatorCount); o++) {
