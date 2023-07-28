@@ -279,6 +279,8 @@ var beepbox = (function (exports) {
 	    // todbox
 		{ name: "die", realName: "death", flags: [true, false, false, false, false, false, false, false, true, false, false, false] },
 		 //wackybox
+		// { name: "Rythmic", realName: "Pretty straightforward.", flags: [true, false, false, false, false, false, false, false, false, false, false, false] },
+        //todbox
         { name: "Custom", realName: "custom", flags: [true, false, true, true, false, false, false, true, true, false, true, true] },
     ]);
    Config.keys = toNameMap([
@@ -8367,6 +8369,11 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
      //          { name: "nerdbox unnamed 1", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": ["aliasing"], "transition": "interrupt", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "nerdbox unnamed 1", "unison": "none", "envelopes": [] } },
      //         { name: "nerdbox unnamed 2", midiProgram: 80, settings: { "type": "chip", "eqFilter": [], "effects": ["aliasing"], "transition": "interrupt", "fadeInSeconds": 0, "fadeOutTicks": -1, "chord": "arpeggio", "wave": "nerdbox unnamed 2", "unison": "none", "envelopes": [] } },
       //       ]) }, 
+	  { name: "Blackbox Presets", presets: toNameMap([
+               	{ name: "deep key", midiProgram: 9, generalMidi: true, settings: { "type": "harmonics", "effects": "reverb", "transition": "hard fade", "chord": "harmony", "filterCutoffHz": 8000, "filterResonance": 32, "filterEnvelope": "twang 1", "interval": "shimmer", "vibrato": "light", "harmonics": [100, 86, 86, 86, 86, 71, 71, 57, 0, 57, 29, 43, 57, 57, 57, 43, 43, 0, 29, 43, 43, 43, 43, 43, 43, 29, 0, 30] } },
+				{ name: "ring ding", midiProgram: 78, generalMidi: true, settings: { "type": "FM", "effects": "reverb", "transition": "hard", "chord": "strum", "filterCutoffHz": 1500, "filterResonance": 16, "filterEnvelope": "twang 2", "vibrato": "none", "algorithm": "1 2 3 4", "feedbackType": "1⟲ 2⟲", "feedbackAmplitude": 0, "feedbackEnvelope": "steady", "operators": [{ "frequency": "1×", "amplitude": 9, "envelope": "custom" }, { "frequency": "4×", "amplitude": 8, "envelope": "custom" }, { "frequency": "12×", "amplitude": 9, "envelope": "custom" }, { "frequency": "22×", "amplitude": 4, "envelope": "twang 2" }] } },
+				//blackbox adds LITERALLY TWO presets. that's it.
+			  ]) },
 		//	  { name: "Zefbox Presets", presets: toNameMap([
        //         { name: "zefbox semi-square", settings: { "type": "custom chip", "transition": "hard", "effects": "none", "chord": "arpeggio", "filterCutoffHz": 4000, "filterResonance": 0, "filterEnvelope": "steady", "interval": "union", "vibrato": "none", "customChipWave": [24, 24, 24, 24, 24, 24, 24, 24, 8, 8, 8, 8, 8, 8, 8, -8, -8, -8, -8, -8, -8, -8, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -8, -8, -8, -8, -8, -8, -8, 8, 8, 8, 8, 8, 8, 8, 24, 24, 24, 24, 24, 24, 24] } },
        //         { name: "zefbox deep square", settings: { "type": "custom chip", "transition": "hard", "effects": "none", "chord": "arpeggio", "filterCutoffHz": 4000, "filterResonance": 0, "filterEnvelope": "steady", "interval": "union", "vibrato": "none", "customChipWave": [-10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11] } },
