@@ -339,7 +339,7 @@ var beepbox = (function (exports) {
         { name: "÷4 (standard)", stepsPerBeat: 4, roundUpThresholds: [3, 9, 17, 21] },
         { name: "÷6 (sextuplets)", stepsPerBeat: 6, roundUpThresholds: null },
         { name: "÷8 (eighth notes)", stepsPerBeat: 8, roundUpThresholds: null },
-	    { name: "÷12 (twelveth notes)", stepsPerBeat: 12, ticksPerArpeggio: 3, arpeggioPatterns: [[0], [0, 1], [0, 1, 2, 1]], roundUpThresholds: null },
+	    { name: "÷12 (twelfth notes)", stepsPerBeat: 12, ticksPerArpeggio: 3, arpeggioPatterns: [[0], [0, 1], [0, 1, 2, 1]], roundUpThresholds: null },
 	    // from todbox
         { name: "freehand", stepsPerBeat: 24, roundUpThresholds: null },
 		// wackybox
@@ -8034,7 +8034,7 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
             return (_a = EditorConfig.presetCategories[0].presets.dictionary) === null || _a === void 0 ? void 0 : _a[TypePresets === null || TypePresets === void 0 ? void 0 : TypePresets[instrument]];
         }
     }
-    EditorConfig.version = "2.0.0";
+    EditorConfig.version = "2.0.1";
     EditorConfig.versionDisplayName = "UltraBox " + EditorConfig.version + " Player";
     EditorConfig.releaseNotesURL = "https://jummbus.bitbucket.io/patch_notes/" + EditorConfig.version + ".html";
     EditorConfig.isOnMac = /^Mac/i.test(navigator.platform) || /Mac OS X/i.test(navigator.userAgent) || /^(iPhone|iPad|iPod)/i.test(navigator.platform) || /(iPhone|iPad|iPod)/i.test(navigator.userAgent);
