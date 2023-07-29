@@ -22,7 +22,7 @@ var beepbox = (function (exports) {
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     */
-// const sampleLoaderAudioContext = new AudioContext({ sampleRate: 44100 });
+
     function startLoadingSample(url, chipWaveIndex, customSampleRate) {
         // @TODO: Track loading status of samples, so that parts of the code
         // that expect everything to already be in memory can work correctly.
@@ -8034,7 +8034,7 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
             return (_a = EditorConfig.presetCategories[0].presets.dictionary) === null || _a === void 0 ? void 0 : _a[TypePresets === null || TypePresets === void 0 ? void 0 : TypePresets[instrument]];
         }
     }
-    EditorConfig.version = "2.0.1";
+    EditorConfig.version = "2.0.2";
     EditorConfig.versionDisplayName = "UltraBox " + EditorConfig.version + " Player";
     EditorConfig.releaseNotesURL = "https://jummbus.bitbucket.io/patch_notes/" + EditorConfig.version + ".html";
     EditorConfig.isOnMac = /^Mac/i.test(navigator.platform) || /Mac OS X/i.test(navigator.userAgent) || /^(iPhone|iPad|iPod)/i.test(navigator.platform) || /(iPhone|iPad|iPod)/i.test(navigator.userAgent);
@@ -17755,18 +17755,24 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
                     const phaseRatioB = phaseB - phaseBInt;
                     nextWaveIntegralA += (wave[Synth.wrap(indexA + 1, waveLength)] - nextWaveIntegralA) * phaseRatioA;
                     nextWaveIntegralB += (wave[Synth.wrap(indexB + 1, waveLength)] - nextWaveIntegralB) * phaseRatioB;
-                    waveA = (nextWaveIntegralA - prevWaveIntegralA) / phaseDeltaA;
+                    if (!(chipWaveLoopMode === 0 && chipWaveLoopStart === 0 && chipWaveLoopEnd === waveLength) && wrapped !== 0) {
+                        let pwia = 0;
+                        let pwib = 0;
+                        const phaseA_ = phaseA - phaseDeltaA * directionA;
+                        const phaseB_ = phaseB - phaseDeltaB * directionB;
+                        const phaseAInt = Math.floor(phaseA_);
+                        const phaseBInt = Math.floor(phaseB_);
+                        const indexA = Synth.wrap(phaseAInt, waveLength);
+                        const indexB = Synth.wrap(phaseBInt, waveLength);
+                        pwia = wave[indexA];
+                        pwib = wave[indexB];
+                        pwia += (wave[Synth.wrap(indexA + 1, waveLength)] - pwia) * (phaseA_ - phaseAInt);
+                        pwib += (wave[Synth.wrap(indexB + 1, waveLength)] - pwib) * (phaseB_ - phaseBInt);
+                        prevWaveIntegralA = pwia;
+                        prevWaveIntegralB = pwib;
+				   }
+				    waveA = (nextWaveIntegralA - prevWaveIntegralA) / phaseDeltaA;
                     waveB = (nextWaveIntegralB - prevWaveIntegralB) / phaseDeltaB;
-                     if (!(chipWaveLoopMode === 0 && chipWaveLoopStart === 0 && chipWaveLoopEnd === waveLength) && wrapped !== 0) {
-                        // @TODO: This may be too harsh? In that case, the next
-                        // two lines should attenuate the large discontinuity
-                       // instead. The `* 2` may not be necessary either.
-                       // Needs testing.
-                       waveA = 0;
-                       waveB = 0;
-                       // waveA = (nextWaveIntegralA - prevWaveIntegralA) / ((Math.abs(prevPhaseA - phaseA) * 2));
-                        // waveB = (nextWaveIntegralB - prevWaveIntegralB) / ((Math.abs(prevPhaseB - phaseB) * 2));
-                    }
 					prevWaveIntegralA = nextWaveIntegralA;
                     prevWaveIntegralB = nextWaveIntegralB;
                     if (!chipWaveCompletionA)
