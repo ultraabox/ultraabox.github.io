@@ -11829,7 +11829,7 @@ Config.chipWaves = rawChipToIntegrated(Config.rawChipWaves);
 							// The problem with using the url is that the name is
 							// user-facing and long names break assumptions of the
 							// UI.
-							const expression = 0.5;
+							const expression = 1.0;
 						  Config.chipWaves[chipWaveIndex] = {
 								name: name,
 								expression: expression,
