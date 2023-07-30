@@ -218,7 +218,7 @@ aside {
                 <p>This utility helps you take sounds from larger files with several sounds inside (such as <a href="https://en.wikipedia.org/wiki/SoundFont">soundfonts</a>, with their well-known <code>.sf2</code> file extension), and save them as individual <a href="https://en.wikipedia.org/wiki/WAV"><code>.wav</code></a> files, for use in your <a href="https://ultraabox.github.io">UltraBox</a> songs.</p>
                 <p>To start, drop a file (in one of the <a class="supported-formats-link" href="#">supported formats</a>) on this page, or use your browser's file picker:</p>
                 <div class="center">
-                    <input type="file" id="file-picker">
+                    <input type="file" multiple id="file-picker">
                 </div>
                 <p>After downloading some samples, you can upload them to a file hosting service or web server. Some suggestions:</p>
                 <ul>
@@ -262,6 +262,10 @@ aside {
             <div class="footer-area">
                 <details>
                     <summary>Changelog</summary>
+                    <h3>v1.1.0</h3>
+                    <ul>
+                        <li>Added the ability to load multiple .wav/.txt files at once.</li>
+                    </ul>
                     <h3>v1.0.0</h3>
                     <ul>
                         <li>Initial release.</li>
@@ -5743,6 +5747,89 @@ function loadSf2(file) {
     });
 }
 
+function createSampleFromWav(name, arrayBuffer) {
+    const wav = new wavefile.WaveFile();
+    wav.fromBuffer(new Uint8Array(arrayBuffer));
+    const sampleRate = wav.fmt.sampleRate;
+    let TypedArray = null;
+    let sampleFormat = null;
+    switch (wav.bitDepth) {
+        case "4": {
+            sampleFormat = SAMPLE_FORMAT_S16;
+            wav.fromIMAADPCM("16");
+            TypedArray = Int16Array;
+            break;
+        }
+        case "8": {
+            sampleFormat = SAMPLE_FORMAT_S8;
+            TypedArray = Int8Array;
+            break;
+        }
+        case "8m": {
+            sampleFormat = SAMPLE_FORMAT_S16;
+            wav.fromMuLaw("16");
+            TypedArray = Int16Array;
+            break;
+        }
+        case "8a": {
+            sampleFormat = SAMPLE_FORMAT_S16;
+            wav.fromALaw("16");
+            TypedArray = Int16Array;
+            break;
+        }
+        case "16": {
+            sampleFormat = SAMPLE_FORMAT_S16;
+            TypedArray = Int16Array;
+            break;
+        }
+        case "32f": {
+            sampleFormat = SAMPLE_FORMAT_F32;
+            TypedArray = Float32Array;
+            break;
+        }
+        case "64": {
+            sampleFormat = SAMPLE_FORMAT_F64;
+            TypedArray = Float64Array;
+            break;
+        }
+        default: {
+            throw new Error(`Unsupported bit depth: ${wav.bitDepth}`);
+        }
+    }
+    let data = wav.getSamples(false, TypedArray);
+    if (wav.fmt.numChannels > 1) {
+        data = data[0];
+    }
+    let loopStart = 0;
+    let loopEnd = data.length;
+    for (const loopDescriptor of wav.smpl.loops) {
+        loopStart = loopDescriptor.dwStart;
+        loopEnd = loopDescriptor.dwEnd;
+        // We only support the first loop descriptor.
+        break;
+    }
+    return new Sample(name, sampleFormat, sampleRate, data, loopStart, loopEnd);
+}
+
+function loadWavs(files) {
+    loadedCollection = new Collection("wav files");
+    const sampleGroup = new SampleGroup("wav files");
+    loadedCollection.addSampleGroup(sampleGroup);
+    for (const file of files) {
+        file.arrayBuffer().then((arrayBuffer) => {
+            stopSample();
+            const nameWithoutExtension = file.name.replace(EXTENSION_RE, "");
+            selectedSampleGroup = null;
+            selectedSample = null;
+            const name = nameWithoutExtension;
+            const sample = createSampleFromWav(name, arrayBuffer);
+            sampleGroup.addSample(sample);
+            refreshSampleList(loadedCollection);
+            refreshSampleInfo(selectedSampleGroup, selectedSample);
+        });
+    }
+}
+
 function loadWav(file) {
     file.arrayBuffer().then((arrayBuffer) => {
         stopSample();
@@ -5750,69 +5837,9 @@ function loadWav(file) {
         loadedCollection = new Collection(file.name);
         selectedSampleGroup = null;
         selectedSample = null;
-        const wav = new wavefile.WaveFile();
-        wav.fromBuffer(new Uint8Array(arrayBuffer));
         const sampleGroup = new SampleGroup(null);
         const name = nameWithoutExtension;
-        const sampleRate = wav.fmt.sampleRate;
-        let TypedArray = null;
-        let sampleFormat = null;
-        switch (wav.bitDepth) {
-            case "4": {
-                sampleFormat = SAMPLE_FORMAT_S16;
-                wav.fromIMAADPCM("16");
-                TypedArray = Int16Array;
-                break;
-            }
-            case "8": {
-                sampleFormat = SAMPLE_FORMAT_S8;
-                TypedArray = Int8Array;
-                break;
-            }
-            case "8m": {
-                sampleFormat = SAMPLE_FORMAT_S16;
-                wav.fromMuLaw("16");
-                TypedArray = Int16Array;
-                break;
-            }
-            case "8a": {
-                sampleFormat = SAMPLE_FORMAT_S16;
-                wav.fromALaw("16");
-                TypedArray = Int16Array;
-                break;
-            }
-            case "16": {
-                sampleFormat = SAMPLE_FORMAT_S16;
-                TypedArray = Int16Array;
-                break;
-            }
-            case "32f": {
-                sampleFormat = SAMPLE_FORMAT_F32;
-                TypedArray = Float32Array;
-                break;
-            }
-            case "64": {
-                sampleFormat = SAMPLE_FORMAT_F64;
-                TypedArray = Float64Array;
-                break;
-            }
-            default: {
-                throw new Error(`Unsupported bit depth: ${wav.bitDepth}`);
-            }
-        }
-        let data = wav.getSamples(false, TypedArray);
-        if (wav.fmt.numChannels > 1) {
-            data = data[0];
-        }
-        let loopStart = 0;
-        let loopEnd = data.length;
-        for (const loopDescriptor of wav.smpl.loops) {
-            loopStart = loopDescriptor.dwStart;
-            loopEnd = loopDescriptor.dwEnd;
-            // We only support the first loop descriptor.
-            break;
-        }
-        const sample = new Sample(name, sampleFormat, sampleRate, data, loopStart, loopEnd);
+        const sample = createSampleFromWav(name, arrayBuffer);
         sampleGroup.addSample(sample);
         loadedCollection.addSampleGroup(sampleGroup);
         refreshSampleList(loadedCollection);
@@ -5859,6 +5886,42 @@ function loadSampleScript(file) {
     });
 }
 
+function createSampleFromTextFile(name, contents) {
+    const sampleRate = 44100;
+    const sampleFormat = SAMPLE_FORMAT_F64;
+    // This is the format used in:
+    // - Pandora's Archive (https://pandoras-box-archive.neptendo.repl.co)
+    // @TODO: This assumes no other whitespace exists.
+    const rawValues = contents.trim().split("\n");
+    const dataSize = rawValues.length;
+    const data = new Float64Array(dataSize);
+    for (let i = 0; i < dataSize; i++) {
+        data[i] = Number(rawValues[i]);
+    }
+    let loopStart = 0;
+    let loopEnd = data.length;
+    const sample = new Sample(name, sampleFormat, sampleRate, data, loopStart, loopEnd);
+}
+
+function loadSampleTextFiles(files) {
+    loadedCollection = new Collection("text files");
+    const sampleGroup = new SampleGroup("text files");
+    loadedCollection.addSampleGroup(sampleGroup);
+    for (const file of files) {
+        file.text().then((contents) => {
+            stopSample();
+            const nameWithoutExtension = file.name.replace(EXTENSION_RE, "");
+            selectedSampleGroup = null;
+            selectedSample = null;
+            const name = nameWithoutExtension;
+            const sample = createSampleFromTextFile(name, contents);
+            sampleGroup.addSample(sample);
+            refreshSampleList(loadedCollection);
+            refreshSampleInfo(selectedSampleGroup, selectedSample);
+        });
+    }
+}
+
 function loadSampleTextFile(file) {
     file.text().then((contents) => {
         stopSample();
@@ -5868,20 +5931,7 @@ function loadSampleTextFile(file) {
         selectedSample = null;
         const sampleGroup = new SampleGroup(null);
         const name = nameWithoutExtension;
-        const sampleRate = 44100;
-        const sampleFormat = SAMPLE_FORMAT_F64;
-        // This is the format used in:
-        // - Pandora's Archive (https://pandoras-box-archive.neptendo.repl.co)
-        // @TODO: This assumes no other whitespace exists.
-        const rawValues = contents.trim().split("\n");
-        const dataSize = rawValues.length;
-        const data = new Float64Array(dataSize);
-        for (let i = 0; i < dataSize; i++) {
-            data[i] = Number(rawValues[i]);
-        }
-        let loopStart = 0;
-        let loopEnd = data.length;
-        const sample = new Sample(name, sampleFormat, sampleRate, data, loopStart, loopEnd);
+        const sample = createSampleFromTextFile(name, contents);
         sampleGroup.addSample(sample);
         loadedCollection.addSampleGroup(sampleGroup);
         refreshSampleList(loadedCollection);
@@ -5906,6 +5956,22 @@ function detectFileFormat(file) {
 }
 
 function tryToLoadCollectionFile(files) {
+    // If we receive many files all of a type that we load as just one sample,
+    // create a sample group for those.
+    const detectedFileFormats = new Set();
+    for (const file of files) {
+        const detectedFileFormat = detectFileFormat(file);
+        detectedFileFormats.add(detectedFileFormat);
+    }
+    if (files.length > 1 && detectedFileFormats.size === 1) {
+        if (detectedFileFormats.has(FILE_FORMAT_WAV)) {
+            loadWavs(files);
+            return;
+        } else if (detectedFileFormats.has(FILE_FORMAT_PLAIN_TEXT)) {
+            loadSampleTextFiles(files);
+            return;
+        }
+    }
     for (const file of files) {
         const detectedFileFormat = detectFileFormat(file);
         switch (detectedFileFormat) {
