@@ -235,7 +235,7 @@ aside {
                 <p>Select a sample:</p>
                 <div class="columns">
                     <div class="column">
-                        <select class="sample-list" size="10"></select>
+                        <select multiple class="sample-list" size="10"></select>
                     </div>
                     <div class="column">
                         <ul class="sample-info-container"></ul>
@@ -250,10 +250,17 @@ aside {
                                 <strong>Output sample rate:</strong>
                                 <input class="output-sample-rate" type="number" value="44100" step="1">
                             </p>
+                            <p class="export-option-row center">
+                                <label>
+                                    <strong>Export samples with instrument name:</strong>
+                                    <input class="instrument-name-box" type="checkbox">
+                                </label>
+                            </p>
                             <ul class="center output-sample-info-container"></ul>
                             <p class="center">
                                 <button class="play-note"></button>
                                 <button class="export-as-wav">Export as .wav</button>
+                                <button class="export-as-zip" style="display: none;">Export .wav files as .zip</button>
                             </p>
                         </div>
                     </div>
@@ -262,6 +269,11 @@ aside {
             <div class="footer-area">
                 <details>
                     <summary>Changelog</summary>
+                    <h3>v1.2.0</h3>
+                    <ul>
+                        <li>Added the ability to export multiple samples into a .zip file. The sample list is <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select">browser-dependent</a>, so how to select multiple items may vary, but on desktop browsers it should be a matter of clicking on samples while holding <code>Ctrl</code>, <code>Command</code>, or <code>Shift</code>.</li>
+                        <li>Added an option to export samples with the instrument name, if available (thanks to nesquix for the initial implementation).</li>
+                    </ul>
                     <h3>v1.1.0</h3>
                     <ul>
                         <li>Added the ability to load multiple .wav/.txt files at once.</li>
@@ -300,6 +312,7 @@ aside {
             </div>
         </section>
         <script src="https://cdn.jsdelivr.net/npm/wavefile@11.0.0/dist/wavefile.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.0/umd/index.js"></script>
         <script>
 // https://cdn.jsdelivr.net/npm/@logue/sf2synth@latest/dist/sf2synth.umd.js
 // Modified slightly to not error on SoundFont 2.04 files (though the 24-bit samples
@@ -5422,7 +5435,10 @@ class Collection {
 let loadedCollection = null;
 let selectedSampleGroup = null;
 let selectedSample = null;
+let hasMultipleSamplesSelected = false;
 let shouldResample = false;
+let shouldExportSamplesWithInstrumentName = true;
+let zipNameCounter = 0;
 
 let playingSample = null;
 let stopPlayingSample = null;
@@ -5440,12 +5456,15 @@ const sampleList = document.body.querySelector(".sample-list");
 const sampleInfoContainer = document.body.querySelector(".sample-info-container");
 const exportArea = document.body.querySelector(".export-area");
 const resampleBox = document.body.querySelector(".resample-box");
+const instrumentNameBox = document.body.querySelector(".instrument-name-box");
 const outputSampleRateRow = document.body.querySelector(".output-sample-rate-row");
 const outputSampleRateStepper = document.body.querySelector(".output-sample-rate");
 const outputSampleInfoContainer = document.body.querySelector(".output-sample-info-container");
 const playNoteButton = document.body.querySelector(".play-note");
 const exportAsWavButton = document.body.querySelector(".export-as-wav");
+const exportAsZipButton = document.body.querySelector(".export-as-zip");
 let generatedWavLink = null;
+let generatedZipLink = null;
 
 function playSample(outputSampleRate, group, sample) {
     playingSample = sample;
@@ -5483,8 +5502,12 @@ function refreshPlayNoteButton() {
     }
 }
 
-function exportAsWav(shouldResample, outputSampleRate, group, sample) {
-    const name = `${sample.name}.wav`;
+function prepareNameForOutput(name) {
+    // @TODO: Need to check what browsers generally do here.
+    return name.replace(/\//g, "_");
+}
+
+function createWavFile(shouldResample, outputSampleRate, sample) {
     const sampleData = sample.data;
     const sampleRate = sample.sampleRate;
     const sampleFormat = sample.format;
@@ -5522,8 +5545,13 @@ function exportAsWav(shouldResample, outputSampleRate, group, sample) {
         });
         wav.smpl.dwNumSampleLoops = wav.smpl.loops.length;
     }
-    const wavData = wav.toBuffer().buffer;
+    return wav.toBuffer().buffer;
+}
 
+function exportAsWav(shouldResample, outputSampleRate, sample, group, useInstrumentName) {
+    const prefix = useInstrumentName && group.name != null ? prepareNameForOutput(group.name) + " - " : "";
+    const name = `${prefix}${prepareNameForOutput(sample.name)}.wav`;
+    const wavData = createWavFile(shouldResample, outputSampleRate, sample);
     generatedWavLink.download = name;
     const url = URL.createObjectURL(new Blob([wavData], {type: "audio/wav"}));
     setTimeout(function () {
@@ -5532,6 +5560,51 @@ function exportAsWav(shouldResample, outputSampleRate, group, sample) {
     generatedWavLink.href = url;
     setTimeout(function () {
         generatedWavLink.dispatchEvent(new MouseEvent("click"));
+    }, 0);
+}
+
+function exportAsZip(shouldResample, outputSampleRate, samples, useInstrumentName) {
+    const dirStructure = Object.create(null);
+
+    for (const [group, sample] of samples) {
+        const prefix = useInstrumentName && group.name != null ? prepareNameForOutput(group.name) + " - " : "";
+        let name = `${prefix}${prepareNameForOutput(sample.name)}.wav`;
+
+        if (dirStructure[name] != null) {
+            let uniqueId = 1;
+            let attempts = 0;
+            do {
+                const newName = `${prefix}${prepareNameForOutput(sample.name)}__${uniqueId}.wav`;
+                uniqueId++;
+                if (dirStructure[newName] == null) {
+                    name = newName;
+                    break;
+                }
+                attempts++;
+            } while (attempts < 10000);
+        }
+
+        const wavData = createWavFile(shouldResample, outputSampleRate, sample);
+
+        dirStructure[name] = new Uint8Array(wavData);
+    }
+
+    const collectionName = loadedCollection.name == null ? "" : loadedCollection.name;
+    const collectionNameWithoutExtension = collectionName.replace(EXTENSION_RE, "");
+    const zipName = collectionName === "" ? `extracted${zipNameCounter}.zip` : `${collectionNameWithoutExtension}_extracted${zipNameCounter}.zip`;
+    zipNameCounter++;
+    const zipData = fflate.zipSync(dirStructure, {
+        level: 0, // No compression.
+    });
+
+    generatedZipLink.download = zipName;
+    const url = URL.createObjectURL(new Blob([zipData], {type: "application/zip"}));
+    setTimeout(function () {
+        URL.revokeObjectURL(url);
+    }, secondsToMilliseconds(60));
+    generatedZipLink.href = url;
+    setTimeout(function () {
+        generatedZipLink.dispatchEvent(new MouseEvent("click"));
     }, 0);
 }
 
@@ -5575,32 +5648,62 @@ const overlayCloseButtonEventHandler = {
 };
 
 function getCurrentSampleListSelection() {
-    const selectedSampleElement = sampleList.selectedOptions[0];
-    if (selectedSampleElement != null) {
-        const sampleGroupElement = selectedSampleElement.parentNode;
-        let groupIndex = 0;
-        if (sampleGroupElement !== sampleList) {
-            groupIndex = +sampleGroupElement.dataset.index;
+    let result = null;
+    if (sampleList.selectedOptions.length > 0) {
+        result = [];
+        for (const selectedOption of sampleList.selectedOptions) {
+            const sampleGroupElement = selectedOption.parentNode;
+            let groupIndex = 0;
+            if (sampleGroupElement !== sampleList) {
+                groupIndex = +sampleGroupElement.dataset.index;
+            }
+            const sampleIndex = +selectedOption.value;
+            const group = loadedCollection.sampleGroups[groupIndex];
+            const sample = group.samples[sampleIndex];
+            result.push([group, sample]);
         }
-        const sampleIndex = +selectedSampleElement.value;
-        const group = loadedCollection.sampleGroups[groupIndex];
-        const sample = group.samples[sampleIndex];
-        return [group, sample];
     }
-    return null;
+    return result;
 }
 
 const sampleListEventHandler = {
     handleEvent: (event) => {
         switch (event.type) {
+            case "keydown": {
+                if (event.ctrlKey && event.key === "a") {
+                    // If Ctrl+A is pressed, select every sample.
+                    event.preventDefault();
+                    for (const option of sampleList.options) {
+                        option.selected = true;
+                    }
+                    sampleList.dispatchEvent(new Event("change"));
+                }
+                break;
+            };
             case "change": {
                 const selection = getCurrentSampleListSelection();
                 if (selection != null) {
                     stopSample();
-                    const [group, sample] = selection;
-                    selectedSampleGroup = group;
-                    selectedSample = sample;
-                    refreshSampleInfo(selectedSampleGroup, selectedSample);
+                    if (selection.length === 1) {
+                        playNoteButton.style.display = "";
+                        exportAsWavButton.style.display = "";
+                        exportAsZipButton.style.display = "none";
+
+                        const [group, sample] = selection[0];
+                        selectedSampleGroup = group;
+                        selectedSample = sample;
+                        hasMultipleSamplesSelected = false;
+                        refreshSampleInfo(selectedSampleGroup, selectedSample, hasMultipleSamplesSelected);
+                    } else {
+                        playNoteButton.style.display = "none";
+                        exportAsWavButton.style.display = "none";
+                        exportAsZipButton.style.display = "";
+
+                        selectedSampleGroup = null;
+                        selectedSample = null;
+                        hasMultipleSamplesSelected = true;
+                        refreshSampleInfo(selectedSampleGroup, selectedSample, hasMultipleSamplesSelected);
+                    }
                 }
                 break;
             }
@@ -5613,7 +5716,7 @@ const resampleBoxEventHandler = {
         switch (event.type) {
             case "input": {
                 shouldResample = resampleBox.checked;
-                refreshSampleInfo(selectedSampleGroup, selectedSample);
+                refreshSampleInfo(selectedSampleGroup, selectedSample, hasMultipleSamplesSelected);
                 break;
             }
         }
@@ -5623,7 +5726,21 @@ const resampleBoxEventHandler = {
 const outputSampleRateStepperEventHandler = {
     handleEvent: (event) => {
         switch (event.type) {
-            case "input": refreshSampleInfo(selectedSampleGroup, selectedSample); break;
+            case "input": {
+                refreshSampleInfo(selectedSampleGroup, selectedSample, hasMultipleSamplesSelected);
+                break;
+            }
+        }
+    },
+};
+
+const instrumentNameBoxHandler = {
+    handleEvent: (event) => {
+        switch (event.type) {
+            case "input": {
+                shouldExportSamplesWithInstrumentName = instrumentNameBox.checked;
+                break;
+            }
         }
     },
 };
@@ -5637,8 +5754,8 @@ const playNoteEventHandler = {
                 } else {
                     stopSample();
                     const selection = getCurrentSampleListSelection();
-                    if (selection != null) {
-                        const [group, sample] = selection;
+                    if (selection != null && selection.length === 1) {
+                        const [group, sample] = selection[0];
                         const outputSampleRate = +outputSampleRateStepper.value;
                         playSample(outputSampleRate, group, sample);
                     }
@@ -5655,13 +5772,29 @@ const exportAsWavEventHandler = {
             case "click": {
                 stopSample();
                 const selection = getCurrentSampleListSelection();
-                if (selection != null) {
-                    const [group, sample] = selection;
+                if (selection != null && selection.length === 1) {
+                    const [group, sample] = selection[0];
                     const outputSampleRate = +outputSampleRateStepper.value;
-                    exportAsWav(shouldResample, outputSampleRate, group, sample);
+                    exportAsWav(shouldResample, outputSampleRate, sample, group, shouldExportSamplesWithInstrumentName);
                 }
                 break;
             }
+        }
+    },
+};
+
+const exportAsZipEventHandler = {
+    handleEvent: (event) => {
+        switch (event.type) {
+            case "click":
+                stopSample();
+                const selection = getCurrentSampleListSelection();
+                if (selection != null) {
+                    const samples = selection.map(([group, sample]) => [group, sample]);
+                    const outputSampleRate = +outputSampleRateStepper.value;
+                    exportAsZip(shouldResample, outputSampleRate, samples, shouldExportSamplesWithInstrumentName);
+                }
+                break;
         }
     },
 };
@@ -5675,8 +5808,10 @@ function loadSf2(file) {
     file.arrayBuffer().then((arrayBuffer) => {
         stopSample();
         loadedCollection = new Collection(file.name);
+        zipNameCounter = 0;
         selectedSampleGroup = null;
         selectedSample = null;
+        hasMultipleSamplesSelected = false;
         const parser = new SoundFont.Parser(new Uint8Array(arrayBuffer), {
             // Should make the parser not modify the samples.
             // See `SoundFont.Parser.adjustSampleData`.
@@ -5743,7 +5878,7 @@ function loadSf2(file) {
             }
         }
         refreshSampleList(loadedCollection);
-        refreshSampleInfo(selectedSampleGroup, selectedSample);
+        refreshSampleInfo(selectedSampleGroup, selectedSample, hasMultipleSamplesSelected);
     });
 }
 
@@ -5813,6 +5948,7 @@ function createSampleFromWav(name, arrayBuffer) {
 
 function loadWavs(files) {
     loadedCollection = new Collection("wav files");
+    zipNameCounter = 0;
     const sampleGroup = new SampleGroup("wav files");
     loadedCollection.addSampleGroup(sampleGroup);
     for (const file of files) {
@@ -5821,11 +5957,12 @@ function loadWavs(files) {
             const nameWithoutExtension = file.name.replace(EXTENSION_RE, "");
             selectedSampleGroup = null;
             selectedSample = null;
+            hasMultipleSamplesSelected = false;
             const name = nameWithoutExtension;
             const sample = createSampleFromWav(name, arrayBuffer);
             sampleGroup.addSample(sample);
             refreshSampleList(loadedCollection);
-            refreshSampleInfo(selectedSampleGroup, selectedSample);
+            refreshSampleInfo(selectedSampleGroup, selectedSample, hasMultipleSamplesSelected);
         });
     }
 }
@@ -5835,15 +5972,17 @@ function loadWav(file) {
         stopSample();
         const nameWithoutExtension = file.name.replace(EXTENSION_RE, "");
         loadedCollection = new Collection(file.name);
+        zipNameCounter = 0;
         selectedSampleGroup = null;
         selectedSample = null;
+        hasMultipleSamplesSelected = false;
         const sampleGroup = new SampleGroup(null);
         const name = nameWithoutExtension;
         const sample = createSampleFromWav(name, arrayBuffer);
         sampleGroup.addSample(sample);
         loadedCollection.addSampleGroup(sampleGroup);
         refreshSampleList(loadedCollection);
-        refreshSampleInfo(selectedSampleGroup, selectedSample);
+        refreshSampleInfo(selectedSampleGroup, selectedSample, hasMultipleSamplesSelected);
     });
 }
 
@@ -5851,8 +5990,10 @@ function loadSampleScript(file) {
     file.text().then((contents) => {
         stopSample();
         loadedCollection = new Collection(file.name);
+        zipNameCounter = 0;
         selectedSampleGroup = null;
         selectedSample = null;
+        hasMultipleSamplesSelected = false;
         const sampleGroup = new SampleGroup(file.name);
         // This is the format used in:
         // - UltraBox (https://ultraabox.github.io)
@@ -5882,7 +6023,7 @@ function loadSampleScript(file) {
             loadedCollection.addSampleGroup(sampleGroup);
         }
         refreshSampleList(loadedCollection);
-        refreshSampleInfo(selectedSampleGroup, selectedSample);
+        refreshSampleInfo(selectedSampleGroup, selectedSample, hasMultipleSamplesSelected);
     });
 }
 
@@ -5905,6 +6046,7 @@ function createSampleFromTextFile(name, contents) {
 
 function loadSampleTextFiles(files) {
     loadedCollection = new Collection("text files");
+    zipNameCounter = 0;
     const sampleGroup = new SampleGroup("text files");
     loadedCollection.addSampleGroup(sampleGroup);
     for (const file of files) {
@@ -5913,11 +6055,12 @@ function loadSampleTextFiles(files) {
             const nameWithoutExtension = file.name.replace(EXTENSION_RE, "");
             selectedSampleGroup = null;
             selectedSample = null;
+            hasMultipleSamplesSelected = false;
             const name = nameWithoutExtension;
             const sample = createSampleFromTextFile(name, contents);
             sampleGroup.addSample(sample);
             refreshSampleList(loadedCollection);
-            refreshSampleInfo(selectedSampleGroup, selectedSample);
+            refreshSampleInfo(selectedSampleGroup, selectedSample, hasMultipleSamplesSelected);
         });
     }
 }
@@ -5927,15 +6070,17 @@ function loadSampleTextFile(file) {
         stopSample();
         const nameWithoutExtension = file.name.replace(EXTENSION_RE, "");
         loadedCollection = new Collection(file.name);
+        zipNameCounter = 0;
         selectedSampleGroup = null;
         selectedSample = null;
+        hasMultipleSamplesSelected = false;
         const sampleGroup = new SampleGroup(null);
         const name = nameWithoutExtension;
         const sample = createSampleFromTextFile(name, contents);
         sampleGroup.addSample(sample);
         loadedCollection.addSampleGroup(sampleGroup);
         refreshSampleList(loadedCollection);
-        refreshSampleInfo(selectedSampleGroup, selectedSample);
+        refreshSampleInfo(selectedSampleGroup, selectedSample, hasMultipleSamplesSelected);
     });
 }
 
@@ -6065,7 +6210,7 @@ function renderInfoRows(container, rows) {
     }
 }
 
-function refreshSampleInfo(group, sample) {
+function refreshSampleInfo(group, sample, hasMultipleSamplesSelected) {
     let instrumentName = null;
     let name = null;
     let format = null;
@@ -6074,44 +6219,55 @@ function refreshSampleInfo(group, sample) {
     let loopStart = null;
     let loopEnd = null;
 
-    if (sample != null) {
-        if (group != null) {
-            instrumentName = group.name;
-        }
-        name = sample.name;
-        format = getSampleFormatName(sample.format);
-        sampleRate = sample.sampleRate;
-        length = sample.data.length;
-        loopStart = sample.loopStart;
-        loopEnd = sample.loopEnd;
-    }
-
-    renderInfoRows(sampleInfoContainer, [
-        ["Instrument:", instrumentName],
-        ["Name:", name],
-        ["Format:", format],
-        ["Sample Rate:", sampleRate],
-        ["Length (in samples):", length],
-        ["Loop start (in samples):", loopStart],
-        ["Loop end (in samples):", loopEnd],
-    ]);
-
-    if (sample == null) {
-        exportArea.style.display = "none";
+    if (hasMultipleSamplesSelected) {
+        sampleInfoContainer.innerHTML = "";
+        const n = sampleList.selectedOptions.length;
+        const message = document.createTextNode(`There are ${n} samples selected.`);
+        sampleInfoContainer.appendChild(message);
     } else {
-        exportArea.style.display = "";
+        if (sample != null) {
+            if (group != null) {
+                instrumentName = group.name;
+            }
+            name = sample.name;
+            format = getSampleFormatName(sample.format);
+            sampleRate = sample.sampleRate;
+            length = sample.data.length;
+            loopStart = sample.loopStart;
+            loopEnd = sample.loopEnd;
+        }
+
+        renderInfoRows(sampleInfoContainer, [
+            ["Instrument:", instrumentName],
+            ["Name:", name],
+            ["Format:", format],
+            ["Sample Rate:", sampleRate],
+            ["Length (in samples):", length],
+            ["Loop start (in samples):", loopStart],
+            ["Loop end (in samples):", loopEnd],
+        ]);
+
+        if (sample == null) {
+            exportArea.style.display = "none";
+        } else {
+            exportArea.style.display = "";
+        }
+        if (!shouldResample) {
+            outputSampleInfoContainer.style.display = "none";
+        } else {
+            outputSampleInfoContainer.style.display = "";
+            const newSampleRate = +outputSampleRateStepper.value;
+            renderInfoRows(outputSampleInfoContainer, [
+                ["New loop start:", Math.floor((loopStart / sampleRate) * newSampleRate)],
+                ["New loop end:", Math.floor((loopEnd / sampleRate) * newSampleRate)],
+            ]);
+        }
     }
+
     if (!shouldResample) {
         outputSampleRateRow.style.display = "none";
-        outputSampleInfoContainer.style.display = "none";
     } else {
         outputSampleRateRow.style.display = "";
-        outputSampleInfoContainer.style.display = "";
-        const newSampleRate = +outputSampleRateStepper.value;
-        renderInfoRows(outputSampleInfoContainer, [
-            ["New loop start:", Math.floor((loopStart / sampleRate) * newSampleRate)],
-            ["New loop end:", Math.floor((loopEnd / sampleRate) * newSampleRate)],
-        ]);
     }
 }
 
@@ -6121,22 +6277,29 @@ function main() {
     generatedWavLink = document.createElement("a");
     generatedWavLink.download = "";
     generatedWavLink.href = "";
+    generatedZipLink = document.createElement("a");
+    generatedZipLink.download = "";
+    generatedZipLink.href = "";
 
     outputSampleRateStepper.value = "44100";
     resampleBox.checked = shouldResample;
+    instrumentNameBox.checked = shouldExportSamplesWithInstrumentName;
 
     refreshSampleList(loadedCollection);
-    refreshSampleInfo(selectedSampleGroup, selectedSample);
+    refreshSampleInfo(selectedSampleGroup, selectedSample, hasMultipleSamplesSelected);
     refreshPlayNoteButton();
 
     supportedFormatsLink.addEventListener("click", supportedFormatsLinkEventHandler);
     overlay.addEventListener("click", overlayEventHandler);
     overlayCloseButton.addEventListener("click", overlayCloseButtonEventHandler);
     sampleList.addEventListener("change", sampleListEventHandler);
+    sampleList.addEventListener("keydown", sampleListEventHandler);
     resampleBox.addEventListener("input", resampleBoxEventHandler);
+    instrumentNameBox.addEventListener("input", instrumentNameBoxHandler);
     outputSampleRateStepper.addEventListener("input", outputSampleRateStepperEventHandler);
     playNoteButton.addEventListener("click", playNoteEventHandler);
     exportAsWavButton.addEventListener("click", exportAsWavEventHandler);
+    exportAsZipButton.addEventListener("click", exportAsZipEventHandler);
     filePicker.addEventListener("change", filePickerEventHandler);
     window.addEventListener("dragover", windowEventHandler);
     window.addEventListener("drop", windowEventHandler);
