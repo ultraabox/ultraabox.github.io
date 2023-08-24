@@ -150,14 +150,14 @@
         }
     </style>
 </head>
-		<script test="beepbox_editor.js" src="samples.js"></script>
-<script test="beepbox_editor.js" src="samples2.js"></script>
+		<!--<script test="beepbox_editor.js" src="samples.js"></script>-->
+<!--<script test="beepbox_editor.js" src="samples2.js"></script>-->
 	<!--<script test="beepbox_editor.js" src="standarddrumsamples.js"></script>-->
- <script test="beepbox_editor.js" src="drumsamples.js"></script>
-<script test="beepbox_editor.js" src="samples3.js"></script>
+ <!--<script test="beepbox_editor.js" src="drumsamples.js"></script>-->
+<!--<script test="beepbox_editor.js" src="samples3.js"></script>-->
 <!--<script test="beepbox_editor.js" src="plok_samples.js"></script>-->
-<script test="beepbox_editor.js" src="kirby_samples.js"></script>
-<script test="beepbox_editor.js" src="wario_samples.js"></script>
+<!--<script test="beepbox_editor.js" src="kirby_samples.js"></script>-->
+<!--<script test="beepbox_editor.js" src="wario_samples.js"></script>-->
 	 <!--WIP, DO NOT USE-->
 	 <!--<center>THIS URL IS MEANT FOR TESTING THE CHANGES MADE IN ULTRABOX 2.0. THIS URL WILL BE DELETED WHEN ULTRABOX 2.0 RELEASES, AND ANY SONGS YOU MAKE HERE MAY BE UNRECOVERABLE. YOU'VE BEEN WARNED.</center>-->
 <body id="secondImage">
@@ -165,8 +165,10 @@
         const image = localStorage.getItem('customTheme2');
         const el  = document.getElementById('secondImage');
         // console.log(image, el);
-        el.style.backgroundImage="url(" + image + ")";
-        el.style.backgroundRepeat= "repeat";
+        if (image != null && image !== "null" && image !== "undefined") {
+            el.style.backgroundImage="url(" + image + ")";
+            el.style.backgroundRepeat= "repeat";
+        }
     </script>
     <div id="beepboxEditorContainer">
         <noscript>
@@ -183,10 +185,10 @@
             
             <p id="introduction">
                 UltraBox is a mod made by Neptendo and Main Character of the Problem, with help from contributing community members.<br>
-                It takes elements from most of the beepbox mods available (see <a href="https://ultraabox.github.io/credits">credits</a>) and puts them in one convenient package.
+                It takes elements from most of the beepbox mods available (see <a href="./credits.html">credits</a>) and puts them in one convenient package.
             </p>
             <p>
-                 <!--(Everything below is the usual beepbox description)-->
+                 <!--(Everything below is, more or less, the usual beepbox description)-->
             </p>
             <p>
                 All song data is contained in the URL at the top of your browser.
@@ -290,12 +292,12 @@
                         About
                     </h2>
                     <p>
-                        UltraBox is a fork of Goldbox developed by Neptendo and Main. See the credits list of mods we borrowed content from <a href="https://ultraabox.github.io/credits" target="_blank">here</a>.
+                        UltraBox is a fork of Goldbox developed by Neptendo and Main. See the credits list of mods we borrowed content from <a href="./credits.html" target="_blank">here</a>.
                        JummBox is developed by Jummbus. You can find him sporadically at <a href="https://twitter.com/jummbus" target="_blank">twitter.com/jummbus</a>.<br><br>
 			    BeepBox was originally developed by <a href="http://www.johnnesky.com" target="_blank">John Nesky</a>, also known as <a href="https://twitter.com/shaktool" target="_blank">@shaktool</a>.
                     </p>
 					<p>
-						The patch notes of Ultrabox are available <a href=https://ultraabox.github.io/patch_notes>here</a>.
+						The patch notes of Ultrabox are available <a href="./patch_notes.html">here</a>.
 					</p>
                     <p>
                         UltraBox does not claim ownership over songs created with it, so original songs belong to their authors.
@@ -307,10 +309,12 @@
                         UltraBox does not collect, track, or share any user data.
                     </p>
                     <p id="offline-instructions">
+                        <!--
                         You can download <a download="ultrabox-offline.html" href="ultrabox-offline.html">an offline version of UltraBox</a> to use when you don't have access to the internet. The features are otherwise the same.
+                        -->
                     </p>
                     <p>
-                        You can download and use <a href="https://github.com/MainCharacteroftheProblem/ultrabox" target="_blank">the source code</a> under the MIT license.
+                        You can download and use <a href="https://github.com/ultraabox/ultrabox_typescript" target="_blank">the source code</a> under the MIT license.
                         The original BeepBox source code by John Nesky can be found <a href="https://github.com/johnnesky/beepbox" target="_blank">here</a>.
                     </p>
                 </section>
@@ -321,7 +325,7 @@
                 <!-- </h2> -->
                 <!-- <div style="background: black;"> -->
                     <!-- <a class="twitter-timeline" data-width="300" data-height="2000" data-link-color="#9988ff" data-chrome="noheader nofooter transparent" data-dnt="true" data-theme="dark" href="https://twitter-archive.beepbox.co/" target="_blank">Songs retweeted by @beepboxco</a> -->
-                   <script async src="https://twitter-archive.beepbox.co/" charset="utf-8"></script>
+                    <!-- <script async src="https://twitter-archive.beepbox.co/" charset="utf-8"></script> -->
                 <!-- </div> -->
             <!-- </aside> -->
         </div>
@@ -329,7 +333,7 @@
 
     <!--
     Instead of loading js beepbox editor interface directly, test for browser support.
-    <script type="text/javascript" src="beepbox_editor.js"></script>
+    <script type="text/javascript" src="beepbox_editor.min.js"></script>
     -->
     <script type="text/javascript">
 
@@ -416,7 +420,7 @@
             // Go ahead and load js beepbox editor interface:
             var fileref = document.createElement("script");
             fileref.setAttribute("type", "text/javascript");
-            fileref.setAttribute("src", "beepbox_editor.js");
+            fileref.setAttribute("src", "beepbox_editor.min.js");
             document.head.appendChild(fileref);
         } else {
             document.getElementById("beepboxEditorContainer").innerHTML = "Sorry, UltraBox doesn't support your browser. Try a recent version of Chrome, Firefox, Edge, Safari, or Opera.";
@@ -424,6 +428,7 @@
 
 		// If the page was loaded with an old song version that old versions of BeepBox support,
 		// update the links to the old versions so that they'll open the song.
+	    //HEY, ULTRABOX DOESN'T HAVE THESE, WHAT DO WE DO????
 		if (/^#[1-6]/.test(location.hash)) {
 			document.getElementById("linkTo2_3").href += location.hash;
 		}

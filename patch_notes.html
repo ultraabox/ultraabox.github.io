@@ -153,6 +153,49 @@
 	  <h1>
 <font color="#9c64f7">Patch Notes (in reverse chronological order);</font>
 </h1>
+	<h2>Version 2.1.0</h2>
+	<h3>
+	<ul>
+	<li>Various quality of life changes were made to the UI:</li>
+		<ul>
+		<li>Added new prompt when adding samples</li>
+		<li>Added loop controls prompt, to visually set the loop region or start offset</li>
+		<li>Added loading bar and loading status prompt for custom samples</li>
+		<li>Custom sample presets now appear at the top of the instrument list</li>
+		<li>Added a reset button for custom themes</li>
+		<li>Added the ability to show/hide the oscilloscope and the sample loading bar</li>
+		</ul>
+	<li>Added loop control options for custom sample presets</li>
+	<li>Added a new loop mode ("Play Loop Once")</li>
+	<li>Changed the offset to not be flipped anymore when playing samples backwards</li>
+	<li>Added nintaribox and paintbox samples</li>
+	<ul>
+	<li>Use <code>nintariboxSamples</code> and <code>marioPaintboxSamples</code> respectively as URLs in the "Add Samples" prompt to load them</li>
+	</ul>
+	<li>Various custom sample-related bugfixes:</li>
+		<ul>
+		<li>Fixed custom samples not saving in json</li>
+		<li>Fixed ping-pong loop mode not inverting the sample when going backwards while anti-aliased</li>
+		<li>Fixed clicking when playing samples that end with non-zero values once</li>
+		<li>Fixed ping-pong loop mode getting stuck when changing to another loop mode during playback</li>
+		<li>Legacy samples no longer load in when they aren't needed</li>
+			<ul>
+			<li>This should improve load times</li>
+			</ul>
+		</ul>
+	<li>And finally, various misc additions:</li>
+		<ul>
+		<li>Added MicroBox theme and made changes to the Wackybox theme</li>
+		<li>Fixed nes white and nes ping presets (again)</li>
+		<li>Renamed the Blackbox presets for consistency</li>
+		<li>Added song octave option</li>
+		<ul>
+			<li>The <code>"C+"</code>, <code>"G- (actually F#-)"</code>, <code>"C-"</code>, and <code>"oh no (F-)"</code> keys were obsoleted with this addition, so they have been removed, and will be converted to the right key and octave settings on load</li>
+		</ul>
+			</ul>
+	</ul> </h3>
+	<p>8/24/2023</p>
+	
 	<h2>Version 2.0.2</h2>
 	<h3>
 <ul>
@@ -173,24 +216,22 @@
 	<h2>Version 2.0.0</h2>
 	<h3>
 <ul>
-	<li>Added custom sampling, chip wave looping, and a sample extracter (thank LeoV for all of these features!)</li>
+	<li>Added custom sampling, chip wave looping, and a sample extractor (thank LeoV for all of these features!)</li>
 	<ul>
 	<li>Custom sampling</li>
 	<ul>
 	<li>Samples are loaded by typing a url into the custom sample prompt, which can be found by scrolling to the bottom of the edit tab</li>
 	<li>The old built-in samples can be added by typing "legacySamples" into the custom sample prompt</li>
-	<!--<li>"nintariboxSamples" and "marioPaintboxSamples" can be inputted into the custom sample prompt to load nintaribox and paintbox samples respectively</li>-->
 	</ul>
 	<li>Chip wave looping</li>
 	<ul>
 	<li>Chip wave looping can be enabling by clicking on the "Loop Controls" box</li>
-	<!--<li>Use this to </li>-->
 	</ul>
-	<li>Soundfont sample extracter</li>
+	<li>Soundfont sample extractor</li>
 	<ul>
 	<li>You can extract samples from soundfonts with this tool</li>
 	<li>There are instructions on the page itself on how, so I won't repeat it here</li>
-	<li>https://ultraabox.github.io/sample_extractor</li>
+	<li><a href="./sample_extractor.html">https://ultraabox.github.io/sample_extractor</a></li>
 	</ul>
 	</ul>
 	<li>Added todbox 1/3 and 1/5 wave, and removed the zefbox squaretooth wave</li>
@@ -222,8 +263,10 @@
 	<li>Fixed nes ping preset (for real this time)</li>
 	<li>Fixed custom chip sometimes being way too low pitch</li>
 	<li>Added two batches of bugfixes (ported from jummbox):</li>
-	<li>https://github.com/AurySystem/goldbox/commit/44e7bdb472d3dfcdc333755132edd07dca7b6e0a</li>
-	<li>https://github.com/AurySystem/goldbox/commit/dd05827f7802b56829b4b7da9d73603a804d72d8</li>
+	<ul>
+		<li><a href="https://github.com/AurySystem/goldbox/commit/44e7bdb472d3dfcdc333755132edd07dca7b6e0a">https://github.com/AurySystem/goldbox/commit/44e7bdb472d3dfcdc333755132edd07dca7b6e0a</a></li>
+		<li><a href="https://github.com/AurySystem/goldbox/commit/dd05827f7802b56829b4b7da9d73603a804d72d8">https://github.com/AurySystem/goldbox/commit/dd05827f7802b56829b4b7da9d73603a804d72d8</a></li>
+	</ul>
 </ul> </h3>
 	<p>6/28/2023</p>
 	<h2>Version 1.1.3</h2>

@@ -87,6 +87,10 @@ button, input {
     height: 30em;
 }
 
+.sample-list-collection-filename {
+    word-break: break-all;
+}
+
 .export-option-row {
     display: flex;
     flex-direction: column;
@@ -223,7 +227,7 @@ aside {
                 <p>After downloading some samples, you can upload them to a file hosting service or web server. Some suggestions:</p>
                 <ul>
                     <li><a href="https://filegarden.com">File Garden</a></li>
-                   <!-- <li><a href="https://www.dropbox.com">Dropbox</a></li>-->
+                    <li><a href="https://www.dropbox.com">Dropbox</a></li>
                     <!-- <li><a href="https://neocities.org">Neocities</a></li> -->
                     <li><a href="https://pages.github.com">GitHub Pages</a></li>
                     <!-- <li><a href="https://docs.gitlab.com/ee/user/project/pages/">GitLab Pages</a></li> -->
@@ -269,6 +273,10 @@ aside {
             <div class="footer-area">
                 <details>
                     <summary>Changelog</summary>
+                    <h3>v1.3.0</h3>
+                    <ul>
+                        <li>Added loading support for .mp3/.ogg/.flac.</li>
+                    </ul>
                     <h3>v1.2.0</h3>
                     <ul>
                         <li>Added the ability to export multiple samples into a .zip file. The sample list is <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select">browser-dependent</a>, so how to select multiple items may vary, but on desktop browsers it should be a matter of clicking on samples while holding <code>Ctrl</code>, <code>Command</code>, or <code>Shift</code>.</li>
@@ -307,6 +315,15 @@ aside {
                     <li>
                         <a href="https://en.wikipedia.org/wiki/WAV"><code>.wav</code></a>:
                         Loadable for convenience, in case resampling is needed. Loop points are also saved/loaded, so they can be consulted after exporting.
+                    </li>
+                    <li>
+                        <a href="https://en.wikipedia.org/wiki/MP3"><code>.mp3</code></a>: Supported via the Web Audio API. Resampled to 44100hz on load. No loop point info.
+                    </li>
+                    <li>
+                        <a href="https://en.wikipedia.org/wiki/Ogg"><code>.ogg</code></a>: Supported via the Web Audio API. Resampled to 44100hz on load. No loop point info.
+                    </li>
+                    <li>
+                        <a href="https://en.wikipedia.org/wiki/FLAC"><code>.flac</code></a>: Supported via the Web Audio API. Resampled to 44100hz on load. No loop point info.
                     </li>
                 </ul>
             </div>
@@ -5213,11 +5230,6 @@ aside {
 //   - .xm?
 //   - .s3m?
 //   - SF3/SF4?
-//   - Anything that can be loaded via the Web Audio API
-//     - .ogg
-//     - .mp3
-//     - .flac
-// - Downmix samples with multiple channels.
 // - Better validation of loop points.
 // - Make `detectFileFormat` read the actual first bytes of the file as well.
 //   This will have to return a Promise which should resolve to the detected
@@ -5239,17 +5251,21 @@ aside {
 // - Try to load large files lazily?
 //   Will require a "skeleton" `Sample`.
 // - Make the preview match the output that will be generated.
+// - Add an option to specify the sample rate used when loading via the Web Audio API.
 
 const FILE_FORMAT_UNKNOWN = 0;
 const FILE_FORMAT_SF2 = 1;
 const FILE_FORMAT_WAV = 2;
 const FILE_FORMAT_JS = 3;
 const FILE_FORMAT_PLAIN_TEXT = 4;
+const FILE_FORMAT_MP3 = 5;
+const FILE_FORMAT_OGG = 6;
+const FILE_FORMAT_FLAC = 7;
 
 const SAMPLE_FORMAT_UNKNOWN = 0;
 const SAMPLE_FORMAT_S16 = 1;
 const SAMPLE_FORMAT_F32 = 2;
-const SAMPLE_FORMAT_S8 = 3;
+const SAMPLE_FORMAT_U8 = 3;
 const SAMPLE_FORMAT_F64 = 4;
 
 const EXTENSION_RE = /\.([a-zA-Z0-9_]+)$/;
@@ -5309,6 +5325,16 @@ function s8ToF64(x) {
     return x >= 0x80 ? (x / 0x80) : (x / 0x7F);
 }
 
+function f64ToU8(x) {
+    x = clamp(x, -1, 1);
+    return x < 0 ? ((x * 0x7F + 0x7F) | 0) : ((x * 0x80 + 0x7F) | 0);
+}
+
+function u8ToF64(x) {
+    x = clamp(x, 0, 255);
+    return x / 127 - 1;
+}
+
 function s16ToS8(x) {
     return f64ToS8(s16ToF64(x));
 }
@@ -5317,11 +5343,19 @@ function s8ToS16(x) {
     return f64ToS16(s8ToF64(x));
 }
 
+function s16ToU8(x) {
+    return f64ToU8(s16ToF64(x));
+}
+
+function u8ToS16(x) {
+    return f64ToS16(u8ToF64(x));
+}
+
 function getSampleFormatName(format) {
     switch (format) {
         case SAMPLE_FORMAT_S16: return "16-bit signed integer";
         case SAMPLE_FORMAT_F32: return "32-bit floating point";
-        case SAMPLE_FORMAT_S8: return "8-bit signed integer";
+        case SAMPLE_FORMAT_U8: return "8-bit unsigned integer";
         case SAMPLE_FORMAT_F64: return "64-bit floating point";
         default: return "Unknown";
     }
@@ -5352,22 +5386,22 @@ class Sample {
             // [input format, output format, function]
             [SAMPLE_FORMAT_S16, SAMPLE_FORMAT_S16, identity],
             [SAMPLE_FORMAT_S16, SAMPLE_FORMAT_F32, s16ToF64],
-            [SAMPLE_FORMAT_S16, SAMPLE_FORMAT_S8, s16ToS8],
+            [SAMPLE_FORMAT_S16, SAMPLE_FORMAT_U8, s16ToU8],
             [SAMPLE_FORMAT_S16, SAMPLE_FORMAT_F64, s16ToF64],
 
             [SAMPLE_FORMAT_F32, SAMPLE_FORMAT_S16, f64ToS16],
             [SAMPLE_FORMAT_F32, SAMPLE_FORMAT_F32, identity],
-            [SAMPLE_FORMAT_F32, SAMPLE_FORMAT_S8, f64ToS8],
+            [SAMPLE_FORMAT_F32, SAMPLE_FORMAT_U8, f64ToU8],
             [SAMPLE_FORMAT_F32, SAMPLE_FORMAT_F64, identity],
 
-            [SAMPLE_FORMAT_S8, SAMPLE_FORMAT_S16, s8ToS16],
-            [SAMPLE_FORMAT_S8, SAMPLE_FORMAT_F32, s8ToF64],
-            [SAMPLE_FORMAT_S8, SAMPLE_FORMAT_S8, identity],
-            [SAMPLE_FORMAT_S8, SAMPLE_FORMAT_F64, s8ToF64],
+            [SAMPLE_FORMAT_U8, SAMPLE_FORMAT_S16, u8ToS16],
+            [SAMPLE_FORMAT_U8, SAMPLE_FORMAT_F32, u8ToF64],
+            [SAMPLE_FORMAT_U8, SAMPLE_FORMAT_U8, identity],
+            [SAMPLE_FORMAT_U8, SAMPLE_FORMAT_F64, u8ToF64],
 
             [SAMPLE_FORMAT_F64, SAMPLE_FORMAT_S16, f64ToS16],
             [SAMPLE_FORMAT_F64, SAMPLE_FORMAT_F32, identity],
-            [SAMPLE_FORMAT_F64, SAMPLE_FORMAT_S8, f64ToS8],
+            [SAMPLE_FORMAT_F64, SAMPLE_FORMAT_U8, f64ToU8],
             [SAMPLE_FORMAT_F64, SAMPLE_FORMAT_F64, identity],
         ];
 
@@ -5445,6 +5479,8 @@ let stopPlayingSample = null;
 
 let playingSource = null;
 let audioContext = null;
+let sampleLoadingAudioContext = null;
+let sampleLoadingSampleRate = 44100;
 
 const filePicker = document.body.querySelector("#file-picker");
 const overlay = document.body.querySelector(".overlay");
@@ -5518,7 +5554,7 @@ function createWavFile(shouldResample, outputSampleRate, sample) {
     switch (sampleFormat) {
         case SAMPLE_FORMAT_S16: bitDepth = "16"; break;
         case SAMPLE_FORMAT_F32: bitDepth = "32f"; break;
-        case SAMPLE_FORMAT_S8: bitDepth = "8"; break;
+        case SAMPLE_FORMAT_U8: bitDepth = "8"; break;
         case SAMPLE_FORMAT_F64: bitDepth = "64"; break;
         default: throw new Error("Unknown sample format");
     }
@@ -5896,8 +5932,8 @@ function createSampleFromWav(name, arrayBuffer) {
             break;
         }
         case "8": {
-            sampleFormat = SAMPLE_FORMAT_S8;
-            TypedArray = Int8Array;
+            sampleFormat = SAMPLE_FORMAT_U8;
+            TypedArray = Uint8Array;
             break;
         }
         case "8m": {
@@ -5932,7 +5968,17 @@ function createSampleFromWav(name, arrayBuffer) {
         }
     }
     let data = wav.getSamples(false, TypedArray);
-    if (wav.fmt.numChannels > 1) {
+    if (wav.fmt.numChannels === 1) {
+        // Nothing to do here.
+    } else if (wav.fmt.numChannels === 2) {
+        const l = data[0];
+        const r = data[1];
+        const length = l.length;
+        data = new TypedArray(length);
+        for (let i = 0; i < length; i++) data[i] = (l[i] + r[i]) * 0.5;
+    } else {
+        // wav.fmt.numChannels > 2
+        // @TODO: What about quad/5.1/etc.?
         data = data[0];
     }
     let loopStart = 0;
@@ -6028,7 +6074,7 @@ function loadSampleScript(file) {
 }
 
 function createSampleFromTextFile(name, contents) {
-    const sampleRate = 44100;
+    const sampleRate = 8000;
     const sampleFormat = SAMPLE_FORMAT_F64;
     // This is the format used in:
     // - Pandora's Archive (https://pandoras-box-archive.neptendo.repl.co)
@@ -6042,6 +6088,7 @@ function createSampleFromTextFile(name, contents) {
     let loopStart = 0;
     let loopEnd = data.length;
     const sample = new Sample(name, sampleFormat, sampleRate, data, loopStart, loopEnd);
+    return sample;
 }
 
 function loadSampleTextFiles(files) {
@@ -6084,6 +6131,120 @@ function loadSampleTextFile(file) {
     });
 }
 
+function createSampleFromDecodedAudioData(name, audioBuffer) {
+    const sampleRate = 44100;
+    const sampleFormat = SAMPLE_FORMAT_F32;
+    const length = audioBuffer.length;
+    let data = null;
+    // @TODO: Ideally this probably should use ChannelMergerNode.
+    // https://www.w3.org/TR/webaudio/#down-mix
+    switch (audioBuffer.numberOfChannels) {
+        case 1: {
+            // Mono
+            data = audioBuffer.getChannelData(0);
+        } break;
+        case 2: {
+            // Stereo
+            data = new Float32Array(length);
+            const l = audioBuffer.getChannelData(0);
+            const r = audioBuffer.getChannelData(1);
+            for (let i = 0; i < length; i++) data[i] = (l[i] + r[i]) * 0.5;
+        } break;
+        case 4: {
+            // Quad
+            data = new Float32Array(length);
+            const l = audioBuffer.getChannelData(0);
+            const r = audioBuffer.getChannelData(1);
+            const sl = audioBuffer.getChannelData(2);
+            const sr = audioBuffer.getChannelData(3);
+            for (let i = 0; i < length; i++)
+                data[i] = (l[i] + r[i] + sl[i] + sr[i]) * 0.25;
+        } break;
+        case 6: {
+            // 5.1
+            data = new Float32Array(length);
+            const l = audioBuffer.getChannelData(0);
+            const r = audioBuffer.getChannelData(1);
+            const c = audioBuffer.getChannelData(2);
+            const sl = audioBuffer.getChannelData(4);
+            const sr = audioBuffer.getChannelData(5);
+            for (let i = 0; i < length; i++) data[i] = (
+                Math.SQRT1_2 * (l[i] + r[i]) + c[i] + 0.5 * (sl[i] + sr[i])
+            );
+        } break;
+    }
+    const loopStart = 0;
+    const loopEnd = data.length;
+    return new Sample(name, sampleFormat, sampleRate, data, loopStart, loopEnd);
+}
+
+function loadFilesViaWebAudioOrWavefile(files) {
+    loadedCollection = new Collection("audio files");
+    zipNameCounter = 0;
+    const sampleGroup = new SampleGroup("audio files");
+    loadedCollection.addSampleGroup(sampleGroup);
+    for (const file of files) {
+        // @TODO: The files should come with the format instead.
+        const detectedFileFormat = detectFileFormat(file);
+        if (detectedFileFormat === FILE_FORMAT_WAV) {
+            file.arrayBuffer().then((arrayBuffer) => {
+                stopSample();
+                const nameWithoutExtension = file.name.replace(EXTENSION_RE, "");
+                selectedSampleGroup = null;
+                selectedSample = null;
+                hasMultipleSamplesSelected = false;
+                const name = nameWithoutExtension;
+                const sample = createSampleFromWav(name, arrayBuffer);
+                sampleGroup.addSample(sample);
+                refreshSampleList(loadedCollection);
+                refreshSampleInfo(selectedSampleGroup, selectedSample, hasMultipleSamplesSelected);
+            });
+        } else {
+            file
+            .arrayBuffer()
+            .then((arrayBuffer) => {
+                return sampleLoadingAudioContext.decodeAudioData(arrayBuffer);
+            })
+            .then((audioBuffer) => {
+                stopSample();
+                const nameWithoutExtension = file.name.replace(EXTENSION_RE, "");
+                selectedSampleGroup = null;
+                selectedSample = null;
+                hasMultipleSamplesSelected = false;
+                const name = nameWithoutExtension;
+                const sample = createSampleFromDecodedAudioData(name, audioBuffer);
+                sampleGroup.addSample(sample);
+                refreshSampleList(loadedCollection);
+                refreshSampleInfo(selectedSampleGroup, selectedSample, hasMultipleSamplesSelected);
+            });
+        }
+    }
+}
+
+function loadFileViaWebAudio(file) {
+    file
+    .arrayBuffer()
+    .then((arrayBuffer) => {
+        return sampleLoadingAudioContext.decodeAudioData(arrayBuffer);
+    })
+    .then((audioBuffer) => {
+        stopSample();
+        const nameWithoutExtension = file.name.replace(EXTENSION_RE, "");
+        loadedCollection = new Collection(file.name);
+        zipNameCounter = 0;
+        selectedSampleGroup = null;
+        selectedSample = null;
+        hasMultipleSamplesSelected = false;
+        const sampleGroup = new SampleGroup(null);
+        const name = nameWithoutExtension;
+        const sample = createSampleFromDecodedAudioData(name, audioBuffer);
+        sampleGroup.addSample(sample);
+        loadedCollection.addSampleGroup(sampleGroup);
+        refreshSampleList(loadedCollection);
+        refreshSampleInfo(selectedSampleGroup, selectedSample, hasMultipleSamplesSelected);
+    });
+}
+
 function detectFileFormat(file) {
     const mimetype = file.type;
 
@@ -6096,34 +6257,76 @@ function detectFileFormat(file) {
     if (mimetype === "audio/x-wav" || extension === "wav") return FILE_FORMAT_WAV;
     if (mimetype === "application/javascript" || extension === "js") return FILE_FORMAT_JS;
     if (mimetype === "plain/text" || extension === "txt") return FILE_FORMAT_PLAIN_TEXT;
+    if (mimetype === "audio/mpeg" || extension === "mp3") return FILE_FORMAT_MP3;
+    if (
+        mimetype === "audio/ogg"
+        || extension === "ogg"
+        || extension === "opus"
+    ) return FILE_FORMAT_OGG;
+    if (mimetype === "audio/flac" || extension === "flac") return FILE_FORMAT_FLAC;
 
     return FILE_FORMAT_UNKNOWN;
 }
 
 function tryToLoadCollectionFile(files) {
-    // If we receive many files all of a type that we load as just one sample,
-    // create a sample group for those.
+    const supportedFiles = [];
     const detectedFileFormats = new Set();
     for (const file of files) {
         const detectedFileFormat = detectFileFormat(file);
-        detectedFileFormats.add(detectedFileFormat);
+        if (detectedFileFormat !== FILE_FORMAT_UNKNOWN) {
+            detectedFileFormats.add(detectedFileFormat);
+            supportedFiles.push(file);
+        }
     }
-    if (files.length > 1 && detectedFileFormats.size === 1) {
+    if (supportedFiles.length > 1 && detectedFileFormats.size === 1) {
+        // If we receive many files all of a type that we load
+        // as just one sample, create a sample group for those.
         if (detectedFileFormats.has(FILE_FORMAT_WAV)) {
-            loadWavs(files);
+            loadWavs(supportedFiles);
+            return;
+        } else if (
+            detectedFileFormats.has(FILE_FORMAT_MP3)
+            || detectedFileFormats.has(FILE_FORMAT_OGG)
+            || detectedFileFormats.has(FILE_FORMAT_FLAC)
+        ) {
+            loadFilesViaWebAudioOrWavefile(supportedFiles);
             return;
         } else if (detectedFileFormats.has(FILE_FORMAT_PLAIN_TEXT)) {
-            loadSampleTextFiles(files);
+            loadSampleTextFiles(supportedFiles);
+            return;
+        }
+    } else if (supportedFiles.length > 1) {
+        // If we receive many files, all of which are supported by the
+        // Web Audio API, then create a sample group for those.
+        let onlyHasWebAudioCompatibleFiles = true;
+        for (const detectedFileFormat of detectedFileFormats) {
+            if (!(
+                detectedFileFormat === FILE_FORMAT_WAV
+                || detectedFileFormat === FILE_FORMAT_MP3
+                || detectedFileFormat === FILE_FORMAT_OGG
+                || detectedFileFormat === FILE_FORMAT_FLAC
+            )) {
+                onlyHasWebAudioCompatibleFiles = false;
+                break;
+            }
+        }
+        if (onlyHasWebAudioCompatibleFiles) {
+            loadFilesViaWebAudioOrWavefile(supportedFiles);
             return;
         }
     }
-    for (const file of files) {
+    for (const file of supportedFiles) {
         const detectedFileFormat = detectFileFormat(file);
         switch (detectedFileFormat) {
             case FILE_FORMAT_SF2: loadSf2(file); break;
             case FILE_FORMAT_WAV: loadWav(file); break;
             case FILE_FORMAT_JS: loadSampleScript(file); break;
             case FILE_FORMAT_PLAIN_TEXT: loadSampleTextFile(file); break;
+            case FILE_FORMAT_MP3:
+            case FILE_FORMAT_OGG:
+            case FILE_FORMAT_FLAC:
+                loadFileViaWebAudio(file);
+                break;
             default: console.warn("Unknown file format:", file); break;
         }
         // We only support loading one collection file at a time.
@@ -6220,6 +6423,8 @@ function refreshSampleInfo(group, sample, hasMultipleSamplesSelected) {
     let loopEnd = null;
 
     if (hasMultipleSamplesSelected) {
+        outputSampleInfoContainer.style.display = "none";
+        exportArea.style.display = "";
         sampleInfoContainer.innerHTML = "";
         const n = sampleList.selectedOptions.length;
         const message = document.createTextNode(`There are ${n} samples selected.`);
@@ -6273,6 +6478,7 @@ function refreshSampleInfo(group, sample, hasMultipleSamplesSelected) {
 
 function main() {
     audioContext = new AudioContext({ sampleRate: 44100 });
+    sampleLoadingAudioContext = new AudioContext({ sampleRate: sampleLoadingSampleRate });
 
     generatedWavLink = document.createElement("a");
     generatedWavLink.download = "";
