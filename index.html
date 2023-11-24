@@ -14,7 +14,7 @@
     <meta name="application-name" content="UltraBox" />
     <meta name="apple-mobile-web-app-title" content="UltraBox">
     <meta name="description" content="Ultrabox is an online tool for sketching and sharing instrumental music." />
-    <meta name="keywords" content="chiptune, instrumental, music, song, melody, composition, tool, free, square wave, NES, NSF, JummBox, jummbox, BeepBox, beepbox, GoldBox, goldBox" />
+    <meta name="keywords" content="chiptune, instrumental, music, song, melody, composition, tool, free, online, square wave, NES, NSF, ultrabox, beepbox, jummbox, pandorasbox, modbox, sandbox, goldbox, wackybox, todbox" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -71,6 +71,7 @@
             margin-top: 0.5em;
             margin-bottom: 0.5em;
             -webkit-text-stroke-width: 0;
+            color: var(--mod-title, var(--link-accent, #9c64f7));
         }
 
         h2 {
@@ -94,6 +95,7 @@
         }
 
         .donation input[type="submit"] {
+            appearance: none;
             -webkit-appearance: none;
             background: none;
             border: none;
@@ -125,12 +127,6 @@
             .instructions-column {
 				min-width: 0;
             }
-
-            <!-- .twitter-column { -->
-                <!-- width: 300px; -->
-				<!-- flex-shrink: 0; -->
-            <!-- } -->
-        }
 
         /* narrow screen */
 		@media (max-width: 710px) {
@@ -179,12 +175,12 @@
         <section>
 
             <h1>
-                <font color="#9c64f7">UltraBox</font>
+                <font>UltraBox</font>
                 <span id="goldboxPlant" style="display: inline; color:#62a13b"></span>
             </h1>
             
             <p id="introduction">
-                UltraBox is a mod made by Neptendo and Main Character of the Problem, with help from contributing community members.<br>
+                UltraBox is a mod made by Neptendo and Main, with help from contributing community members.<br>
                 It takes elements from most of the beepbox mods available (see <a href="./credits.html">credits</a>) and puts them in one convenient package.
             </p>
             <p>
@@ -261,7 +257,8 @@
 							<li><b>[ ]</b>: move playhead backward or forward</li>
 							<li><b>F/H</b>: move to First or Highlighted pattern </li>
 							<li><b>Shift & Drag</b>: select part of a pattern (long press on touch screen)</li>
-							<li>These are just a few shortcuts, check JummBox's edit menu for more!</li>
+							<li>These are just a few shortcuts, check UltraBox's edit menu for more!</li>
+                            <!-- need to edit this eventually -->
                         </ul>
                     </div>
                     <p>
@@ -292,18 +289,13 @@
                         About
                     </h2>
                     <p>
-                        UltraBox is a fork of Goldbox developed by Neptendo and Main. See the credits list of mods we borrowed content from <a href="./credits.html" target="_blank">here</a>.
-                       JummBox is developed by Jummbus. You can find him sporadically at <a href="https://twitter.com/jummbus" target="_blank">twitter.com/jummbus</a>.<br><br>
-			    BeepBox was originally developed by <a href="http://www.johnnesky.com" target="_blank">John Nesky</a>, also known as <a href="https://twitter.com/shaktool" target="_blank">@shaktool</a>.
+                        UltraBox is a mod of BeepBox developed by Main and Neptendo. The easiest way to contact the developes is via the <a href="https://discord.com/invite/beepbox" target="_blank">Beepbox Discord</a>.<br><br>
                     </p>
-					<p>
-						The patch notes of Ultrabox are available <a href="./patch_notes.html">here</a>.
-					</p>
                     <p>
                         UltraBox does not claim ownership over songs created with it, so original songs belong to their authors.
                     </p>
                     <p>
-                        Neither Ultrabox nor it's creators assume responsibility for any copyrighted material played on UltraBox. No songs are ever received, recorded, or distributed by UltraBox's servers. All song data is contained in the URL after the hash (#) mark, and Ultrabox running inside your browser converts that data into sound waves.
+                        Neither Ultrabox nor its creators assume responsibility for any copyrighted material played on UltraBox. No songs are ever received, recorded, or distributed by UltraBox's servers. All song data is contained in the URL after the hash (#) mark, and Ultrabox running inside your browser converts that data into sound waves.
                     </p>
                     <p>
                         UltraBox does not collect, track, or share any user data.
@@ -317,6 +309,9 @@
                         You can download and use <a href="https://github.com/ultraabox/ultrabox_typescript" target="_blank">the source code</a> under the MIT license.
                         The original BeepBox source code by John Nesky can be found <a href="https://github.com/johnnesky/beepbox" target="_blank">here</a>.
                     </p>
+                    <p>
+                        The patch notes of Ultrabox are available <a href="./patch_notes.html">here</a>.
+                    </p>     
                 </section>
             </main>
             <!-- <aside class="twitter-column"> -->
@@ -338,9 +333,10 @@
     <script type="text/javascript">
 
         // Randomize display of header
-        // 1-in-10
+        // 1-in-23
+        //I should rework this sometime (maybe add the midbox tips thingy?)
         if (Math.floor(Math.random() * 8) == 0) {
-            switch (Math.floor(Math.random() * 14)) {
+            switch (Math.floor(Math.random() * 22)) {
                 case 0:
                     document.getElementById("goldboxPlant").innerHTML = "  🍂";
                     break;
@@ -365,30 +361,65 @@
                 case 7:
                     document.getElementById("goldboxPlant").innerHTML = "  1️⃣3️⃣1️⃣2️⃣";
                     break;
-			     case 8:
+                    // jummbox/goldbox plants 
+			    case 8:
                     document.getElementById("goldboxPlant").innerHTML = "  ≽(◕ ᴗ ◕)≼";
                     break;
-			     case 9:
+			    case 9:
                     document.getElementById("goldboxPlant").innerHTML = "  ≽(ᴗ _ ᴗ)≼";
                     break;
 			    case 10:
                     document.getElementById("goldboxPlant").innerHTML = "  ≽(⌐ _ ⌐)≼";
                     break;
-			     case 11:
+			    case 11:
                     document.getElementById("goldboxPlant").innerHTML = "  ≽(ᵕ ‿ ᵕ)≼";
                     break;
-			       case 12:
+                // blubox 1.0 plants 
+			    case 12:
                     document.getElementById("goldboxPlant").innerHTML = "  ☀️⭐🕒👁️";
                     break;
+                // familiarbox plant (there were others, but the code of familiarbox is long gone) 
+                // this is actually a reference to really old lore chippy made for one of their projects 
 			    case 13:
                     document.getElementById("goldboxPlant").innerHTML = "  🪱";
                     break;
+                // suggested by mel, meant to supplement the lack of a worm logo 
+                // (in case it doesn't show up, this is meant to be a worm emoji)
 			     case 14:
                     document.getElementById("goldboxPlant").innerHTML = "  :wackybox:";
                     break;
+                // don't remember where this one is from, most likely it's from ultrabox or familiarbox
 			    case 15:
                     document.getElementById("goldboxPlant").innerHTML = "  🚫 🍽️ 🐟";
                     break;
+                 // plant suggested by mel, in reference to the "(don't) eat thegubbys" meme
+                 // I wonder if somebody will misinterpret this as a political statement
+                 case 16:
+                    document.getElementById("goldboxPlant").innerHTML = "  ⚡";
+                    break;
+                case 17:
+                    document.getElementById("goldboxPlant").innerHTML = "  🔵";
+                    break;
+                case 18:
+                    document.getElementById("goldboxPlant").innerHTML = "  💫";
+                    break;
+                case 19:
+                    document.getElementById("goldboxPlant").innerHTML = "  👽";
+                    break;
+                  // blubox 2.0 plants 
+                case 20:
+                    document.getElementById("goldboxPlant").innerHTML = "  🍕";
+                    break;
+                case 21:
+                    document.getElementById("goldboxPlant").innerHTML = "  🌭";
+                    break;
+                case 22:
+                    document.getElementById("goldboxPlant").innerHTML = "  🍔";
+                    break;
+                case 23:
+                    document.getElementById("goldboxPlant").innerHTML = "  🍟";
+                    break;
+                //dogebox2 plants   
             }
         }
 
