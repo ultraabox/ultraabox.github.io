@@ -169,6 +169,7 @@
             <h1>
                 <font>UltraBox</font>
                 <span id="goldboxPlant" style="display: inline; color:#62a13b"></span>
+                <!-- <span id="goldboxPlant" style="display: inline; color: var(--plant-color, var(--link-accent, #62a13b));"></span> -->
             </h1>
             
             <p id="introduction">
@@ -327,6 +328,7 @@
         //I should rework this sometime (maybe add the midbox tips thingy?)
         if (Math.floor(Math.random() * 8) == 0) {
             switch (Math.floor(Math.random() * 22)) {
+                // jummbox/goldbox plants
                 case 0:
                     document.getElementById("goldboxPlant").innerHTML = "  🍂";
                     break;
@@ -351,7 +353,7 @@
                 case 7:
                     document.getElementById("goldboxPlant").innerHTML = "  1️⃣3️⃣1️⃣2️⃣";
                     break;
-                    // jummbox/goldbox plants 
+                // blubox plants 
 			    case 8:
                     document.getElementById("goldboxPlant").innerHTML = "  ≽(◕ ᴗ ◕)≼";
                     break;
@@ -364,26 +366,25 @@
 			    case 11:
                     document.getElementById("goldboxPlant").innerHTML = "  ≽(ᵕ ‿ ᵕ)≼";
                     break;
-                // blubox 1.0 plants 
+                // familiarbox plant (there were others, but the code of familiarbox is long gone) 
+                // this is actually a reference to really old lore chippy made for one of their projects 
 			    case 12:
                     document.getElementById("goldboxPlant").innerHTML = "  ☀️⭐🕒👁️";
                     break;
-                // familiarbox plant (there were others, but the code of familiarbox is long gone) 
-                // this is actually a reference to really old lore chippy made for one of their projects 
+                // suggested by mel, meant to supplement the lack of a worm logo 
+                // (in case it doesn't show up, this is meant to be a worm emoji)
 			    case 13:
                     document.getElementById("goldboxPlant").innerHTML = "  🪱";
                     break;
-                // suggested by mel, meant to supplement the lack of a worm logo 
-                // (in case it doesn't show up, this is meant to be a worm emoji)
-			     case 14:
+                // don't remember where this one is from, most likely it's from ultrabox or familiarbox
+                case 14:
                     document.getElementById("goldboxPlant").innerHTML = "  :wackybox:";
                     break;
-                // don't remember where this one is from, most likely it's from ultrabox or familiarbox
+                // plant suggested by mel, in reference to the "(don't eat) thegubbys" meme
 			    case 15:
-                    document.getElementById("goldboxPlant").innerHTML = "  🚫 🍽️ 🐟";
+                    document.getElementById("goldboxPlant").innerHTML = "  🐟";
                     break;
-                 // plant suggested by mel, in reference to the "(don't) eat thegubbys" meme
-                 // I wonder if somebody will misinterpret this as a political statement
+                 // blubox desktop plants 
                  case 16:
                     document.getElementById("goldboxPlant").innerHTML = "  ⚡";
                     break;
@@ -396,7 +397,7 @@
                 case 19:
                     document.getElementById("goldboxPlant").innerHTML = "  👽";
                     break;
-                  // blubox 2.0 plants 
+                // dogebox2 plants 
                 case 20:
                     document.getElementById("goldboxPlant").innerHTML = "  🍕";
                     break;
@@ -409,7 +410,6 @@
                 case 23:
                     document.getElementById("goldboxPlant").innerHTML = "  🍟";
                     break;
-                //dogebox2 plants   
             }
         }
 
