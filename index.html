@@ -65,6 +65,8 @@
             padding-right: 30px;
         }
 
+        #Hotdog { display: none; }
+
         h1 {
             font-size: 1.7rem;
             text-align: center;
@@ -127,6 +129,7 @@
             .instructions-column {
 				min-width: 0;
             }
+        }
 
         /* narrow screen */
 		@media (max-width: 710px) {
@@ -205,7 +208,7 @@
                     <p>
                         You can add or remove notes by clicking on the gray rows at the top.
                         UltraBox automatically plays the notes out loud for you. Try it!
-			    <img id="Hotdog" src="hotdog.png" width="500" height="333" onclick="changeHotdogSize()" />
+			    <img id="Hotdog" src="" width="500" height="333" onclick="changeHotdogSize()" />
 				<script>
 				function changeHotdogSize(){
 					var image = document.getElementById('Hotdog')
