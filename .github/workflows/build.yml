@@ -1,4 +1,4 @@
-name: Build and publish testing version
+name: Build and publish new version
 
 on:
   workflow_dispatch:
@@ -47,7 +47,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Check out testing website repository
+      - name: Check out main website repository
         uses: actions/checkout@v4
       - name: Download and unpack artifact with new website contents
         uses: actions/download-artifact@v4
