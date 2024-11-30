@@ -1,0 +1,73 @@
+name: Build and publish testing version
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_branch:
+        description: 'Source code branch to publish'
+        required: true
+        type: string
+        default: 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      commit: ${{ steps.grab-commit.outputs.commit }}
+    steps:
+      - name: Check out the main branch of source repository
+        uses: actions/checkout@v4
+        with:
+          repository: ultraabox/ultrabox_typescript
+          ref: ${{ inputs.source_branch }}
+      - name: Install Node.js and NPM
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: |
+          npm ci
+      - name: Build
+        run: |
+          npm run build
+      - name: Deploy files
+        run: |
+          npm run deploy-files
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: new_website_contents
+          path: to_deploy/*
+      - name: Grab current commit hash
+        id: grab-commit
+        run: |
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out testing website repository
+        uses: actions/checkout@v4
+      - name: Download and unpack artifact with new website contents
+        uses: actions/download-artifact@v4
+        with:
+          name: new_website_contents
+      - name: Push directly to main branch
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          git commit -m "Sync with latest changes" -m "https://github.com/ultraabox/ultrabox_typescript/commit/${{ needs.build.outputs.commit }}"
+          git push origin main
+      # - name: Make a pull request with the build
+      #   uses: peter-evans/create-pull-request@v6
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     branch: automated-release
+      #     delete-branch: true
+      #     commit-message: |
+      #       Sync with latest changes
+
+      #       https://github.com/ultraabox/ultrabox_typescript/commit/${{ needs.build.outputs.commit }}
+      #     title: Sync with latest changes
