@@ -441,6 +441,9 @@ var beepbox = (function (exports) {
         { name: "Whole Tone", realName: "whole tone", flags: [true, false, true, false, true, false, true, false, true, false, true, false] },
         { name: "Octatonic", realName: "octatonic", flags: [true, false, true, true, false, true, true, false, true, true, false, true] },
         { name: "Hexatonic", realName: "hexatonic", flags: [true, false, false, true, true, false, false, true, true, false, false, true] },
+        { name: "No Dabbing (MB)", realName: "no dabbing", flags: [true, true, false, true, true, true, true, true, true, false, true, false] },
+        { name: "Jacked Toad (TB)", realName: "jacked toad", flags: [true, false, true, true, false, true, true, true, true, false, true, true] },
+        { name: "Test Scale (TB)", realName: "**t", flags: [true, true, false, false, false, true, true, false, false, true, true, false] },
         { name: "Custom", realName: "custom", flags: [true, false, true, true, false, false, false, true, true, false, true, true] },
     ]);
     Config.keys = toNameMap([
