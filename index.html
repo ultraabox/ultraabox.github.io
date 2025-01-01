@@ -74,7 +74,7 @@
             margin-top: 0.5em;
             margin-bottom: 0.5em;
             -webkit-text-stroke-width: 0;
-            color: var(--mod-title, var(--link-accent, #9c64f7));
+            color: var(--mod-title, #9c64f7);
         }
 
         h2 {
@@ -130,6 +130,11 @@
             .instructions-column {
 				min-width: 0;
             }
+
+            .bsky-column {
+				width: 300px;
+				flex-shrink: 0;
+			}
         }
 
         /* narrow screen */
@@ -175,7 +180,7 @@
             </h1>
             
             <p id="introduction">
-                UltraBox is a mod first envisioned by Neptendo that was made possible by Main, with help from contributing community members.<br>
+                UltraBox is a mod first envisioned by Neptendo, and made possible with help from contributing community members.<br>
                 It takes elements from most of the beepbox mods available (see <a href="./credits.html">credits</a>) and puts them in one convenient package.
             </p>
             <!-- <p>
@@ -273,10 +278,28 @@
                     </p>
                     <p>
 						Want to see what people have made with BeepBox? Songs that were shared on Twitter prior to 2023-05-22 can now be browsed in <a href="https://twitter-archive.beepbox.co/" target="_blank">this interactive archive</a>!
-                        Additionally, there's an active <a href="https://discord.gg/beepbox">BeepBox Discord</a> where you can share songs and ask questions!
+                        <!-- Additionally, there's an active <a href="https://discord.gg/beepbox">BeepBox Discord</a> where you can share songs and ask questions! -->
                     </p>
                 </section>
             </main>
+            <aside class="bsky-column">
+				<h2>
+					Shared on Bluesky:
+				</h2>
+				<div>
+					<!-- <a class="bsky-timeline" data-width="300" data-height="2000" data-link-color="#9988ff" data-chrome="noheader nofooter transparent" data-dnt="true" data-theme="dark" href="https://twitter.com/beepboxco?ref_src=twsrc%5Etfw" target="_blank">Songs retweeted by @beepboxco</a> -->
+                    <bsky-embed
+						feed="at://did:plc:mbrx5fkqsdgk5l2dfhygecm6/app.bsky.feed.generator/aaabsv7gjrgl2"
+						mode="dark"
+						link-target="_blank"
+						load-more="true"
+						disable-styles="false"
+						custom-styles=".flex > div { max-width: 90%; } .whitespace-pre-wrap { word-wrap: break-word;}"
+					  >
+					  </bsky-embed>
+					<script type="module" src="https://cdn.jsdelivr.net/npm/bsky-embed/dist/bsky-embed.es.js" async></script>
+				</div>
+			</aside>
         </div>
     </div>
 
@@ -301,14 +324,14 @@
         "🪱",
         // I believe this is from paandorasbox (might have also been present in familiarbox?)
         " :wackybox:",
-        // plant suggested by mel, in reference to the "(don't eat) thegubbys" meme
+        // plant originally suggested by mel in reference to the "(don't) eat thegubbys" meme. has now been reduced to just the fish emoji
         "🐟",
         // blubox desktop plants 
         "⚡","🔵","💫",
         // dogebox2 plants 
         "🍕","🌭","🍔","🍟",
         // Slarmoo's Box plants
-        "✨","🌈","🌧️","🪨","🐍","🌲","🌳"
+        "✨","🌈","🌧️","🪨","🐍","🌲","🌳","𓆏","🦀"
         ];
 
         if (Math.floor(Math.random() * 9) == 0) {
