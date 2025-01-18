@@ -93,7 +93,7 @@
             color: var(--link-accent, #98f);
         }
 
-        .donation form {
+        /* .donation form {
             display: inline;
         }
 
@@ -109,7 +109,7 @@
             cursor: pointer;
             padding: 0;
             margin: 0;
-        }
+        } */
 
         /* wide screen */
 		@media (min-width: 711px) {
@@ -190,6 +190,7 @@
             </p> -->
             <p>
                 If you have any questions, please visit the <a href="./faq.html">FAQ</a>.
+                <img id="Hotdog" src="" width="500" height="333" onclick="changeHotdogSize()" />
             </p>
             <!--
     <div class="donation">
@@ -214,7 +215,6 @@
                     <p>
                         You can add or remove notes by clicking on the gray rows at the top.
                         UltraBox automatically plays the notes out loud for you. Try it!
-			    <img id="Hotdog" src="" width="500" height="333" onclick="changeHotdogSize()" />
 		
                     </p>
                     <p>
@@ -298,8 +298,20 @@
 						disable-styles="false"
 						custom-styles="a.mt-4.rounded-md.border.border-slate-300.block {display: none;} .flex > div { max-width: 90%; } .whitespace-pre-wrap { word-wrap: break-word;}"
 					  >
-					  </bsky-embed>
-					<script type="module" src="https://cdn.jsdelivr.net/npm/bsky-embed@0.2.2/dist/bsky-embed.es.min.js" async></script>
+                    </bsky-embed>
+                    <script async>
+                    // only load bsky-embed if it's actually visible
+                    // (the downside of doing this is that you have to manually reload the page to load/unload the library)
+                    if (window.localStorage.getItem("showDescription") != "false") {
+                        const bsky_script = document.createElement("script");
+
+                        bsky_script.src = "https://cdn.jsdelivr.net/npm/bsky-embed@0.2.2/dist/bsky-embed.es.min.js";
+                        bsky_script.type = "module";
+
+                        document.head.appendChild(bsky_script);
+                    }
+                    </script>
+					<!-- <script type="module" src="https://cdn.jsdelivr.net/npm/bsky-embed/dist/bsky-embed.es.js" async></script> -->
 				</div>
 			</aside>
         </div>
