@@ -49,25 +49,20 @@ jobs:
     steps:
       - name: Check out main website repository
         uses: actions/checkout@v4
+      - name: Prepare for new commit
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "automated-release-${{ needs.build.outputs.commit }}"
       - name: Download and unpack artifact with new website contents
         uses: actions/download-artifact@v4
         with:
           name: new_website_contents
-      - name: Push directly to main branch
+      - name: Push to a new branch and make a pull request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add --all
           git commit -m "Sync with latest changes" -m "https://github.com/ultraabox/ultrabox_typescript/commit/${{ needs.build.outputs.commit }}"
-          git push origin main
-      # - name: Make a pull request with the build
-      #   uses: peter-evans/create-pull-request@v6
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     branch: automated-release
-      #     delete-branch: true
-      #     commit-message: |
-      #       Sync with latest changes
-
-      #       https://github.com/ultraabox/ultrabox_typescript/commit/${{ needs.build.outputs.commit }}
-      #     title: Sync with latest changes
+          git push origin "automated-release-${{ needs.build.outputs.commit }}"
+          gh pr create --title "Sync with latest changes" --base main --head "automated-release-${{ needs.build.outputs.commit }}"
