@@ -65,4 +65,4 @@ jobs:
           git add --all
           git commit -m "Sync with latest changes" -m "https://github.com/ultraabox/ultrabox_typescript/commit/${{ needs.build.outputs.commit }}"
           git push origin "automated-release-${{ needs.build.outputs.commit }}"
-          gh pr create --title "Sync with latest changes" --base main --head "automated-release-${{ needs.build.outputs.commit }}"
+          gh pr create --title "Sync with latest changes" --fill-verbose --base main --head "automated-release-${{ needs.build.outputs.commit }}"
