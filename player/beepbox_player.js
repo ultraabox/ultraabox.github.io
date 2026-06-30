@@ -365,7 +365,7 @@ var beepbox = (function (exports) {
                 Config.rawChipWaves[chipWaveIndex] = rawChipWave;
                 Config.rawChipWaves.dictionary[chipWave.name] = rawChipWave;
                 Config.chipWaves[chipWaveIndex] = integratedChipWave;
-                Config.chipWaves.dictionary[chipWave.name] = rawChipWave;
+                Config.chipWaves.dictionary[chipWave.name] = integratedChipWave;
                 sampleLoadingState.statusTable[chipWaveIndex] = 0;
                 sampleLoadingState.urlTable[chipWaveIndex] = setDefinition.name;
             }
@@ -20850,7 +20850,7 @@ var beepbox = (function (exports) {
     const stop3 = SVG.stop({ "stop-color": "red", offset: "100%" });
     const gradient = SVG.linearGradient({ id: "volumeGrad2", gradientUnits: "userSpaceOnUse" }, stop1, stop2, stop3);
     const defs = SVG.defs({}, gradient);
-    const volumeBarContainer = SVG.svg({ style: `touch-action: none; overflow: hidden; margin: auto;`, width: "160px", height: "10px", preserveAspectRatio: "none" }, defs, outVolumeBarBg, outVolumeBar, outVolumeCap);
+    const volumeBarContainer = SVG.svg({ style: `touch-action: none; overflow: hidden; margin: auto; width: 100%;`, width: "160px", height: "10px", preserveAspectRatio: "none" }, defs, outVolumeBarBg, outVolumeBar, outVolumeCap);
     const sampleLoadingBar = div({ style: `width: 0%; height: 100%; background-color: ${ColorConfig.sampleLoaded};` });
     const sampleFailedBar = div({ style: `width: 0%; height: 100%; background-color: ${ColorConfig.sampleFailed};` });
     const sampleLoadingBarContainer = div({ style: `overflow: hidden; margin: auto; width: 90%; height: 5px; display: flex; background-color: ${ColorConfig.indicatorSecondary};` }, sampleLoadingBar, sampleFailedBar);
